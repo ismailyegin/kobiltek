@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 # Create your models here.
 class Patient(models.Model):
     name = models.CharField(max_length=120, verbose_name='İsim')
@@ -36,14 +37,19 @@ class Threat(models.Model):
 class CashMovement(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Hasta')
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Ödenen Ücret')
-    creationDate = models.DateTimeField(auto_now_add=True, verbose_name='Muayene Tarihi')
+    creationDate = models.DateTimeField(auto_now_add=True, verbose_name='Ödeme Tarihi')
 
     class Meta:
         verbose_name ='Ödeme'
         verbose_name_plural = 'Ödemeler'
+
+     
 
 
 class PayList(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Hasta')
     debt = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Ödenen Ücret')
     modificationDate = models.DateTimeField(auto_now=True, verbose_name='Güncelleme Tarihi')
+
+   
+        

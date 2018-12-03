@@ -1,8 +1,10 @@
 from django.db import models
 
 
-
 # Create your models here.
+from django.db.models import Sum
+
+
 class Patient(models.Model):
     name = models.CharField(max_length=120, verbose_name='İsim')
     surname = models.CharField(max_length=120, verbose_name='Soyisim')
@@ -17,6 +19,21 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name + " " + self.surname
+
+    def _get_total_debt(self):
+        totalthreat = Threat.objects.filter(patient=self).aggregate(Sum('price'))
+        totalpayment = CashMovement.objects.filter(patient=self).aggregate(Sum('price'))
+
+        if totalpayment['price__sum'] is None:
+            totalpayment['price__sum'] = 0
+        else:
+            totalpayment['price__sum']=totalpayment['price__sum']
+        if totalthreat['price__sum'] is None:
+            return 0
+        else:
+            return totalthreat['price__sum']-totalpayment['price__sum']
+
+    totalDebt = _get_total_debt
 
     class Meta:
         verbose_name = 'Hasta'
@@ -43,13 +60,8 @@ class CashMovement(models.Model):
         verbose_name ='Ödeme'
         verbose_name_plural = 'Ödemeler'
 
-     
-
 
 class PayList(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Hasta')
     debt = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Ödenen Ücret')
     modificationDate = models.DateTimeField(auto_now=True, verbose_name='Güncelleme Tarihi')
-
-   
-        

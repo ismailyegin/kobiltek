@@ -4,7 +4,7 @@ from .models import Patient, Threat, CashMovement
 
 
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['name', 'surname', 'mobilePhone', 'email', 'creationDate']
+    list_display = ['name', 'surname', 'mobilePhone', 'email', 'creationDate', 'totalDebt']
     search_fields = ['name', 'surname']
 
     class Meta:
@@ -13,7 +13,7 @@ class PatientAdmin(admin.ModelAdmin):
 
 class ThreatAdmin(admin.ModelAdmin):
 
-    list_display = ['patient', 'threatName', 'price']
+    list_display = ['patient', 'threatName', 'price', 'creationDate']
 
     class Meta:
         Threat

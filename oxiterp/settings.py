@@ -43,8 +43,8 @@ INSTALLED_APPS = [
 
     #own
     'patient',
-    'rest_framework'
-
+    'rest_framework',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,7 @@ ROOT_URLCONF = 'oxiterp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'oxiterp/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,8 +72,12 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
+
     },
 ]
+
+
+
 
 WSGI_APPLICATION = 'oxiterp.wsgi.application'
 
@@ -125,10 +129,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+
+STATIC_ROOT = ''
+
 STATIC_URL = '/static/'
 
-REST_FRAMEWORK = {
-    # When you enable API versioning, the request.version attribute will contain a string
-    # that corresponds to the version requested in the incoming client request.
-    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
-}
+STATICFILES_DIRS = (os.path.join('oxiterp/static'), )
+
+
+LOGIN_REDIRECT_URL = '/patient'

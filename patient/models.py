@@ -4,6 +4,8 @@ from django.db import models
 # Create your models here.
 from django.db.models import Sum
 
+from oxiterp import settings
+
 
 class Patient(models.Model):
     name = models.CharField(max_length=120, verbose_name='İsim')
@@ -13,6 +15,7 @@ class Patient(models.Model):
     isActive = models.BooleanField(verbose_name='Aktif')
     email = models.CharField(max_length=120, verbose_name='Email')
     birthDate = models.DateField(null=True, verbose_name='Doğum Tarihi')
+
     address = models.TextField(blank=True, null=True, verbose_name='Adres')
     creationDate = models.DateTimeField(auto_now_add=True, verbose_name='Kayıt Tarihi')
     modificationDate = models.DateTimeField(auto_now=True, verbose_name='Güncelleme Tarihi')

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+from django.conf.locale.tr import formats as tr_formats
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'patient',
     'rest_framework',
     'accounts',
+
 ]
 
 MIDDLEWARE = [
@@ -70,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
 
@@ -138,3 +142,7 @@ STATICFILES_DIRS = (os.path.join('oxiterp/static'), )
 
 
 LOGIN_REDIRECT_URL = '/patient'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+

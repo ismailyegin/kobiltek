@@ -22,7 +22,7 @@ def index(request):
 def login(request):
 
     if request.user.is_authenticated is True:
-        return redirect('patient/index')
+        return redirect('patient:index')
 
     if request.method == 'POST':
         username = request.POST.get('username')

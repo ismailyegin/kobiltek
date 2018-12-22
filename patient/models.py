@@ -3,13 +3,14 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import Sum
+from django.urls import reverse
 
 from oxiterp import settings
 
 
 class Patient(models.Model):
-    name = models.CharField(max_length=120, verbose_name='İsim')
-    surname = models.CharField(max_length=120, verbose_name='Soyisim')
+    name = models.CharField(max_length=120, verbose_name='Hasta Adı')
+    surname = models.CharField(max_length=120, verbose_name='Hasta Soyadı')
     patientNumber = models.CharField(max_length=120, verbose_name='Hasta Kayıt Numarası')
     mobilePhone = models.CharField(max_length=120, verbose_name='Telefon Numarası')
     isActive = models.BooleanField(verbose_name='Aktif')
@@ -22,6 +23,9 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name + " " + self.surname
+
+    def get_absolute_url(self):
+        return reverse('patient:hasta-duzenle', kwargs={'pk': self.pk})
 
     def _get_total_debt(self):
         totalthreat = Threat.objects.filter(patient=self).aggregate(Sum('price'))

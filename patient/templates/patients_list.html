@@ -4,8 +4,8 @@
 {% block content %}
 <section class="content-header">
       <h1>
-        Data Tables
-        <small>advanced tables</small>
+        Hasta Modülü
+
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -16,30 +16,42 @@
 
 <section class="content">
       <div class="row">
+      <div class="col-xs-12">
          <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Data Table With Full Features</h3>
+              <h3 class="box-title">Kayıtlı Hastalar</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Rendering engine</th>
-                  <th>Browser</th>
-                  <th>Platform(s)</th>
-                  <th>Engine version</th>
-                  <th>CSS grade</th>
+                    <th></th>
+                  <th>Adı</th>
+                  <th>Soyadı</th>
+                  <th>Hasta Numarası</th>
+                  <th>Telefon</th>
+                  <th>Email</th>
+                    <th>Borç</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
+
                 {% for patient in patients %}
                     <tr>
+                    <td>{{ forloop.counter }} </td>
                   <td>{{ patient.name }}</td>
                   <td>{{ patient.surname }}</td>
-                  <td>{{ patient.email }}</td>
-                  <td> {{ patient.isActive }}</td>
-                  <td>X</td>
+                  <td>{{ patient.patientNumber }}</td>
+                  <td>{{ patient.mobilePhone }}</td>
+                  <td> {{ patient.email }}</td>
+                  <td>{{ patient.totalDebt }}</td>
+                  <td> <div class="btn-group">
+                      <a  class="btn btn-info"><i class="fa fa-align-left"></i>Detay</a>
+                     <a href ="{% url "patient:hasta-duzenle" patient.pk %}" class="btn btn-warning"><i class="fa fa-edit"></i>Güncelle</a>
+                    <a class="btn btn-danger"><i class="fa fa-trash"></i>Sil</a>
+                    </div>  </td>
                 </tr>
 
                 {% endfor %}
@@ -47,11 +59,14 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                  <th>Rendering engine</th>
-                  <th>Browser</th>
-                  <th>Platform(s)</th>
-                  <th>Engine version</th>
-                  <th>CSS grade</th>
+                    <th></th>
+                <th>Adı</th>
+                  <th>Soyadı</th>
+                  <th>Hasta Numarası</th>
+                  <th>Telefon</th>
+                  <th>Email</th>
+                    <th>Borç</th>
+                    <th></th>
                 </tr>
                 </tfoot>
               </table>
@@ -61,7 +76,20 @@
           <!-- /.box -->
         </div>
         <!-- /.col -->
+
+      </div>
       </div>
 </section>
+<button>Send an HTTP GET request to a page and get the result back</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $("button").click(function(){
+  $.get("{% url "patient:jsonPatient"  %}", function(data, status){
+    alert("Data: " + data.user[0].name + "\nStatus: " + status);
+  });
+});
 
+
+</script>
 {% endblock %}
+

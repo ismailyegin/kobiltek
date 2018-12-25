@@ -55,7 +55,7 @@
           <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body bodys">
         ...
       </div>
     </div>
@@ -241,14 +241,17 @@
           html += '</div><br>'
 
 
-$(".modal-body").html(html);
+         $(".bodys").html(html);
 
-     });
-
-
-
+        });
 
            $('.bd-example-modal-lg').modal('show');
+
+
+           $(".bd-example-modal-lg").on("hidden.bs.modal", function () {
+    // put your default event here
+                $(".bodys").html("");
+          });
 
 
     }

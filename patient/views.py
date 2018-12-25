@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from oxiterp.serializers import UserSerializer, GroupSerializer
 from rest_framework import generics
@@ -22,14 +23,25 @@ def patients_list(request):
 
 
 @api_view()
+@permission_classes((IsAuthenticated, ))
 def patients_listJson(request):
     patients = Patient.objects.all()
-    data = PatientSerializer(patients,many=True)
+    data = PatientSerializer(patients, many=True)
     responseData = {}
     responseData['user'] =data.data
     #data = serializers.serialize('json',patients)
     return JsonResponse(responseData, safe=True)
 
+
+@api_view()
+@permission_classes((IsAuthenticated, ))
+def getPatient(request, pk):
+    patients = Patient.objects.filter(pk=pk)
+    data = PatientSerializer(patients,many=True)
+    responseData = {}
+    responseData['user'] =data.data
+    #data = serializers.serialize('json',patients)
+    return JsonResponse(responseData, safe=True)
 
 
 @login_required
@@ -84,4 +96,19 @@ def patient_update(request, pk):
         return redirect('patient:index')
 
     return render(request, 'patient_add1.html', {'form': form})
+
+
+def patient_delete(request, pk):
+
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = Patient.objects.get(pk=pk)
+            obj.isActive = request.POST['isActive']
+            obj.save()
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+        except Patient.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 

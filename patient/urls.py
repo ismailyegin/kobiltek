@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import path
 from .import views
+from .import ThreatViews
 
 
 app_name = 'patient'
@@ -11,7 +12,9 @@ urlpatterns = [
 
     url(r'json/$', views.patients_listJson, name='jsonPatient'),
 
-url(r'^getPatient/(?P<pk>\d+)$', views.getPatient, name='getPatient'),
+    url(r'jsonThreat/$', views.getThreatments, name='jsonThreat'),
+
+    url(r'^getPatient/(?P<pk>\d+)$', views.getPatient, name='getPatient'),
 
     url(r'^hasta/ekle/$', views.patients_add, name='hasta-ekle'),
 
@@ -20,4 +23,9 @@ url(r'^getPatient/(?P<pk>\d+)$', views.getPatient, name='getPatient'),
     url(r'^hasta/duzenle/(?P<pk>\d+)$', views.patient_update, name='hasta-duzenle'),
 
     url(r'^hasta/sil/(?P<pk>\d+)$', views.patient_delete, name='hasta-sil'),
+
+    #threat
+    url(r'^hasta/muayene/$', ThreatViews.threats_list, name='muayene'),
+
+url(r'^hasta/muayene/ekle/$', ThreatViews.threat_add, name='muayene-ekle'),
 ]

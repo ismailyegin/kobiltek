@@ -76,30 +76,23 @@
                 <thead>
                 <tr>
                     <th></th>
-                  <th>Adı</th>
-                  <th>Soyadı</th>
-                  <th>Hasta Numarası</th>
-                  <th>Telefon</th>
-                  <th>Email</th>
-                    <th>Borç</th>
+                  <th>Hasta Adı Soyadı</th>
+                  <th>Muayene</th>
+                  <th>Muayene Ücreti</th>
+
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
 
-                {% for patient in patients %}
+                {% for threat in threats %}
                     <tr>
                     <td>{{ forloop.counter }} </td>
-                  <td>{{ patient.name }}</td>
-                  <td>{{ patient.surname }}</td>
-                  <td>{{ patient.patientNumber }}</td>
-                  <td>{{ patient.mobilePhone }}</td>
-                  <td> {{ patient.email }}</td>
-                  <td>{{ patient.totalDebt }}</td>
+                  <td>{{ threat.patient.name }}  {{ threat.patient.surname }}</td>
+                  <td>{{ threat.threatName }}</td>
+                  <td>{{ threat.price }}</td>
+
                   <td> <div class="btn-group">
-                      <a  class="btn btn-info" onclick="getPatient({{ patient.id }})" ><i class="fa fa-align-left"></i>Detay</a>
-                     <a href ="{% url "patient:hasta-duzenle" patient.pk %}" class="btn btn-warning"><i class="fa fa-edit"></i>Güncelle</a>
-                    <a class="btn btn-danger" onclick="deactivePatient({{ patient.pk }})" data-toggle="modal" data-target=".deneme222" ><i class="fa fa-trash"></i>Sil</a>
                     </div>  </td>
                 </tr>
 
@@ -109,12 +102,10 @@
                 <tfoot>
                 <tr>
                     <th></th>
-                <th>Adı</th>
-                  <th>Soyadı</th>
-                  <th>Hasta Numarası</th>
-                  <th>Telefon</th>
-                  <th>Email</th>
-                    <th>Borç</th>
+                <th>Hasta Adı Soyadı</th>
+                  <th>Muayene</th>
+                  <th>Muayene Ücreti</th>
+
                     <th></th>
                 </tr>
                 </tfoot>
@@ -190,12 +181,11 @@
 
 
     function getPatient(id) {
-
         var html ='';
         $.get(" {% url "patient:getPatient" pk=12121   %}".replace(/12121/, id.toString()))
      .done(function(response) {
 
-
+         debugger;
           html += '<div class="form-row">';
           html += '<div class="col-md-6">';
           html += '<label for="validationDefault01">Ad Soyad:</label>';

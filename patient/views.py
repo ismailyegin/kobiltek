@@ -10,8 +10,8 @@ from oxiterp.serializers import UserSerializer, GroupSerializer
 from rest_framework import generics
 
 from patient.forms import PatientForm
-from .models import Patient
-from .serializers import PatientSerializer
+from .models import Patient, Threat
+from .serializers import PatientSerializer, ThreatSerializer
 from datetime import datetime
 
 from django.core import serializers
@@ -37,7 +37,7 @@ def patients_listJson(request):
 @permission_classes((IsAuthenticated, ))
 def getPatient(request, pk):
     patients = Patient.objects.filter(pk=pk)
-    data = PatientSerializer(patients,many=True)
+    data = PatientSerializer(patients, many=True)
     responseData = {}
     responseData['user'] =data.data
     #data = serializers.serialize('json',patients)
@@ -84,7 +84,6 @@ def patiends_add2(request):
     return render(request, 'patient_add1.html', {'form': form})
 
 
-
 @login_required
 def patient_update(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
@@ -98,6 +97,7 @@ def patient_update(request, pk):
     return render(request, 'patient_add1.html', {'form': form})
 
 
+@login_required
 def patient_delete(request, pk):
 
     if request.method == 'POST' and request.is_ajax():
@@ -112,3 +112,13 @@ def patient_delete(request, pk):
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
+@api_view()
+def getThreatments(request):
+
+    threatmens = Threat.objects.all()
+    data = ThreatSerializer(threatmens, many=True)
+    responseData = {}
+    responseData['threat'] = data.data
+    # data = serializers.serialize('json',patients)
+    return JsonResponse(responseData, safe=True)

@@ -32,6 +32,8 @@ class ThreatForm(ModelForm):
             'patient': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%;'}),
             'threatName': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Tedavi adı'}),
+
+            'price': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Ücret', 'step': 0.25})
         }
 
 

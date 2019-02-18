@@ -12,7 +12,7 @@ urlpatterns = [
 
     url(r'json/$', views.patients_listJson, name='jsonPatient'),
 
-    url(r'jsonThreat/$', views.getThreatments, name='jsonThreat'),
+    url(r'jsonThreat$', views.getThreatments, name='jsonThreat'),
 
     url(r'^getPatient/(?P<pk>\d+)$', views.getPatient, name='getPatient'),
 
@@ -27,5 +27,9 @@ urlpatterns = [
     #threat
     url(r'^hasta/muayene/$', ThreatViews.threats_list, name='muayene'),
 
-url(r'^hasta/muayene/ekle/$', ThreatViews.threat_add, name='muayene-ekle'),
+    url(r'^hasta/muayene/ekle/$', ThreatViews.threat_add, name='muayene-ekle'),
+
+    url(r'^hasta/muayene/duzenle/(?P<pk>\d+)$', ThreatViews.threat_update, name='muayene-guncelle'),
+
+    url(r'^hasta/izinler/$', ThreatViews.getPermission, name='izin-ekle'),
 ]

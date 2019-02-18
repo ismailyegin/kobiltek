@@ -1,8 +1,11 @@
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 
 
 # Create your models here.
 from django.db.models import Sum
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 
 from oxiterp import settings
@@ -30,6 +33,7 @@ class Patient(models.Model):
     def get_absolute_url(self):
         return reverse('patient:hasta-duzenle', kwargs={'pk': self.pk})
 
+    @property
     def _get_total_debt(self):
         totalthreat = Threat.objects.filter(patient=self).aggregate(Sum('price'))
         totalpayment = CashMovement.objects.filter(patient=self).aggregate(Sum('price'))
@@ -75,3 +79,18 @@ class PayList(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Hasta')
     debt = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Ödenen Ücret')
     modificationDate = models.DateTimeField(auto_now=True, verbose_name='Güncelleme Tarihi')
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+
+#yapılacak
+#def create_profile(sender, **kwargs):
+ #   user = kwargs["instance"]
+  #  if kwargs["created"] and kwargs['user.group.name']:
+
+   #     user_profile = UserProfile(user=user)
+    #    user_profile.save()
+#post_save.connect(create_profile, sender=User)

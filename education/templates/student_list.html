@@ -99,8 +99,8 @@
                                 <th>Soyadı</th>
                                 <th>Öğrenci Numarası</th>
                                 <th>Telefon</th>
-                                <th>Email</th>
-                                <th>Borç</th>
+
+                                <th>Veli</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -114,8 +114,19 @@
                                     <td>{{ student.user.last_name}}</td>
                                     <td>{{ student.studentNumber }}</td>
                                     <td>{{ student.mobilePhone }}</td>
-                                    <td> {{ student.user.email }}</td>
 
+                                    <td>
+
+                                        <div class="btn-group">
+                                            <a class="btn btn-info" onclick="getStudent({{ student.id }})"><i
+                                                    class="fa fa-info-circle"></i></a>
+                                            <a href="{% url "education:veli-ekle" student.pk %}"
+                                               class="btn btn-warning"><i class="fa fa-plus"></i></a>
+
+                                        </div>
+
+
+                                    </td>
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-info" onclick="getStudent({{ student.id }})"><i
@@ -138,8 +149,8 @@
                                 <th>Soyadı</th>
                                 <th>Hasta Numarası</th>
                                 <th>Telefon</th>
-                                <th>Email</th>
-                                <th>Borç</th>
+
+                                <th>Veli</th>
                                 <th></th>
                             </tr>
                             </tfoot>

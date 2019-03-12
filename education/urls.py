@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from django.urls import path
-from education.Views import StudentViews
-
+from education.Views import StudentViews, ParentViews
 
 app_name = 'education'
 
@@ -11,6 +10,7 @@ urlpatterns = [
     url(r'ogrenci-listesi/$', StudentViews.student_list, name='list'),
     url(r'^ogrenci/(?P<pk>\d+)$', StudentViews.getStudent, name='getStudent'),
     url(r'^ogrenci/duzenle/(?P<pk>\d+)$', StudentViews.updateStudent, name='ogrenci-duzenle'),
+    url(r'^veli/ekle/(?P<student_pk>\d+)$', ParentViews.parent_add, name='veli-ekle'),
 
 
 ]

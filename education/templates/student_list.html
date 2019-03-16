@@ -118,7 +118,7 @@
                                     <td>
 
                                         <div class="btn-group">
-                                            <a class="btn btn-info" onclick="getStudent({{ student.id }})"><i
+                                            <a class="btn btn-info" onclick="getParents({{ student.id }})"><i
                                                     class="fa fa-info-circle"></i></a>
                                             <a href="{% url "education:veli-ekle" student.pk %}"
                                                class="btn btn-warning"><i class="fa fa-plus"></i></a>
@@ -220,7 +220,85 @@
 
 
 
+    function getParents(id){
 
+
+             var html = '';
+            $.get(" {% url "education:getParents" pk=12121   %}".replace(/12121/, id.toString()))
+                .done(function (response) {
+
+                    console.log(response);
+                    html = '<div class="box-body">\n' +
+                        '                        <table id="example1" class="table table-bordered table-striped">\n' +
+                        '                            <thead>\n' +
+                        '                            <tr>\n' +
+                        '                                <th></th>\n' +
+                        '                                <th>Fotoğraf</th>\n' +
+                        '                                <th>Adı</th>\n' +
+                        '                                <th>Soyadı</th>\n' +
+                        '                                <th>Telefon</th>\n' +
+                        '                                <th>Mail</th>\n' +
+                        '                                <th></th>\n' +
+                        '                            </tr>\n' +
+                        '                            </thead>\n' +
+                        '                            <tbody>'
+
+                    for (var parent in response.parents) {
+                        console.log(response.parents[parent]);
+                        var i =Number(parent.value)+Number(1);
+                       html+= '<tr>';
+                       html+= '<td>'+i+ '</td>'
+                       html+='<td><img src="'+ response.parents[parent].profileImage +'" width="50px" height="50px" /> </td>'
+                       html+=  '<td>'+ response.parents[parent].user.first_name +'</td>';
+                       html+=  '<td>'+ response.parents[parent].user.last_name +'</td>';
+                       html+=  '<td>'+ response.parents[parent].mobilePhone +'</td>';
+                       html+=  '<td>'+ response.parents[parent].user.email +'</td></tr>';
+
+                       i=i+1;
+
+
+
+                    }
+
+                    html+= '</tbody>';
+                    html+=         '<tfoot>';
+                    html+=         '<tr>';
+                    html+=             '<th></th>';
+                    html+=             '<th>FotoğrF</th>';
+                    html+=             '<th>Adı</th>';
+                    html+=             '<th>Soyadı</th>';
+                    html+=             '<th>Telefon</th>';
+
+                     html+=            '<th>Email</th>';
+                    html+=             '<th></th>';
+                    html+=         '</tr> </tfoot> </table></div>';
+
+
+
+
+
+
+
+
+                    $(".bodys").html(html);
+
+                });
+
+            $('.bd-example-modal-lg').modal('show');
+
+
+            $(".bd-example-modal-lg").on("hidden.bs.modal", function () {
+                // put your default event here
+                $(".bodys").html("");
+            });
+
+
+
+
+
+
+
+    }
 
 
 

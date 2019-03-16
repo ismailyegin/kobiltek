@@ -79,7 +79,7 @@ def student_list(request):
 
 
 @api_view()
-@permission_classes((IsAuthenticated, ))
+#@permission_classes((IsAuthenticated, ))
 def getStudent(request, pk):
     students = Student.objects.filter(pk=pk).defer("user__password")
     students[0].user.password = "*********"

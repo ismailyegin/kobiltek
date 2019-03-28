@@ -292,8 +292,14 @@
             <li><a href="../UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>
             <li><a href="../UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li>
             <li><a href="../UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li>
+            {% for menu in menus %}
+                        <li class="{{ menu.name }}">{{ menu.name }}</li>
+                    {% endfor %}
           </ul>
         </li>
+
+
+
         <li class="treeview">
           <a href="#">
             <i class="fa fa-edit"></i> <span>Forms</span>

@@ -26,4 +26,7 @@ class Student(models.Model):
     modificationDate = models.DateTimeField(auto_now=True, verbose_name='Güncelleme Tarihi')
     parents = models.ManyToManyField(Parent)
 
+    class Meta:
+        permissions = (('student_add', 'Öğrenci Ekle'),('student_list', 'Öğrenci Liste'),('update_student', 'Öğrenci Güncelle'))
+
 

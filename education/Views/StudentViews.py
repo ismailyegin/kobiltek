@@ -13,6 +13,7 @@ from education.Forms.StudentProfileForm import StudentProfileForm
 from education.models import Parent
 from education.models.Student import Student
 from education.serializers.student_serializer import StudentSerializer
+from education.services import general_methods
 
 
 @login_required

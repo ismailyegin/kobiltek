@@ -4,7 +4,7 @@ from accounts.forms import LoginForm
 from django.contrib import auth, messages
 from django.urls import reverse
 
-from patient.views import patients_list
+
 
 
 
@@ -33,7 +33,7 @@ def login(request):
             # correct username and password login the user
             auth.login(request, user)
             #return render(request, 'patient/:patient/index', context={})
-            return redirect('patient:index')
+            return redirect('education:list')
 
         else:
             messages.add_message(request, messages.SUCCESS, 'todo')

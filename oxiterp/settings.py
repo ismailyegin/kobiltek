@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
 
     #own
-    'patient',
+
     'rest_framework',
     'accounts',
     'education',
@@ -74,6 +74,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+
+
+                #"education.services.general_methods.append_privileges",
             ],
         },
 

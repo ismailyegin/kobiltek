@@ -105,7 +105,7 @@
                             </tr>
                             </thead>
                             <tbody>
-
+                            {% if students.all %}
                             {% for student in students %}
                                 <tr>
                                     <td>{{ forloop.counter }} </td>
@@ -140,6 +140,7 @@
                                 </tr>
 
                             {% endfor %}
+                            {% endif %}
 
                             </tbody>
                             <tfoot>
@@ -171,16 +172,18 @@
 
 
     <script>
+    /*
         function deactivePatient(id) {
+         */
 
             // $('#modal-danger').modal('show');
 
 
-            $("#modal-danger").on("shown.bs.modal", function (e) {
+         /*   $("#modal-danger").on("shown.bs.modal", function (e) {
                 $("#btn-conf").click(function () {
 
                     $.ajax({
-                        url: "{% url "patient:hasta-sil" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        url: "".replace(/212121223232323232/, id.toString()),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -188,7 +191,7 @@
                         },
                         success: function (result) {
 
-                            window.location.replace("{% url "patient:index" %}");
+                            window.location.replace(" url "patient:index" %}");
                             console.log(result.status)
                         }
                     });
@@ -214,8 +217,8 @@
             success : function(result) {
                 console.log(result[0].status)
                 }
-        });*/
-        }
+        });
+        } */
 
 
 

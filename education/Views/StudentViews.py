@@ -48,7 +48,7 @@ def student_add(request):
                               mobilePhone=form_student.cleaned_data['mobilePhone'],
                               studentNumber='asasasa',)
             student= student.save()
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+
             return redirect('education:list')
         else:
 

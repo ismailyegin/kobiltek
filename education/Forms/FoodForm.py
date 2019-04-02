@@ -8,11 +8,11 @@ class FoodForm(ModelForm):
 
     class Meta:
         model = Food
-        fields = {'menu', 'foodDate'}
+        fields = {'menu', 'food_date'}
 
         widgets = {
 
-            'menu': forms.Textarea(attrs={'class': 'form-control ', 'placeholder': 'Menü', 'required': 'required'}),
-            'foodDate': forms.DateInput(
+            'menu': forms.Textarea(attrs={'class': 'form-control ', 'placeholder': 'Menü', 'required': 'required','rows':3}),
+            'food_date': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker'}),
         }

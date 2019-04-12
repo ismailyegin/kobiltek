@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^veli/ekle/(?P<student_pk>\d+)$', ParentViews.parent_add, name='veli-ekle'),
     url(r'^ogrenci-velisi/(?P<pk>\d+)$', ParentViews.getParents, name='getParents'),
     url(r'^yemek-menusu/$', FoodViews.food_list, name='yemek-listesi'),
+    url(r'^yemek-menusu/sil/(?P<pk>\d+)$', FoodViews.food_delete, name='yemek-sil'),
+    url(r'^yemek-menusu/duzenle/(?P<pk>\d+)$', FoodViews.food_update, name='yemek-duzenle'),
 
 
 ]

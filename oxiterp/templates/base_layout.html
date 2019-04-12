@@ -31,7 +31,11 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %} ">
 
+    <link rel="stylesheet" href="{% static 'dist/css/jquery.tagsinput.css' %} ">
+
     <link rel="stylesheet" href="{% static 'dist/css/checkbox.css' %} ">
+
+    <link rel="stylesheet" href="{% static 'dist/css/carousel.css' %} ">
 
     <link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
 
@@ -55,9 +59,9 @@
         <!-- Logo -->
         <a href="../../index2.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>A</b>LT</span>
+            <span class="logo-mini"><img style="width: 50px" src="{% static 'images/beyaz.png' %}"> </span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Admin</b>LTE</span>
+            <span class="logo-lg"><img style="width: 120px" src="{% static 'images/beyaz.png' %}"> </span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
@@ -561,11 +565,15 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
 
-
+<script src="{% static 'dist/js/jquery.tagsinput.js' %}"></script>
 
 
 
 <script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
+
+
+<script src="{% static 'dist/js/carousel.js' %}"></script>
+
 
 
 <script>
@@ -653,6 +661,10 @@
             showInputs: false
         })
     })
+
+    $('#tags').tagsInput({
+    // my parameters here
+});
 </script>
 
 </body>

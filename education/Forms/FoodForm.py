@@ -12,7 +12,7 @@ class FoodForm(ModelForm):
 
         widgets = {
 
-            'menu': forms.Textarea(attrs={'class': 'form-control ', 'placeholder': 'Menü', 'required': 'required','rows':3}),
+            'menu': forms.TextInput(attrs={'class': 'form-control tags', 'id':'tags', 'placeholder': 'Menü', 'required': 'required','rows':3}),
             'food_date': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker'}),
         }

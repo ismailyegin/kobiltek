@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^sinif/$', ClassViews.class_list, name='sinif-listesi'),
     url(r'^sinif/sil/(?P<pk>\d+)$', ClassViews.class_delete, name='sinif-sil'),
     url(r'^sinif/guncelle/(?P<pk>\d+)$', ClassViews.class_update, name='sinif-duzenle'),
+    url(r'^sinif/ogrenci-ekle$', ClassViews.class_add_students, name='sinif-ogrenci-ekle'),
+
 
 
 

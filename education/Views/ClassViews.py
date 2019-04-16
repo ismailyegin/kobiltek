@@ -67,3 +67,8 @@ def class_update(request,pk):
     class_lists = class_services.get_class_list()
 
     return render(request, 'class_list_add.html', {'classes': class_lists, 'form_class': form_class})
+
+
+@login_required
+def class_add_students(request):
+    return render(request, 'student_preparing.html')

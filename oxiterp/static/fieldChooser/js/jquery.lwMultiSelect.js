@@ -57,7 +57,8 @@
         tmphtml = '<div class="lwms-filterhead"><a href="#" class="lwms-addall">' + this.options.addAllText + '</a>&nbsp; | &nbsp;<a href="#" class="lwms-removeall">' + this.options.removeAllText + '</a></div>';
       }
       this.$leftHead = $(tmphtml).appendTo(this.$leftDiv);
-      this.$rightHead = $('<div class="lwms-filterhead"><span class="lwms-filcount"></span> '+this.options.selectedLabel+'</div>').appendTo(this.$rightDiv);      
+      //console.log(this.options)
+      this.$rightHead = $('<div class="lwms-filterhead"><span class="lwms-filcount"></span> '+this.options.selectedLabel+'</div>').appendTo(this.$rightDiv);
       this.$availList = $('<ul class="lwms-list lwms-available"></ul>').appendTo(this.$leftDiv);
       this.$selectedList = $('<ul class="lwms-list"></ul>').appendTo(this.$rightDiv);
       this.$counter = this.$mainContainer.find('.lwms-filcount');
@@ -75,6 +76,7 @@
     selectItem: function (that) {      
       if (this.options.maxSelect == 0 || this.isBelowMax()) { //allow selection if there's no max or selection is below max
         var $self = $(that);
+        console.log(this.$availList);
         $self.clone().appendTo(this.$selectedList); //clone the element and append to selected, this is required due to search visibility
         $self.addClass('lwms-selected'); //lwms-selected is to preserved visibility state of search filters
         this.$element.find('option[value="' + $self.data('value') + '"]').attr('selected', 'selected'); //mark selected on the source, used attr vs prop because clone doesn't carry over selected attr      
@@ -136,6 +138,7 @@
       this.$availList.on('click.lwmultiselect', 'li', function (e) {        
         e.preventDefault();
         that.selectItem(this);
+        console.log(this);
       });
 
       /* remove clicks */
@@ -168,7 +171,8 @@
         $tmpThis, 
         tmpVal, 
         tmpText, 
-        selectClass = '';
+        selectClass = '',
+        tmpImage = '';
         
       this.$selectedList.empty(); //clear available and selected list
       this.$availList.empty();      
@@ -179,14 +183,16 @@
         selectClass = '';
         $tmpThis = $(this);
         tmpVal = $tmpThis.prop('value');
+        tmpImage = $tmpThis.prop('imgSrc');
         tmpText = $tmpThis.text();
 
+        console.log( $tmpThis.prop('dataset').imgSrc);
         //if option is preselected then append to selected and add lwms-selected to the available side        
         if ($tmpThis.is(':selected')) {
-          tmpSelectHtml += '<li class="lwms-selectli" data-value="' + tmpVal + '">' + tmpText + '</li>';
+          tmpSelectHtml += '<li class="lwms-selectli" data-value="' + tmpVal + '"><img src ="'+$tmpThis.prop('dataset').imgSrc+'"/>' + tmpText + '</li>';
           selectClass = ' lwms-selected';
         }
-        tmpAvailHtml += '<li class="lwms-selectli' + selectClass + '" data-value="' + tmpVal + '">' + tmpText + '</li>';
+        tmpAvailHtml += '<li class="lwms-selectli' + selectClass + '" data-value="' + tmpVal + '"><img width="50px" src ="'+$tmpThis.prop("dataset").imgSrc+'"/><font size="3">' + tmpText + '</font></li>';
       });
 
       this.$selectedList.html(tmpSelectHtml);

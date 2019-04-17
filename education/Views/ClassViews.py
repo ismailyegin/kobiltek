@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from education.Forms.ClassForm import ClassForm
-from education.models import Class
+from education.models import Class, Student
 from education.services import class_services
 
 
@@ -71,4 +71,5 @@ def class_update(request,pk):
 
 @login_required
 def class_add_students(request):
-    return render(request, 'student_preparing.html')
+    students = Student.objects.filter(user__is_active=True)
+    return render(request, 'student_preparing.html', {'students' :students})

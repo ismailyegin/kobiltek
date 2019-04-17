@@ -76,7 +76,7 @@
     selectItem: function (that) {      
       if (this.options.maxSelect == 0 || this.isBelowMax()) { //allow selection if there's no max or selection is below max
         var $self = $(that);
-        console.log(this.$availList);
+        console.log("ererere"+that);
         $self.clone().appendTo(this.$selectedList); //clone the element and append to selected, this is required due to search visibility
         $self.addClass('lwms-selected'); //lwms-selected is to preserved visibility state of search filters
         this.$element.find('option[value="' + $self.data('value') + '"]').attr('selected', 'selected'); //mark selected on the source, used attr vs prop because clone doesn't carry over selected attr      

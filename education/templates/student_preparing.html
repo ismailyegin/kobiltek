@@ -30,7 +30,7 @@
         <form action="" method="post" enctype="multipart/form-data" class="content">
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Sınıf Oluştur</h3>
+                    <h3 class="box-title">{{ class.name }} Sınıf Oluştur</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -54,7 +54,8 @@
 
                             {% for student in students %}
                                 <
-                             <option value="{{ student.id }}"   data-img-src="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://{{ request.get_host }}/media/{{ student.profileImage }}">{{ student.user.first_name }} {{ student.user.last_name }}</option>
+                                <option value="{{ student.id }}"
+                                        data-img-src="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://{{ request.get_host }}/media/{{ student.profileImage }}">{{ student.user.first_name }} {{ student.user.last_name }}</option>
                             {% endfor %}
 
                         </select>
@@ -62,12 +63,20 @@
                     </p>
                     <script>
                         jQuery('#defaults').lwMultiSelect(
-
-                            { onChange: function() { console.log($('#defaults').val()) } }
-
+                            {
+                                onChange: function () {
+                                    console.log($('#defaults').val())
+                                }
+                            }
                         );
 
+
+                        debugger;
+                        $('#defaults').data('plugin_lwMultiSelect').selectItem({{ student.id }});
+
                     </script>
+
+
 
 
                     <!-- -->
@@ -75,11 +84,32 @@
 
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <button type="submit" value="Submit" class="btn btn-primary pull-right">Kaydet</button>
+                        <button id="send"  class="btn btn-primary pull-right">Kaydet</button>
                     </div>
 
 
                 </div>
+            <script>
+                        // yanit idli linke tıklanırsa çalış
+                        $('#send').on('click', function (event) {
+
+                             console.log("asasa");
+                            $.ajax({
+                                url: "{% url 'education:ajax' %}",
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                                    values : $('#defaults').val(),
+                                    class : {{ class.pk }}
+                                }
+                            }).done(function (response) {
+                                // okunan json veriyi, #user idli yere yaz
+                                console.log(response)
+                            });
+                            event.preventDefault();
+                        });
+                    </script>
 
             </div>
         </form>

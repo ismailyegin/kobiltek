@@ -1,6 +1,8 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from education.Forms.ClassForm import ClassForm
@@ -9,11 +11,10 @@ from education.services import class_services
 
 
 @login_required
-def class_list(request,message):
+def class_list(request):
     class_lists = class_services.get_class_list()
     form_class = ClassForm()
-    if message is not None:
-        messages.success(request,'Başarıyla Güncellendi')
+
 
     if request.method == 'POST':
 
@@ -70,6 +71,26 @@ def class_update(request,pk):
 
 
 @login_required
-def class_add_students(request):
+def class_add_students(request,pk):
     students = Student.objects.filter(user__is_active=True)
-    return render(request, 'student_preparing.html', {'students' :students})
+    the_class = Class.objects.get(pk=pk)
+    class_students = Student.objects.filter(class__pk  = pk)
+    return render(request, 'student_preparing.html', {'students' :students, 'class':the_class, 'classStudents':class_students})
+
+
+def form_ajax(request):
+    data = {'is_valid': False,}
+    if request.is_ajax():
+        message = request.POST.getlist('values[]')
+        the_class = Class.objects.get(pk=request.POST.get('class'))
+
+        for id in message:
+            student = Student.objects.get(pk=id)
+            the_class.students.add(student)
+            student = None
+
+        the_class.save()
+
+        data.update(is_valid=message)
+
+    return JsonResponse(data)

@@ -189,7 +189,7 @@
         console.log( $tmpThis.prop('dataset').imgSrc);
         //if option is preselected then append to selected and add lwms-selected to the available side        
         if ($tmpThis.is(':selected')) {
-          tmpSelectHtml += '<li class="lwms-selectli" data-value="' + tmpVal + '"><img src ="'+$tmpThis.prop('dataset').imgSrc+'"/>' + tmpText + '</li>';
+          tmpSelectHtml += '<li class="lwms-selectli" data-value="' + tmpVal + '"><img width="50px" src ="'+$tmpThis.prop('dataset').imgSrc+'"/>' + tmpText + '</li>';
           selectClass = ' lwms-selected';
         }
         tmpAvailHtml += '<li class="lwms-selectli' + selectClass + '" data-value="' + tmpVal + '"><img width="50px" src ="'+$tmpThis.prop("dataset").imgSrc+'"/><font size="3">' + tmpText + '</font></li>';

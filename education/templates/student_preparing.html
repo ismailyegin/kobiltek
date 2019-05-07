@@ -53,30 +53,65 @@
                         <p><select id="defaults" multiple="multiple">
 
                             {% for student in students %}
-                                <
+
                                 <option value="{{ student.id }}"
                                         data-img-src="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://{{ request.get_host }}/media/{{ student.profileImage }}">{{ student.user.first_name }} {{ student.user.last_name }}</option>
                             {% endfor %}
 
+
+                            {% for student_exist in class.students.all %}
+
+                                <option value="{{ student_exist.id }}"
+                                        data-img-src="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://{{ request.get_host }}/media/{{ student_exist.profileImage }}">{{ student_exist.user.first_name }} {{ student_exist.user.last_name }}</option>
+
+                            {% endfor %}
+
                         </select>
+
+
                     </div>
                     </p>
+
+
+                    <script type="text/javascript">
+                        var a = "{{class.students.all|safe}}";
+
+                        console.log(a);
+
+                        for (var student in a) {
+                            $("#defaults").find('option[value="' + student.id + '"]').attr("selected", "selected");
+
+                        }
+
+                        $('#defaults').data('plugin_lwMultiSelect').updateList();
+                    </script>
+
+
                     <script>
+                        //  $("#defaults").find('option[value="'+1+'"]').attr("selected","selected");*
+
+                        //$('#defaults').data('plugin_lwMultiSelect').updateList();
+
+
                         jQuery('#defaults').lwMultiSelect(
                             {
+
+
                                 onChange: function () {
-                                    console.log($('#defaults').val())
+                                    console.log($('#defaults').val());
+
+
+                                    $("#defaults").find('option[value="' + 1 + '"]').attr("selected", "selected");
+
+                                    //$('#defaults').data('plugin_lwMultiSelect').selectItem({{ student.id }});
+                                    /*$("#defaults").find('option[value="'+1+'"]').attr("selected","selected");*/
+                                    /*$('#defaults').data('plugin_lwMultiSelect').updateList()*/
                                 }
                             }
                         );
 
 
-                        debugger;
-                        $('#defaults').data('plugin_lwMultiSelect').selectItem({{ student.id }});
-
                     </script>
-
-
 
 
                     <!-- -->
@@ -84,32 +119,79 @@
 
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <button id="send"  class="btn btn-primary pull-right">Kaydet</button>
+                        <a type="button" id="send"  class="btn btn-primary pull-right">Kaydet</a>
                     </div>
 
 
                 </div>
-            <script>
-                        // yanit idli linke tıklanırsa çalış
-                        $('#send').on('click', function (event) {
 
-                             console.log("asasa");
-                            $.ajax({
-                                url: "{% url 'education:ajax' %}",
-                                type: 'POST',
-                                dataType: 'json',
-                                data: {
-                                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                                    values : $('#defaults').val(),
-                                    class : {{ class.pk }}
-                                }
-                            }).done(function (response) {
-                                // okunan json veriyi, #user idli yere yaz
-                                console.log(response)
-                            });
-                            event.preventDefault();
+
+                <script>
+
+
+                    // yanit idli linke tıklanırsa çalış
+                    $('#send').on('click', function (event) {
+
+                        console.log("{{ csrf_token }}");
+
+
+                        $.ajax({
+                            url: "{% url 'education:sinif-ogrenci-ekle-kaydet' %}",
+                            type: "post", // or "get"
+                            data: {
+
+                                values: $('#defaults').val(),
+                                class: {{ class.pk }}
+                            },
+                            success: function (result) {
+
+                                debugger;
+                                alert(result);
+                                alert(result.status);
+                            }
                         });
-                    </script>
+
+
+                    });
+
+
+
+
+
+                    function getCookie(name) {
+        var cookieValue = null;
+        var i = 0;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (i; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+
+                </script>
 
             </div>
         </form>

@@ -15,7 +15,6 @@ def class_list(request):
     class_lists = class_services.get_class_list()
     form_class = ClassForm()
 
-
     if request.method == 'POST':
 
         form_class = ClassForm(request.POST)
@@ -72,25 +71,30 @@ def class_update(request,pk):
 
 @login_required
 def class_add_students(request,pk):
-    students = Student.objects.filter(user__is_active=True)
+    students = Student.objects.filter(user__is_active=True, isAddedToClass=False)
     the_class = Class.objects.get(pk=pk)
     class_students = Student.objects.filter(class__pk  = pk)
     return render(request, 'student_preparing.html', {'students' :students, 'class':the_class, 'classStudents':class_students})
 
+@login_required
+def student_post(request):
+    if request.POST:
+        try:
+            students = request.POST.getlist('values[]')
+            the_class = Class.objects.get(pk=request.POST.get('class'))
 
-def form_ajax(request):
-    data = {'is_valid': False,}
-    if request.is_ajax():
-        message = request.POST.getlist('values[]')
-        the_class = Class.objects.get(pk=request.POST.get('class'))
+            for id in students:
+                student = Student.objects.get(pk=id)
+                the_class.students.add(student)
+                student = None
 
-        for id in message:
-            student = Student.objects.get(pk=id)
-            the_class.students.add(student)
-            student = None
+            the_class.save()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Class.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
-        the_class.save()
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
-        data.update(is_valid=message)
 
-    return JsonResponse(data)
+

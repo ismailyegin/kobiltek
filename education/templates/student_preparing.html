@@ -11,7 +11,7 @@
             crossorigin="anonymous"></script>
 
     <script src="{% static 'fieldChooser/js/jquery.lwMultiSelect.js' %}"></script>
-    <section>
+    <section id="message">
         {% if messages %}
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -27,6 +27,13 @@
 
             </div>
         {% endif %}
+
+
+
+
+
+
+
         <form action="" method="post" enctype="multipart/form-data" class="content">
             <div class="box box-default">
                 <div class="box-header with-border">
@@ -66,24 +73,52 @@
 
                             {% endfor %}
 
+
                         </select>
 
+<script>
+                            $(document).ready(function(){
 
-                    </div>
-                    </p>
+
+                                getSelectedStudent({{ class.id }}) ;
+// your code
+
+});
+                        </script>
+
+
+
 
 
                     <script type="text/javascript">
-                        var a = "{{class.students.all|safe}}";
 
-                        console.log(a);
 
-                        for (var student in a) {
-                            $("#defaults").find('option[value="' + student.id + '"]').attr("selected", "selected");
+
+
+                        function getSelectedStudent(id) {
+                            $.get(" {% url "education:secilen-ogrenciler" pk=12121   %}".replace(/12121/, id.toString()))
+                                .done(function (response) {
+
+                                    console.log(response);
+
+                                    for (var student in response.students) {
+                                        console.log(response.students[student].id);
+                                        $("#defaults").find('option[value="' + response.students[student].id + '"]').attr("selected", "selected");
+                                        $('#defaults').data('plugin_lwMultiSelect').updateList();
+                                    }
+
+
+
+
+
+
+
+                                });
 
                         }
 
-                        $('#defaults').data('plugin_lwMultiSelect').updateList();
+
+
                     </script>
 
 
@@ -101,7 +136,7 @@
                                     console.log($('#defaults').val());
 
 
-                                    $("#defaults").find('option[value="' + 1 + '"]').attr("selected", "selected");
+                                    //$("#defaults").find('option[value="' + 1 + '"]').attr("selected", "selected");
 
                                     //$('#defaults').data('plugin_lwMultiSelect').selectItem({{ student.id }});
                                     /*$("#defaults").find('option[value="'+1+'"]').attr("selected","selected");*/
@@ -119,12 +154,12 @@
 
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a type="button" id="send"  class="btn btn-primary pull-right">Kaydet</a>
+                        <a type="button" id="send" class="btn btn-primary pull-right">Kaydet</a>
                     </div>
 
 
                 </div>
-
+<script src="{% static 'alert/sweetalert.min.js' %}"></script>
 
                 <script>
 
@@ -145,9 +180,8 @@
                             },
                             success: function (result) {
 
-                                debugger;
-                                alert(result);
-                                alert(result.status);
+                                swal("Başarılı", "Sınıf başarıyla güncellendi.", "success");
+
                             }
                         });
 
@@ -155,40 +189,38 @@
                     });
 
 
-
-
-
                     function getCookie(name) {
-        var cookieValue = null;
-        var i = 0;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (i; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
+                        var cookieValue = null;
+                        var i = 0;
+                        if (document.cookie && document.cookie !== '') {
+                            var cookies = document.cookie.split(';');
+                            for (i; i < cookies.length; i++) {
+                                var cookie = jQuery.trim(cookies[i]);
+                                // Does this cookie string begin with the name we want?
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
 
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        crossDomain: false, // obviates need for sameOrigin test
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type)) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
+                    var csrftoken = getCookie('csrftoken');
 
+                    function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    }
+
+                    $.ajaxSetup({
+                        crossDomain: false, // obviates need for sameOrigin test
+                        beforeSend: function (xhr, settings) {
+                            if (!csrfSafeMethod(settings.type)) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
 
 
                 </script>

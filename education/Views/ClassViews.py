@@ -2,12 +2,16 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from rest_framework.decorators import api_view
 
 from education.Forms.ClassForm import ClassForm
 from education.models import Class, Student
+from education.serializers.student_serializer import StudentSerializer
 from education.services import class_services
+from education.services.class_services import add_the_class_false
 
 
 @login_required
@@ -74,7 +78,19 @@ def class_add_students(request,pk):
     students = Student.objects.filter(user__is_active=True, isAddedToClass=False)
     the_class = Class.objects.get(pk=pk)
     class_students = Student.objects.filter(class__pk  = pk)
-    return render(request, 'student_preparing.html', {'students' :students, 'class':the_class, 'classStudents':class_students})
+    data = StudentSerializer(class_students)
+    return render(request, 'student_preparing.html', {'students' :students, 'class':the_class, 'classStudents': data})
+
+
+@api_view()
+def selected_students(request,pk):
+    class_students = Student.objects.filter(class__pk=pk)
+    data = StudentSerializer(class_students, many=True)
+    responseData = {}
+    responseData['students'] = data.data
+    return JsonResponse(responseData, safe=True)
+
+
 
 @login_required
 def student_post(request):
@@ -83,10 +99,18 @@ def student_post(request):
             students = request.POST.getlist('values[]')
             the_class = Class.objects.get(pk=request.POST.get('class'))
 
-            for id in students:
-                student = Student.objects.get(pk=id)
-                the_class.students.add(student)
-                student = None
+            add_the_class_false(the_class.students.all())
+
+            the_class.students.clear()
+            if len(students) == 0:
+                return JsonResponse({'status': 'Success', 'messages': 'Sınıf listesi boş'})
+            else:
+                for id in students:
+                    student = Student.objects.get(pk=id)
+                    the_class.students.add(student)
+                    student.isAddedToClass = True
+                    student.save()
+                    student = None
 
             the_class.save()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})

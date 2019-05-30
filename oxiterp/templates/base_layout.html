@@ -44,10 +44,18 @@
     <link rel="stylesheet" href="{% static 'fieldChooser/css/jquery.lwMultiSelect.css' %}">
 
 
+
+    <link rel="stylesheet" href="{% static 'loader/loader.css' %}">
+
+
     <!-- jQuery 3 -->
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 
+    <script src="{% static 'loader/loader.js' %}"></script>
+
     <script src="{% static 'fieldChooser/js/jquery.lwMultiSelect.js' %}"></script>
+
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -60,8 +68,11 @@
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <body class="hold-transition skin-blue fixed sidebar-mini">
+<div class="preloader"></div>
 <!-- Site wrapper -->
 <div class="wrapper">
+
+
 
     <header class="main-header">
         <!-- Logo -->
@@ -585,6 +596,8 @@
 <script src="{% static 'fieldChooser/js/jquery.lwMultiSelect.js' %}"></script>
 
 
+
+
 <script>
     $(function () {
         $('#example1').DataTable()
@@ -644,6 +657,8 @@
 
 
 
+
+
         //iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
             checkboxClass: 'icheckbox_minimal-blue',
@@ -665,6 +680,11 @@
         //color picker with addon
         $('.my-colorpicker2').colorpicker()
 
+
+
+
+        $(window).on('load', function() { $('.preloader').fadeOut('slow'); });
+
         //Timepicker
         $('.timepicker').timepicker({
             showInputs: false
@@ -674,6 +694,9 @@
     $('#tags').tagsInput({
     // my parameters here
 });
+
+
+
 </script>
 
 </body>

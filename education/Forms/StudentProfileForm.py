@@ -23,7 +23,7 @@ class StudentProfileForm(ModelForm):
            #     attrs={'class': 'form-control ', 'data-input-mask': '"alias: yyyy-mm-dd', 'data-mask': '"'}),
 
             'birthDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right' , 'id':'datepicker'}),
+                attrs={'class': 'form-control  pull-right', 'id':'datepicker','autocomplete': 'off', 'onkeydown':'return false'}),
 
 
         }

@@ -6,3 +6,5 @@ from .Log import Log
 from .Food import Food
 from .Class import Class
 from .Teacher import Teacher
+from .Settings import Settings
+from .Attendance import Attendance

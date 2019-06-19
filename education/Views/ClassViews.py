@@ -91,7 +91,6 @@ def selected_students(request,pk):
     return JsonResponse(responseData, safe=True)
 
 
-
 @login_required
 def student_post(request):
     if request.POST:

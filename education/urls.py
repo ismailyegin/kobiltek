@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.urls import path
-from education.Views import StudentViews, ParentViews, FoodViews, ClassViews, TeacherViews
+from education.Views import StudentViews, ParentViews, FoodViews, ClassViews, TeacherViews, AttendanceViews
 
 app_name = 'education'
 
@@ -31,6 +31,16 @@ urlpatterns = [
     url(r'ogretmen/liste/$', TeacherViews.teacher_list, name='ogretmen-liste'),
     url(r'^ogretmen/(?P<pk>\d+)$', TeacherViews.getTeacher, name='ogretmen-getir'),
     url(r'^ogretmen/duzenle/(?P<pk>\d+)$', TeacherViews.updateTeacher, name='ogretmen-duzenle'),
+    url(r'^ogretmen-aktif-pasif/$', TeacherViews.teacher_active_passive, name="ogretmen-aktif-pasif"),
+
+
+    #Yoklama
+    url(r'yoklama/sinif-liste/$', AttendanceViews.class_list, name='yoklama-sinif-listeleri'),
+    url(r'^yoklama/ogrenci-listesi/(?P<pk>\d+)$', AttendanceViews.student_list, name='yoklama-al'),
+    #path('yoklama/ogrenci-listesi/<str:class_object>/<str:date>/<str:order>/', AttendanceViews.student_list, name='yoklama-al'),
+    url(r'^yoklama/gun-yoklamasi/(?P<pk>\d+)$', AttendanceViews.attendances_of_the_day, name='ders-yoklamasi'),
+
+
 
 
 

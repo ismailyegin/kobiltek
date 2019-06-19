@@ -9,6 +9,7 @@ from education.Forms.TeacherProfileForm import TeacherProfileForm
 from education.Forms.UserForm import UserForm
 from education.models import Teacher
 from education.serializers.teacher_serializer import TeacherSerializer
+from education.services.general_methods import activeUser, deactiveUser
 
 
 @login_required
@@ -52,6 +53,7 @@ def teacher_add(request):
 
     return render(request, 'Teacher/teacher_add.html', {'form_user': form_user, 'form_teacher': form_teacher})
 
+
 @login_required
 def updateTeacher(request,pk):
     user = User.objects.get(pk=pk)
@@ -73,7 +75,6 @@ def teacher_list(request):
     return render(request, 'Teacher/teacher_list.html', {'teachers': teachers})
 
 
-
 @api_view()
 #@permission_classes((IsAuthenticated, ))
 def getTeacher(request, pk):
@@ -86,3 +87,23 @@ def getTeacher(request, pk):
     #data = serializers.serialize('json',patients)
     responseData['teachers'][0]['user']['password']= "********"
     return JsonResponse(responseData, safe=True)
+
+
+@login_required
+def teacher_active_passive(request):
+    if request.POST:
+        try:
+            is_true = request.POST.get('is_true')
+            user_id = request.POST.get('user_id')
+
+            if is_true == 'true':
+                activeUser(request, int(user_id))
+            else:
+                deactiveUser(request, int(user_id))
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+        except Exception as e:
+
+            return JsonResponse({'status': 'Fail', 'msg': e})
+

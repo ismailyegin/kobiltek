@@ -5,8 +5,7 @@ from education.models import Menu
 
 
 class MenuAdmin(admin.ModelAdmin):
+    list_display = ('id','name','parent_id','is_parent')
 
-    class Meta:
-        Menu
 
 admin.site.register(Menu, MenuAdmin)

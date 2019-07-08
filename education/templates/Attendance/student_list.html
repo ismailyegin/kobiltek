@@ -109,99 +109,243 @@
         {% endif %}
 
 
-                <hr>
+        <hr>
 
+
+        <!-- -->
+
+        <script>
+            $(document).ready(function () {
+                $('#example1').DataTable({
+                    "paging": false,
+                    "ordering": true,
+                    "info": true
+                });
+            });
+
+        </script>
+
+
+        <script>
+
+
+            // yanit idli linke tıklanırsa çalış
+            function yoklamaAl() {
+
+                console.log("{{ csrf_token }}");
+                var checked =$('input[type="checkbox"]:checked').map(function () {
+                            return $(this).val();
+                        }).toArray();
+                var unChecked =
+                         $('input[type="checkbox"]:not(:checked)').map(function () {
+                            return $(this).val();
+                        }).toArray();
+
+
+                $.ajax({
+                    url: "{% url 'education:yoklama-gonder' %}",
+                    type: "post", // or "get"
+                    data: {
+
+                        valuesChecked: checked,
+                        valuesUnChecked: unChecked,
+                        class: {{ class.pk }},
+                        date:{{ date }},
+                        order : {{ order }}
+                    },
+                    success: function (result) {
+
+                        swal("Başarılı", "Sınıf başarıyla güncellendi.", "success");
+
+                    }
+                })
+                ;
+
+
+            }
+
+
+            function getCookie(name) {
+                var cookieValue = null;
+                var i = 0;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (i; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            var csrftoken = getCookie('csrftoken');
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            $.ajaxSetup({
+                crossDomain: false, // obviates need for sameOrigin test
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+
+        </script>
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ class.name }} Sınıf Yoklama Listesi - {{ date }}</h3>
+                            <a id="yoklama-al" onclick="yoklamaAl()" class="btn btn-success"
+                               style="float: right; font-size: medium"><i
+                                    class=" fa fa-save"><strong>Yoklama Al</strong></i></a>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Fotoğraf</th>
+                                    <th>Öğrenci No</th>
+                                    <th>Öğrenci Adı</th>
+                                    <th>{{ order }}. Ders</th>
+
+
+                                </tr>
+                                </thead>
+                                <style type="text/css">
+                                    .checkbox label:after,
+                                    .radio label:after {
+                                        content: '';
+                                        display: table;
+                                        clear: both;
+                                    }
+
+                                    .checkbox .cr,
+                                    .radio .cr {
+                                        position: relative;
+                                        display: inline-block;
+                                        border: 1px solid #a9a9a9;
+                                        border-radius: .25em;
+                                        width: 1.3em;
+                                        height: 1.3em;
+                                        float: left;
+                                        margin-right: .5em;
+                                    }
+
+                                    .checkbox label input[type="checkbox"],
+                                    .radio label input[type="radio"] {
+                                        display: none;
+                                    }
+
+                                    .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+                                    .radio label input[type="radio"] + .cr > .cr-icon {
+                                        transform: scale(3) rotateZ(-20deg);
+                                        opacity: 0;
+                                        transition: all .3s ease-in;
+                                    }
+
+                                    .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+                                    .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                                        transform: scale(1) rotateZ(0deg);
+                                        opacity: 1;
+                                    }
+
+                                    .checkbox label input[type="checkbox"]:disabled + .cr,
+                                    .radio label input[type="radio"]:disabled + .cr {
+                                        opacity: .5;
+                                    }
+
+                                    -->
+                                </style>
+                                <tbody>
+
+
+                                {% for student in students %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+
+                                        <td><img src="/media/{{ student.profileImage }}" width="50px"
+                                                 height="50px"/></td>
+                                        <td>{{ student.pk }}</td>
+                                        <td>{{ student.user.first_name }} fggfdgdfg{{ student.user.last_name }}</td>
+
+
+                                        <td>
+
+                                            <div class="checkbox">
+                                                <label style="font-size: 2em">
+                                                    <input type="checkbox" name="attendances[]"
+                                                           value="{{ student.pk }}">
+                                                    <span class="cr"><i class="cr-icon fa fa-check"
+                                                                        style="color: green"></i></span>
+
+                                                </label>
+                                            </div>
+
+                                        </td>
+
+
+                                    </tr>
+
+                                {% endfor %}
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
 
                 <!-- -->
 
 
-                <div class="container">
-
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Sınıf Listesi</h3>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body">
-                                    <table id="example1" class="table table-bordered table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Fotoğraf</th>
-                                            <th>Öğrenci No:</th>
-                                            <th>Öğrenci Adı</th>
-
-
-                                           {% for i in total_lecture %}
-
-                                               <th>{{ i|add:"1" }}. Ders</th>
-
-                                           {% endfor %}
-                                            <th>Yoklama Al</th>
-
-
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% if students.all %}
-                                            {% for student in students %}
-                                                <tr>
-                                                    <td>{{ forloop.counter }} </td>
-
-                                                    <td><img src="/media/{{ student.profileImage }}" width="50px" height="50px" /> </td>
-                                                    <td>{{ student.student_number }}</td>
-                                                    <td>{{ student.user.first_name }}  {{ student.user.last_name }}</td>
-
-
-                                                      {% for i in total_lecture %}
-
-
-                                                          <td><input type="checkbox" name="is_active" class="iCheck-helper" id="id_is_active" checked=""></td>
-
-                                                     {% endfor %}
-
-
-
-                                                    <td>
-
-                                                        <div class="btn-group">
-
-                                                            <a href=""
-                                                               class="btn btn-info"><i class="fa fa-plus"></i></a>
-
-                                                        </div>
-
-
-                                                    </td>
-
-                                                </tr>
-
-                                            {% endfor %}
-                                        {% endif %}
-
-                                        </tbody>
-
-                                    </table>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
-                        <!-- /.col -->
-
-                        <!-- -->
-
-
-                    </div>
-                </div>
-
-
             </div>
+        </div>
+
+
+        </div>
 
 
         </hr>
+
+
+        <script>
+
+            function array() {
+
+                var myCheckboxes = new Array();
+                var data;
+                var values = $('input[type="checkbox"]:checked').map(function () {
+                    return $(this).val();
+                }).toArray();
+                var values1 = $('input[type="checkbox"]:not(:checked)').map(function () {
+                    return $(this).val();
+                }).toArray();
+
+                alert(values);
+                alert(values1);
+            }
+
+
+        </script>
 
 
         <script>
@@ -246,10 +390,32 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
                 {#% url "patient:hasta-sil" pk=2121212 %#}".replace(/2121212/, id.toString()),
             type : "POST",
             data : {
                 'csrfmiddlewaretoken' : "
+
+
+
+
+
+
+
+
+
+
+
 
 
 

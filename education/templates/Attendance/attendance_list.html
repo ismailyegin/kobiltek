@@ -67,7 +67,8 @@
             {% for message in messages %}
 
 
-                {% if message.tags is 'warning' %}
+
+                {% if message.tags == 'warning' %}
 
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -129,7 +130,8 @@
                         <div class="box-body">
 
 
-                            <form>
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group">
@@ -199,44 +201,55 @@
                                             {% endifequal %}
 
                                         {% endfor %}
+                                        <td>
+                                            {% for key, value in att_dict.items %}
 
-                                        {% for key, value in att_dict.items %}
 
-                                            <td>
 
                                                 {% ifequal  'kayitSayisi' key %}
 
                                                     {% if value|get_at_index:i|to_int > 0 %}
                                                         <div class="btn-group">
 
-                                                            <a href="" disabled="disabled"
+                                                            <a disabled="disabled"
                                                                class="btn btn-info"><i class="fa fa-plus"></i>Yoklama
                                                                 Alındı</a>
-                                                        <a href=""
-                                                               class="btn btn-warning"><i class="fa fa-plus"></i>Yoklama Detay
-                                                                </a>
+                                                            <a href=""
+                                                               class="btn btn-warning"><i class="fa fa-plus"></i>Yoklama
+                                                                Detay
+                                                            </a>
                                                         </div>
 
                                                     {% endif %}
 
                                                     {% if value|get_at_index:i|to_int == 0 %}
                                                         <div class="btn-group">
-
-                                                            <a href=""
-                                                               class="btn btn-info"><i class="fa fa-plus"></i>Yoklama
-                                                                Al</a>
-                                                        <a href="" disabled="disabled"
-                                                               class="btn btn-warning"><i class="fa fa-plus"></i>Yoklama Detay
+                                                            {% if attendance.date|is_past_due is False %}
+                                                                <a
+                                                                   class="btn btn-warning"><i class="fa fa-plus"></i>Yoklama
+                                                                    Detay
                                                                 </a>
+
+
+                                                            {% else %}
+                                                                <a href="{% url "education:yoklama-al" class_object=attendance.class_object.pk date=attendance.date|date:'d-m-Y' order=i|add:"1" %}"
+                                                                   class="btn btn-info"><i class="fa fa-plus"></i>Yoklama
+                                                                    Al</a>
+                                                                <a disabled="disabled"
+                                                                   class="btn btn-warning"><i class="fa fa-plus"></i>Yoklama
+                                                                    Detay
+                                                                </a>
+                                                            {% endif %}
+
                                                         </div>
 
                                                     {% endif %}
 
                                                 {% endifequal %}
 
-                                            </td>
 
-                                        {% endfor %}
+
+                                            {% endfor %}</td>
                                     </tr>
 
                                 {% endfor %}
@@ -312,10 +325,14 @@
 
 
 
+
+
                 {#% url "patient:hasta-sil" pk=2121212 %#}".replace(/2121212/, id.toString()),
             type : "POST",
             data : {
                 'csrfmiddlewaretoken' : "
+
+
 
 
 

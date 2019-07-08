@@ -44,12 +44,11 @@
     <link rel="stylesheet" href="{% static 'fieldChooser/css/jquery.lwMultiSelect.css' %}">
 
 
-
     <link rel="stylesheet" href="{% static 'loader/loader.css' %}">
 
 
     <!-- jQuery 3 -->
-<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 
     <script src="{% static 'loader/loader.js' %}"></script>
 
@@ -71,8 +70,11 @@
 <div class="preloader"></div>
 <!-- Site wrapper -->
 <div class="wrapper">
-
-
+    <style>
+        td, th {
+            text-align: center;
+        }
+    </style>
 
     <header class="main-header">
         <!-- Logo -->
@@ -191,7 +193,7 @@
                                 <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                                 <p>
-                                    Alexander Pierce - Web Developer
+                                    Alexander Pierce - Web Developerasasasasasa
                                     <small>Member since Nov. 2012</small>
                                 </p>
                             </li>
@@ -278,7 +280,7 @@
 
                         <li class="treeview active">
                         <a href="#">
-                            <i class="fa fa-laptop"></i>
+                            <i class="fa {{ menu.fa_icon }}"></i>
                             <span>{{ menu.name }}</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -327,7 +329,7 @@
     </aside>
 
     <div class="content-wrapper">
-  <script src="{% static 'alert/sweetalert.min.js' %}"></script>
+        <script src="{% static 'alert/sweetalert.min.js' %}"></script>
         {% block content %}
 
 
@@ -557,7 +559,6 @@
 <script src="{% static 'plugins/input-mask/jquery.inputmask.extensions.js' %}"></script>
 
 
-
 <script src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
 
 <script src="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
@@ -586,7 +587,6 @@
 <script src="{% static 'dist/js/jquery.tagsinput.js' %}"></script>
 
 
-
 <script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
 
 
@@ -594,8 +594,6 @@
 
 
 <script src="{% static 'fieldChooser/js/jquery.lwMultiSelect.js' %}"></script>
-
-
 
 
 <script>
@@ -652,11 +650,8 @@
         $('#datepicker').datepicker({
             autoclose: true,
             language: 'tr',
-             format: 'dd/mm/yyyy',
+            format: 'dd/mm/yyyy',
         })
-
-
-
 
 
         //iCheck for checkbox and radio inputs
@@ -681,9 +676,9 @@
         $('.my-colorpicker2').colorpicker()
 
 
-
-
-        $(window).on('load', function() { $('.preloader').fadeOut('slow'); });
+        $(window).on('load', function () {
+            $('.preloader').fadeOut('slow');
+        });
 
         //Timepicker
         $('.timepicker').timepicker({
@@ -692,9 +687,8 @@
     })
 
     $('#tags').tagsInput({
-    // my parameters here
-});
-
+        // my parameters here
+    });
 
 
 </script>

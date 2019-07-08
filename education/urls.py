@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^yemek-menusu/$', FoodViews.food_list, name='yemek-listesi'),
     url(r'^yemek-menusu/sil/(?P<pk>\d+)$', FoodViews.food_delete, name='yemek-sil'),
     url(r'^yemek-menusu/duzenle/(?P<pk>\d+)$', FoodViews.food_update, name='yemek-duzenle'),
+
     #Sınıf URL
     url(r'^sinif/$', ClassViews.class_list, name='sinif-listesi'),
     url(r'^sinif/sil/(?P<pk>\d+)$', ClassViews.class_delete, name='sinif-sil'),
@@ -36,9 +37,10 @@ urlpatterns = [
 
     #Yoklama
     url(r'yoklama/sinif-liste/$', AttendanceViews.class_list, name='yoklama-sinif-listeleri'),
-    url(r'^yoklama/ogrenci-listesi/(?P<pk>\d+)$', AttendanceViews.student_list, name='yoklama-al'),
-    #path('yoklama/ogrenci-listesi/<str:class_object>/<str:date>/<str:order>/', AttendanceViews.student_list, name='yoklama-al'),
+    #url(r'^yoklama/ogrenci-listesi/(?P<pk>\d+)$', AttendanceViews.student_list, name='yoklama-al'),
+    path('yoklama/ogrenci-listesi/<str:class_object>/<str:date>/<str:order>/', AttendanceViews.get_attendance, name='yoklama-al'),
     url(r'^yoklama/gun-yoklamasi/(?P<pk>\d+)$', AttendanceViews.attendances_of_the_day, name='ders-yoklamasi'),
+    url(r'^yoklama/yoklama-gonder/$', AttendanceViews.attendance_post, name='yoklama-gonder'),
 
 
 

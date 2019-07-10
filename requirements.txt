@@ -1,6 +1,4 @@
 django
-django-heroku
-gunicorn
 dj-database-url
 djangorestframework
 django-rest-framework

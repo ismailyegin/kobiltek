@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+import datetime
 import os
 
 from django.conf.locale.tr import formats as tr_formats
@@ -19,19 +19,17 @@ from django.conf.locale.tr import formats as tr_formats
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = os.environ['SECRET_KEY']
+# SECRET_KEY = os.environ['SECRET_KEY']
 SECRET_KEY = 'j-hgr1ce(!9xi#aaffs%hm@(*(9sfv0shfi!*=md20woa3a23d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['172.20.10.3', 'localhost', '127.0.0.1']
-
 
 # Application definition
 
@@ -43,12 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
-    #own
+    # own
 
     'rest_framework',
     'accounts',
     'education',
+    'patlaks',
+
 ]
 
 MIDDLEWARE = [
@@ -77,8 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'education.services.general_methods.getMenu'
 
-
-                #"education.services.general_methods.append_privileges",
+                # "education.services.general_methods.append_privileges",
             ],
         },
 
@@ -86,26 +84,29 @@ TEMPLATES = [
 ]
 
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
 
 
 WSGI_APPLICATION = 'oxiterp.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-#DATABASES = {
-  #  'default': {
- #       'ENGINE': 'django.db.backends.sqlite3',
-   #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-#}
-
-
-
-
-
-
+# DATABASES = {
+#  'default': {
+#       'ENGINE': 'django.db.backends.sqlite3',
+#     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# }
+# }
 
 
 # Password validation
@@ -125,7 +126,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -148,20 +148,12 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join('oxiterp/static'),)
 
-
 LOGIN_REDIRECT_URL = '/patient'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
-
-
-
-
-

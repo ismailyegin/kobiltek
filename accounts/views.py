@@ -8,7 +8,7 @@ from django.urls import reverse
 
 
 
-# Create your views here.
+# Create your Views here.
 
 
 def index(request):

@@ -1,3 +1,7 @@
+import calendar
+from datetime import datetime
+
+import jwt
 from django.contrib.auth.models import User
 from pytz import unicode
 from rest_framework import status
@@ -6,19 +10,21 @@ from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory
 from rest_framework.views import APIView
 
-from patlaks.models import Competitor
-from patlaks.serializers.CompetitorSerializer import CompetitorSerializer, CompetitorSerializer1
+from oxiterp.settings.base import SECRET_KEY
+from patlaks.models import Competitor, Score
+from patlaks.serializers.CompetitorSerializer import CompetitorSerializer, CompetitorSerializer1, ReferenceSerializer, \
+    ScoreSerializer, SelfScoreSerializer, TopScoreSerializer, CompetitorSerializerReference
 
 
 class CompetitorList(APIView):
 
-    def get(self,request,format=None):
+    def get(self, request, format=None):
         content = {
             'user': unicode(request.user),  # `django.contrib.auth.User` instance.
             'auth': unicode(request.auth),  # None
         }
         competitors = Competitor.objects.all()
-        serializer =CompetitorSerializer(competitors, many=True)
+        serializer = CompetitorSerializer(competitors, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -29,19 +35,18 @@ class CompetitorList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# yarışmacı oluşturma
 class CreateCompetitor(APIView):
 
     def get(self, request, format=None):
-
         competitors = Competitor.objects.all()
         serializer_context = {
             'request': request,
         }
-        serializer = CompetitorSerializer1(competitors, many=True,context=serializer_context)
+        serializer = CompetitorSerializer1(competitors, many=True, context=serializer_context)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-
         serializer = CompetitorSerializer1(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -49,7 +54,83 @@ class CreateCompetitor(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# referans ekleme
+class AddReference(APIView):
+
+    def post(self, request, format=None):
+        serializer = ReferenceSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Reference added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def user_detail(request,pk):
-    return User.objects.get(pk=pk)
+# skor ekleme
+class AddScore(APIView):
+
+    def post(self, request, format=None):
+        serializer = ScoreSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Score added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# yarışmacı skoru
+class GetCompetitorScore(APIView):
+
+    def get(self, request, format=None):
+        user_pk = request.user.id
+
+        user_request = User.objects.get(pk=user_pk)
+        competitor_request = Competitor.objects.get(user=user_request)
+        scores = Score.objects.filter(competitor=competitor_request).order_by('score')[:10]
+        serializer_context = {
+            'request': request,
+        }
+        serializer = SelfScoreSerializer(scores, many=True, context=serializer_context)
+        return Response(serializer.data)
+
+
+# top 100 skor
+class GetTop100(APIView):
+
+    def get(self, request, format=None):
+        user_pk = request.user.id
+        datetime_current = datetime.today()
+        year = datetime_current.year
+        month = datetime_current.month
+        num_days = calendar.monthrange(year, month)[1]
+
+        datetime_start = datetime(year, month, 1, 0, 0)
+
+        datetime_end = datetime(year, month, num_days, 23, 59)
+
+        user_request = User.objects.get(pk=user_pk)
+        competitor_request = Competitor.objects.get(user=user_request)
+        scores = Score.objects.filter(creationDate__range=(datetime_start, datetime_end)).order_by('score')[:100]
+        serializer_context = {
+            'request': request,
+        }
+        serializer = TopScoreSerializer(scores, many=True, context=serializer_context)
+
+        return Response(serializer.data)
+
+
+# alt üyeleri getir
+class GetChildrenCompetitors(APIView):
+    def get(self, request, format=None):
+        user_pk = request.user.id
+
+        user_request = User.objects.get(pk=user_pk)
+        competitor_request = Competitor.objects.get(user=user_request)
+        competitors = Competitor.objects.filter(reference=competitor_request)
+
+        username = []
+
+        for competitor in competitors:
+            username.append({'username':competitor.user.username})
+
+
+        serializer = CompetitorSerializerReference(username, many=True)
+        return Response(serializer.data)

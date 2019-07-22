@@ -1,17 +1,29 @@
 from django.conf.urls import url, include
 from django.urls import path
 
-from patlaks.Views import CompetitorViews, FakeViews, CompetitorApiViews2
+from patlaks.Views import CompetitorViews, CompetitorApiViews2
 
 app_name = 'patlaks'
 
 urlpatterns = [
     url(r"articles$", CompetitorViews.CompetitorList.as_view(),
         name="api-article-list"),
-    url(r'fake/$', FakeViews.generateFake, name='fake'),
+    #url(r'fake/$', FakeViews.generateFake, name='fake'),
 
     url(r'competitor-list/$', CompetitorApiViews2.competitor_list, name='deneme-ssdsdsd'),
 
-    url(r'^competitor-detail/(?P<pk>\d+)$', CompetitorViews.user_detail, name='user-detail'),
+
+
+    url(r'add-reference/$', CompetitorViews.AddReference.as_view(), name="add-reference"),
+
+    url(r'add-score/$',CompetitorViews.AddScore.as_view(), name='add-score'),
+
+    url(r'get-self-10-score/$',CompetitorViews.GetCompetitorScore.as_view(), name='get-self-10-score'),
+
+    url(r'get-100-score/$',CompetitorViews.GetTop100.as_view(), name='get-100-score'),
+
+    url(r'get-references/$', CompetitorViews.GetChildrenCompetitors.as_view(), name='get-100-score'),
+
+
 
     ]

@@ -10,7 +10,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'oxiterp',
-        'USER': 'postgres',
+        'USER': 'oxitowner',
         'PASSWORD': 'oxit2016',
         'HOST': 'localhost',
         'PORT': '5432',

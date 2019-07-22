@@ -1,9 +1,14 @@
+import datetime
+
+import jwt
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.response import Response
 
 from oxiterp.serializers import UserSerializer
-from patlaks.models import Competitor, Country
+from oxiterp.settings.base import SECRET_KEY
+from patlaks.models import Competitor, Country, Score
 
 
 class CompetitorSerializer(serializers.ModelSerializer):
@@ -38,7 +43,6 @@ class CompetitorSerializer1(serializers.Serializer):
     country_post = serializers.IntegerField(write_only=True)
     reference = CompetitorSerializer(read_only=True)
 
-
     def create(self, validated_data):
         # user_data = validated_data.pop('user')
 
@@ -54,8 +58,64 @@ class CompetitorSerializer1(serializers.Serializer):
         birthDate = validated_data.get('birthDate')
         imei = validated_data.get('imei')
         iban = validated_data('iban')
-        country = Country.objects.get(pk=validated_data('country_post'))
+        country = Country.objects.get(pk=validated_data.get('country_post'))
 
         competitor = Competitor.objects.create(user=user, gender=gender, birthDate=birthDate)
 
         return competitor
+
+
+class ReferenceSerializer(serializers.Serializer):
+    reference_user_name = serializers.CharField(write_only=True)
+
+    def get(self, request, format=None):
+        # Model deki veriler, listeye aktarılıyor.
+
+        # Sonuç yollanıyor.
+        return Response({"message": "ok"})
+
+    def create(self, validated_data):
+        user_pk = self.context['request']._request.META['HTTP_AUTHORIZATION'].split(' ')[1]
+
+        decodedPayload = jwt.decode(user_pk, SECRET_KEY)
+        user_request = User.objects.get(pk=decodedPayload['user_id'])
+        competitor_request = Competitor.objects.get(user=user_request)
+        user_reference = User.objects.get(username=validated_data.get('reference_user_name'))
+        competitor_reference = Competitor.objects.get(user=user_reference)
+        competitor_request.reference = competitor_reference
+        competitor_request.save()
+
+        return competitor_request
+
+
+class ScoreSerializer(serializers.Serializer):
+    score = serializers.IntegerField(write_only=True)
+
+    def create(self, validated_data):
+        user_pk = self.context['request']._request.META['HTTP_AUTHORIZATION'].split(' ')[1]
+        decodedPayload = jwt.decode(user_pk, SECRET_KEY)
+        user_request = User.objects.get(pk=decodedPayload['user_id'])
+        competitor_request = Competitor.objects.get(user=user_request)
+
+        score = Score(competitor=competitor_request, score=validated_data.get('score'))
+        score.save()
+        return score
+
+
+class SelfScoreSerializer(serializers.Serializer):
+    score = serializers.IntegerField()
+    creationDate = serializers.DateTimeField()
+
+
+class TopScoreSerializer(serializers.Serializer):
+    competitor = CompetitorSerializer()
+    score = serializers.IntegerField()
+    creationDate = serializers.DateTimeField()
+
+
+class CompetitorSerializerReference(serializers.Serializer):
+   username = serializers.CharField()
+
+
+
+

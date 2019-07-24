@@ -54,7 +54,7 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-handler404 = 'education.Views.ErrorViews.page_not_found'
-handler500 = 'education.Views.ErrorViews.page_not_found'
+#handler404 = 'education.Views.ErrorViews.page_not_found'
+#handler500 = 'education.Views.ErrorViews.page_not_found'
 
 

@@ -45,8 +45,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'accounts',
-    'education',
-    'patlaks',
+
+    'wushu',
 
 ]
 
@@ -74,7 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
-                'education.services.general_methods.getMenu'
+
 
                 # "education.services.general_methods.append_privileges",
             ],

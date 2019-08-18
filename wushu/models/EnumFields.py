@@ -1,7 +1,7 @@
 import enum
 
 
-class EnumFields(enum.ENUM):
+class EnumFields(enum.Enum):
     class LEVELTYPE(enum.Enum):
         VISA = 1
         GRADE = 2

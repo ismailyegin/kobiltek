@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Fixed Layout</title>
+    <title>SPORCU BİLGİ SİSTEMİ </title>
+    <meta name="description" content="SPORCU BİLGİ SİSTEMİ"/>
+    <meta name="keywords" content="SPORCU BİLGİ SİSTEMİ"/>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -42,9 +44,11 @@
     <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="{% static 'fieldChooser/css/jquery.lwMultiSelect.css' %}">
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.css' %}">
 
 
     <link rel="stylesheet" href="{% static 'loader/loader.css' %}">
+    <link rel="stylesheet" href="{% static 'bower_components/jvectormap/jquery-jvectormap.css' %}">
 
 
     <!-- jQuery 3 -->
@@ -70,163 +74,131 @@
 <div class="preloader"></div>
 <!-- Site wrapper -->
 <div class="wrapper">
-    <style>
-        td, th {
-            text-align: center;
-        }
-    </style>
+
 
     <header class="main-header">
         <!-- Logo -->
-        <a href="../../index2.html" class="logo">
+        <a href="#" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><img style="width: 50px" src="{% static 'images/beyaz.png' %}"> </span>
+            <span class="logo-mini"><b>TWF</b></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><img style="width: 120px" src="{% static 'images/beyaz.png' %}"> </span>
+            <span class="logo-lg"><b>WUSHU</b> </span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
             <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
             </a>
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    <!-- Messages: style can be found in dropdown.less-->
-                    <li class="dropdown messages-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">4</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 4 messages</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li><!-- start message -->
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="../../dist/img/user2-160x160.jpg" class="img-circle"
-                                                     alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Support Team
-                                                <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                    <!-- end message -->
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">See All Messages</a></li>
-                        </ul>
-                    </li>
-                    <!-- Notifications: style can be found in dropdown.less -->
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
-                            <span class="label label-warning">10</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 10 notifications</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">View all</a></li>
-                        </ul>
-                    </li>
-                    <!-- Tasks: style can be found in dropdown.less -->
-                    <li class="dropdown tasks-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-flag-o"></i>
-                            <span class="label label-danger">9</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 9 tasks</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li><!-- Task item -->
-                                        <a href="#">
-                                            <h3>
-                                                Design some buttons
-                                                <small class="pull-right">20%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                <div class="progress-bar progress-bar-aqua" style="width: 20%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">20% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <!-- end task item -->
-                                </ul>
-                            </li>
-                            <li class="footer">
-                                <a href="#">View all tasks</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- User Account: style can be found in dropdown.less -->
+
+                   <li class="dropdown messages-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-envelope-o"></i>
+          <span class="label label-success">4</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li class="header">1 Adet Mesajınız Var</li>
+          <li>
+            <!-- inner menu: contains the actual data -->
+            <ul class="menu">
+              <li><!-- start message -->
+                <a href="#">
+                  <div class="pull-left">
+                    <img src="/static/images/logo.png" class="img-circle" alt="User Image">
+                  </div>
+                  <h4>
+                    TWF
+                    <small><i class="fa fa-clock-o"></i> 5 dk</small>
+                  </h4>
+                  <p>Lorem ipsum dolor sit amet.</p>
+                </a>
+              </li>
+              <!-- end message -->
+
+            </ul>
+          </li>
+          <li class="footer"><a href="#">Tüm Mesajları Görüntüle</a></li>
+        </ul>
+      </li>
+
+
+
+         <li class="dropdown notifications-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <i class="fa fa-bell-o"></i>
+          <span class="label label-warning">2</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li class="header">'2 Adet Bildiriminiz var'</li>
+          <li>
+            <!-- inner menu: contains the actual data -->
+            <ul class="menu">
+              <li>
+                <a href="#">
+                  <i class="fa fa-users text-aqua"></i> Müsabakanız Yaklaşıyor
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <i class="fa fa-warning text-yellow"></i> 3 Sporcu Eklendi
+                </a>
+              </li>
+
+
+            </ul>
+          </li>
+          <li class="footer"><a href="#">Hepsini Görüntüle</a></li>
+        </ul>
+      </li>
+
+
+
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            <img src="/media/elif-akyuz.jpg" class="user-image" alt="KOBİLTEK"
+                                 style=" width: 30px;height: 30px;">
+                            <span class="hidden-xs">{{ user.first_name }} {{ user.last_name }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                <img src="/media/elif-akyuz.jpg" class="img-circle" alt="KOBİLTEK">
 
                                 <p>
-                                    Alexander Pierce - Web Developerasasasasasa
-                                    <small>Member since Nov. 2012</small>
+                                    {{ user.first_name }} {{ user.last_name }}
+                                    <small>Eklenme Tarihi: {{ user.date_joined }}</small>
                                 </p>
                             </li>
                             <!-- Menu Body -->
-                            <li class="user-body">
-                                <div class="row">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                                <!-- /.row -->
-                            </li>
+                            <!-- <li class="user-body">
+                                 <div class="row">
+                                     <div class="col-xs-6 text-center">
+                                         <a href="#">Soy Ağacı : 16 Kişi</a>
+                                     </div>
+                                     <div class="col-xs-6 text-center">
+                                         <a href="#">Siparişler : 36 Adet</a>
+                                     </div>
+
+                                 </div>
+
+                             </li> -->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <a href="#"
+                                       class="btn btn-default btn-flat">Profil</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="{% url 'accounts:logout' %}" class="btn btn-default btn-flat">Çıkış Yap</a>
                                 </div>
                             </li>
                         </ul>
                     </li>
                     <!-- Control Sidebar Toggle Button -->
-                    <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                    </li>
+
                 </ul>
             </div>
         </nav>
@@ -237,50 +209,27 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                    <img src="/media/elif-akyuz.jpg" class="img-circle" alt="User Image"
+                    >
                 </div>
                 <div class="pull-left info">
-                    <p>Alexander Pierce</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    <p> {{ user.first_name }} {{ user.last_name }}</p>
+                    <a><i class="fa fa-circle text-success"></i> Online</a>
                 </div>
             </div>
-            <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-                </div>
-            </form>
-            <!-- /.search form -->
-            <!-- sidebar menu: : style can be found in sidebar.less -->
+
+
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                        <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="../../index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                    </ul>
-                </li>
 
 
-
-                {% for menu in menus %}
+                {% for menu in adminmenus %}
 
 
                     {% if menu.is_parent %}
 
-                        <li class="treeview active">
+                        <li class="treeview ">
                         <a href="#">
-                            <i class="fa {{ menu.fa_icon }}"></i>
+                            <i class=" {{ menu.fa_icon }}"></i>
                             <span>{{ menu.name }}</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -291,7 +240,7 @@
 
                 <ul class="treeview-menu">
 
-                    {% for menusub in menus %}
+                    {% for menusub in adminmenus %}
 
 
 
@@ -299,31 +248,21 @@
 
                             <li>
                                 <a href="{% url menusub.url %}"><i
-                                        class="fa {{ menusub.fa_icon }}"></i> {{ menusub.name }}</a>
+                                        class=" {{ menusub.fa_icon }}"></i> {{ menusub.name }}</a>
                             </li>
 
-
-
                         {% endif %}
-
-
-
 
                     {% endfor %}
 
                 </ul>
-
-
                 </li>
-
-
-
-
-
                 {% endfor %}
 
 
             </ul>
+
+
         </section>
         <!-- /.sidebar -->
     </aside>
@@ -343,12 +282,11 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
+            <b>Versiyon</b> 1.0.0
         </div>
-        <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+        <strong>Copyright &copy; 2019 <a target="new_blank" href="#">SPORCU BİLGİ SİSTEMİ</a></strong> All rights
         reserved.
     </footer>
-
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Create the tabs -->
@@ -574,7 +512,11 @@
 
 <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
+<script src="{% static 'bower_components/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+<script src="{% static 'plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+<script src="{% static 'bower_components/chart.js/Chart.js' %}"></script>
+<script src="{% static 'dist/js/pages/dashboard2.js' %}"></script>
 <!-- SlimScroll -->
 <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
 <!-- FastClick -->
@@ -648,6 +590,13 @@
 
         //Date picker
         $('#datepicker').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
+        })
+
+        //Date picker
+        $('#datepicker2').datepicker({
             autoclose: true,
             language: 'tr',
             format: 'dd/mm/yyyy',

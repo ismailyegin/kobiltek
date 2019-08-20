@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'accounts',
-
     'wushu',
 
 ]
@@ -74,7 +73,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
-
+                'wushu.services.general_methods.getMenu',
+                'wushu.services.general_methods.getAdminMenu',
 
                 # "education.services.general_methods.append_privileges",
             ],
@@ -82,7 +82,6 @@ TEMPLATES = [
 
     },
 ]
-
 
 REST_FRAMEWORK = {
 
@@ -93,8 +92,6 @@ REST_FRAMEWORK = {
     )
 
 }
-
-
 
 WSGI_APPLICATION = 'oxiterp.wsgi.application'
 
@@ -148,7 +145,15 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.com.tr'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'kayit@oxityazilim.com'
+EMAIL_HOST_PASSWORD = 'oxit2016'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 

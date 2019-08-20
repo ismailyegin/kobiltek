@@ -19,7 +19,6 @@ from django.conf.locale.tr import formats as tr_formats
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -31,7 +30,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['172.20.10.3', 'localhost', '127.0.0.1']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,12 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
-    #own
+    # own
 
     'rest_framework',
     'accounts',
-    'education',
+    'wushu',
+
 ]
 
 MIDDLEWARE = [
@@ -76,32 +74,24 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'education.services.general_methods.getMenu'
 
-
-                #"education.services.general_methods.append_privileges",
+                # "education.services.general_methods.append_privileges",
             ],
         },
 
     },
 ]
 
-
-
-
 WSGI_APPLICATION = 'oxiterp.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-#DATABASES = {
-  #  'default': {
- #       'ENGINE': 'django.db.backends.sqlite3',
-   #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-#}
-
-
-
+# DATABASES = {
+#  'default': {
+#       'ENGINE': 'django.db.backends.sqlite3',
+#     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# }
+# }
 
 
 DATABASES = {
@@ -114,7 +104,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -133,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -156,26 +144,22 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (os.path.join('oxiterp/static'), )
-
+STATICFILES_DIRS = (os.path.join('oxiterp/static'),)
 
 LOGIN_REDIRECT_URL = '/patient'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-
-
 import dj_database_url
+
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
 
 import dj_database_url
+
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
-
-

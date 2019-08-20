@@ -21,26 +21,20 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     # re_path('api/(?P<version>(v1|v2))/', include('patient.urls')),
-    #path('hasta/', include('patient.urls',  namespace='patient')),
+    # path('hasta/', include('patient.urls',  namespace='patient')),
     # url(r'^', include(router.urls)),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-    #path('', include('accounts.urls')),
-    #path('accounts/', include('django.contrib.auth.urls'))
+    # path('', include('accounts.urls')),
+    # path('accounts/', include('django.contrib.auth.urls'))
     path('accounts/', include('accounts.urls')),
-
-
+    path('wushu/', include('wushu.urls')),
 
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#handler404 = 'education.Views.ErrorViews.page_not_found'
-#handler500 = 'education.Views.ErrorViews.page_not_found'
-
-
+# handler404 = 'education.Views.ErrorViews.page_not_found'
+# handler500 = 'education.Views.ErrorViews.page_not_found'

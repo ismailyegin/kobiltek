@@ -12,5 +12,4 @@ class CategoryItemForm(ModelForm):
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control ',  'required': 'required'})
-
         }

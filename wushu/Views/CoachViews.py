@@ -66,3 +66,7 @@ def return_add_coach(request):
 @login_required
 def return_coachs(request):
     return render(request, 'antrenor/antrenorler.html')
+
+@login_required
+def return_grade(request):
+    return render(request, 'antrenor/kademe.html')

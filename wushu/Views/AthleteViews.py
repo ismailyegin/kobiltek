@@ -5,10 +5,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 
 from wushu.Forms.AthleteForm import AthleteForm
+from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.models import Athlete
+from wushu.models import Athlete, CategoryItem
 
 
 @login_required
@@ -83,3 +84,27 @@ def return_add_athlete(request):
 @login_required
 def return_athletes(request):
     return render(request, 'sporcu/sporcular.html')
+
+
+@login_required
+def return_belt(request):
+    category_item_form = CategoryItemForm();
+
+    if request.method == 'POST':
+
+        category_item_form = CategoryItemForm(request.POST)
+
+        if category_item_form.is_valid():
+
+            categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
+
+            categoryItem.save()
+
+            return redirect('wushu:kusak')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    categoryitem = CategoryItem.objects.all()
+    return render(request, 'sporcu/kusak.html',
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})

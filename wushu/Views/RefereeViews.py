@@ -66,3 +66,8 @@ def return_add_referee(request):
 @login_required
 def return_referees(request):
     return render(request, 'hakem/hakemler.html')
+
+
+@login_required
+def return_level(request):
+    return render(request, 'hakem/seviye.html')

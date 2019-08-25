@@ -160,7 +160,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="/media/elif-akyuz.jpg" class="user-image" alt="KOBİLTEK"
                                  style=" width: 30px;height: 30px;">
-                            <span class="hidden-xs">{{ user.first_name }} {{ user.last_name }}</span>
+                            <span class="hidden-xs">{{ user.first_name }}  {{ user.last_name }}  <i class="fa fa-angle-down pull-right"></i></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
@@ -169,7 +169,7 @@
 
                                 <p>
                                     {{ user.first_name }} {{ user.last_name }}
-                                    <small>Eklenme Tarihi: {{ user.date_joined }}</small>
+                                    <small>Kayıt Tarihi: {{ user.date_joined }}</small>
                                 </p>
                             </li>
                             <!-- Menu Body -->
@@ -597,6 +597,13 @@
 
         //Date picker
         $('#datepicker2').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
+        })
+
+
+         $('#datepicker3').datepicker({
             autoclose: true,
             language: 'tr',
             format: 'dd/mm/yyyy',

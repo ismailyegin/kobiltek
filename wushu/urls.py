@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, BranchViews
+from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews
 
 app_name = 'wushu'
 
@@ -25,7 +25,4 @@ urlpatterns = [
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),
     url(r'antrenor/antrenorler/$', CoachViews.return_coachs, name='antrenorler'),
 
-    # Branşlar
-    url(r'brans/brans-ekle/$', BranchViews.return_add_branch, name='brans-ekle'),
-    url(r'brans/branslar/$', BranchViews.return_branchs, name='branslar'),
 ]

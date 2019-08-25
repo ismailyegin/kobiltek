@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from wushu.Forms.AthleteForm import AthleteForm
@@ -99,7 +100,7 @@ def return_belt(request):
             categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
             categoryItem.forWhichClazz="BELT"
             categoryItem.save()
-
+            messages.success(request, 'Kuşak Başarıyla Kayıt Edilmiştir.')
             return redirect('wushu:kusak')
 
         else:
@@ -108,3 +109,17 @@ def return_belt(request):
     categoryitem = CategoryItem.objects.filter(forWhichClazz="BELT")
     return render(request, 'sporcu/kusak.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+
+
+@login_required
+def categoryItemDelete(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = CategoryItem.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except CategoryItem.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

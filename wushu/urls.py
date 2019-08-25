@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
+    url(r'sporcu/kusak/sil/(?P<pk>\d+)$', AthleteViews.categoryItemDelete,
+        name='categoryItem-delete'),
 
     # Hakemler
     url(r'hakem/hakem-ekle/$', RefereeViews.return_add_referee, name='hakem-ekle'),

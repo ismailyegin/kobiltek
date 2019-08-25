@@ -8,8 +8,9 @@ class CategoryItemForm(ModelForm):
     class Meta:
         model = CategoryItem
         fields = ('name',)
+        labels = {'name': 'Tanımı'}
         widgets = {
             'name': forms.TextInput(
-                attrs={'class': 'form-control ', 'placeholder': 'Kuşak Ekle', 'required': 'required'})
+                attrs={'class': 'form-control ',  'required': 'required'})
 
         }

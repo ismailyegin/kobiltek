@@ -97,7 +97,7 @@ def return_belt(request):
         if category_item_form.is_valid():
 
             categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
-
+            categoryItem.forWhichClazz="BELT"
             categoryItem.save()
 
             return redirect('wushu:kusak')
@@ -105,6 +105,6 @@ def return_belt(request):
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
-    categoryitem = CategoryItem.objects.all()
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="BELT")
     return render(request, 'sporcu/kusak.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})

@@ -1,7 +1,91 @@
 {% extends 'base_layout.html' %}
 {% block content %}
 
-Kademe
+
+
+    <section class="content">
+
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Kademeler</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form method="post" role="form">
+                            <div class="box-body">
+                                {% csrf_token %}
+
+
+                                <div class="form-group">
+                                    <label> {{ category_item_form.name.label }}</label>
+                                    {{ category_item_form.name }}
+                                </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </form>
+
+
+                        <table id="kategori" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kademe Adı</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+
+                            {% if categoryitem.all %}
+                                {% for category in categoryitem %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ category.name }}</td>
+
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+            </section>
+
+
+
+        </div>
+        <!-- /.row (main row) -->
+
+    </section>
+
+
 
 
 {% endblock %}

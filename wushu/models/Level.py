@@ -2,14 +2,13 @@ import enum
 
 from django.db import models
 
-from wushu.models import EnumFields
+from wushu.models.EnumFields import EnumFields
 from wushu.models.CategoryItem import CategoryItem
 
 
 class Level(models.Model):
-
-    levelType = models.CharField(null=True,max_length=329, blank=True)
-    branch = models.CharField(null=True,max_length=329, blank=True)
+    levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
+    branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
     isActive = models.BooleanField(default=True)
     startDate = models.DateTimeField()
     expireDate = models.DateTimeField()

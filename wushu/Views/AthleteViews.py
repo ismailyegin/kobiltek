@@ -7,9 +7,10 @@ from django.shortcuts import render, redirect
 
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.BeltForm import BeltForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.models import Athlete, CategoryItem
+from wushu.models import Athlete, CategoryItem, Person, Communication
 
 
 @login_required
@@ -25,9 +26,9 @@ def return_add_athlete(request):
         data['username'] = data['email']
         user_form = UserForm(data)
         person_form = PersonForm(request.POST, request.FILES)
-        communication_form = CommunicationForm(request.POST, request.FILES)
+        communication_form = CommunicationForm(request.POST)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() :
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
             user = user_form.save(commit=False)
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
@@ -44,7 +45,6 @@ def return_add_athlete(request):
 
             athlete = Athlete(
                 user=user, person=person, communication=communication,
-
             )
 
             athlete.save()
@@ -67,13 +67,45 @@ def return_add_athlete(request):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/sporcu-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form
+
                    })
 
 
 @login_required
 def return_athletes(request):
-    return render(request, 'sporcu/sporcular.html')
+    athletes = Athlete.objects.all()
+    return render(request, 'sporcu/sporcular.html', {'athletes': athletes})
+
+
+@login_required
+def updateathletes(request, pk):
+    user = User.objects.get(pk=pk)
+    person = Person.objects.get(pk=pk)
+    communication = Communication.objects.get(pk=pk)
+
+    user_form = UserForm(request.POST or None, instance=user)
+    person_form = PersonForm(request.POST or None, instance=person)
+    communication_form = CommunicationForm(request.POST or None, instance=communication)
+
+    if request.method == 'POST':
+
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
+
+            user_form.save()
+            person_form.save()
+            communication_form.save()
+
+            messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
+            return redirect('wushu:sporcular')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcuDuzenle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form})
 
 
 @login_required

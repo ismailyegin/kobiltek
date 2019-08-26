@@ -17,6 +17,8 @@ urlpatterns = [
         name='categoryItem-delete'),
     url(r'sporcu/kusakDuzenle/(?P<pk>\d+)$', AthleteViews.categoryItemUpdate,
         name='categoryItem-duzenle'),
+    url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,
+        name='update-athletes'),
 
     # Hakemler
     url(r'hakem/hakem-ekle/$', RefereeViews.return_add_referee, name='hakem-ekle'),

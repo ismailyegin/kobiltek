@@ -55,7 +55,9 @@ def return_add_club(request):
 
 @login_required
 def return_clubs(request):
-    return render(request, 'kulup/kulupler.html')
+    clubs = SportsClub.objects.all()
+
+    return render(request, 'kulup/kulupler.html', {'clubs': clubs})
 
 
 @login_required
@@ -92,7 +94,8 @@ def return_add_club_person(request):
 
             club_person = SportClubUser(
                 user=user, person=person, communication=communication,
-                role=sportClubUser_form.cleaned_data['role']
+                role=sportClubUser_form.cleaned_data['role'],
+                sportClub=sportClubUser_form.cleaned_data['sportClub']
 
             )
 

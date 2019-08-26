@@ -57,7 +57,7 @@
             </section>
 
 
-            <section class="col-lg-8 ">
+           <section class="col-lg-8 ">
                 <div class="box-body">
                     <div class="box-header with-border">
                         <h3 class="box-title">Hakem Ekle</h3>
@@ -65,16 +65,14 @@
                 </div>
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#activity" data-toggle="tab">Genel Bilgiler</a></li>
-
-
+                        <li class="active"><a href="#genel" data-toggle="tab">Genel Bilgiler</a></li>
                         <li><a href="#iletisim" data-toggle="tab">İletişim Bilgileri</a></li>
 
                     </ul>
                     <form method="post" enctype="multipart/form-data" role="form">
                         <div class="tab-content">
                             {% csrf_token %}
-                            <div class="active tab-pane" id="activity">
+                            <div class="active tab-pane" id="genel">
 
 
                                 <div class="box-body">
@@ -87,14 +85,14 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label> {{ user_form.last_name.label }}</label>
-                                            {{ user_form.last_name }}
+                                            <label> {{ person_form.tc.label }}</label>
+                                            {{ person_form.tc }}
                                         </div>
 
 
                                         <div class="form-group">
-                                            <label> {{ person_form.height.label }}</label>
-                                            {{ person_form.height }}
+                                            <label> {{ person_form.gender.label }}</label>
+                                            {{ person_form.gender }}
                                         </div>
 
 
@@ -105,20 +103,20 @@
 
 
                                         <div class="form-group">
-                                            <label> {{ person_form.tc.label }}</label>
-                                            {{ person_form.tc }}
+                                            <label> {{ user_form.last_name.label }}</label>
+                                            {{ user_form.last_name }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ person_form.bloodType.label }}</label>
+                                            {{ person_form.bloodType }}
                                         </div>
 
 
                                         <div class="form-group">
                                             <label> {{ person_form.birthDate.label }}</label>
                                             {{ person_form.birthDate }}
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label> {{ person_form.weight.label }}</label>
-                                            {{ person_form.weight }}
                                         </div>
 
 
@@ -147,6 +145,17 @@
                                         </div>
 
 
+                                        <div class="form-group">
+                                            <label> {{ communication_form.phoneNumber2.label }}</label>
+                                            {{ communication_form.phoneNumber2 }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.country.label }}</label>
+                                            {{ communication_form.country }}
+                                        </div>
+
+
                                     </div>
 
                                     <div class="col-md-6">
@@ -155,6 +164,17 @@
                                             <label> {{ user_form.email.label }}</label>
                                             {{ user_form.email }}
                                         </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.city.label }}</label>
+                                            {{ communication_form.city }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.postalCode.label }}</label>
+                                            {{ communication_form.postalCode }}
+                                        </div>
+
 
                                     </div>
 
@@ -177,6 +197,7 @@
 
                                 </div>
                             </div>
+
                         </div>
                     </form>
 

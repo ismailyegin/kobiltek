@@ -13,4 +13,3 @@ from .Punishment import Punishment
 from .SportsClub import SportsClub
 from .Menu import Menu
 from .MenuAdmin import MenuAdmin
-from .City import City

@@ -5,7 +5,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
-from wushu.Forms.AthleteForm import AthleteForm
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
@@ -18,7 +17,6 @@ def return_add_athlete(request):
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
-    athlete_form = AthleteForm()
 
     if request.method == 'POST':
         x = User.objects.latest('id')
@@ -28,13 +26,12 @@ def return_add_athlete(request):
         user_form = UserForm(data)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST, request.FILES)
-        athlete_form = AthleteForm(request.POST, request.FILES)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and athlete_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() :
             user = user_form.save(commit=False)
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
-            athlete1 = athlete_form.save(commit=False)
+
             group = Group.objects.get(name='Sporcu')
             user2 = user_form.save()
             password = User.objects.make_random_password()
@@ -45,16 +42,8 @@ def return_add_athlete(request):
             person.save()
             communication.save()
 
-            athlete1.communication = communication
-            athlete1.person = person
-            athlete1.user = user
-            athlete1.save()
-
             athlete = Athlete(
                 user=user, person=person, communication=communication,
-                branch=athlete_form.cleaned_data['branch'],
-                beltStartDate=athlete_form.cleaned_data['beltStartDate'],
-                beltFinishDate=athlete_form.cleaned_data['beltFinishDate']
 
             )
 
@@ -79,7 +68,7 @@ def return_add_athlete(request):
 
     return render(request, 'sporcu/sporcu-ekle.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
-                   'athlete_form': athlete_form})
+                   })
 
 
 @login_required

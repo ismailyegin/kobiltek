@@ -18,7 +18,6 @@ class CommunicationForm(ModelForm):
 
             'phoneNumber': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Cep Telefonu'}),
 
-
             'phoneNumber2': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Sabit Telefon'}),
 
             'postalCode': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Posta Kodu'}),

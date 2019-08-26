@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
@@ -90,3 +90,34 @@ def return_grade(request):
     categoryitem = CategoryItem.objects.filter(forWhichClazz="GRADE")
     return render(request, 'antrenor/kademe.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+
+
+
+@login_required
+def categoryItemDelete(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = CategoryItem.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except CategoryItem.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def categoryItemUpdate(request, pk):
+    categoryItem = CategoryItem.objects.get(id=pk)
+    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
+
+    if category_item_form.is_valid():
+        category_item_form.save()
+        messages.warning(request, 'Başarıyla Güncellendi')
+        return redirect('wushu:kademe')
+    else:
+        messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/kademeDuzenle.html',
+                  {'category_item_form': category_item_form})

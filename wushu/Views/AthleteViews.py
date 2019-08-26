@@ -98,7 +98,7 @@ def return_belt(request):
         if category_item_form.is_valid():
 
             categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
-            categoryItem.forWhichClazz="BELT"
+            categoryItem.forWhichClazz = "BELT"
             categoryItem.save()
             messages.success(request, 'Kuşak Başarıyla Kayıt Edilmiştir.')
             return redirect('wushu:kusak')
@@ -123,3 +123,19 @@ def categoryItemDelete(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def categoryItemUpdate(request, pk):
+    categoryItem = CategoryItem.objects.get(id=pk)
+    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
+
+    if category_item_form.is_valid():
+        category_item_form.save()
+        messages.warning(request, 'Başarıyla Güncellendi')
+        return redirect('wushu:kusak')
+    else:
+        messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/kusakDuzenle.html',
+                  {'category_item_form': category_item_form})

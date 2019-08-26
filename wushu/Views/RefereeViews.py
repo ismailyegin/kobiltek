@@ -2,12 +2,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.models import Judge
+from wushu.models import Judge, CategoryItem
 
 
 @login_required
@@ -70,4 +72,53 @@ def return_referees(request):
 
 @login_required
 def return_level(request):
-    return render(request, 'hakem/seviye.html')
+    category_item_form = CategoryItemForm();
+
+    if request.method == 'POST':
+
+        category_item_form = CategoryItemForm(request.POST)
+
+        if category_item_form.is_valid():
+
+            categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
+            categoryItem.forWhichClazz = "VISA"
+            categoryItem.save()
+
+            return redirect('wushu:seviye')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="VISA")
+    return render(request, 'hakem/seviye.html',
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+
+
+@login_required
+def categoryItemDelete(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = CategoryItem.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except CategoryItem.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def categoryItemUpdate(request, pk):
+    categoryItem = CategoryItem.objects.get(id=pk)
+    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
+
+    if category_item_form.is_valid():
+        category_item_form.save()
+        messages.warning(request, 'Başarıyla Güncellendi')
+        return redirect('wushu:seviye')
+    else:
+        messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'hakem/seviyeDuzenle.html',
+                  {'category_item_form': category_item_form})

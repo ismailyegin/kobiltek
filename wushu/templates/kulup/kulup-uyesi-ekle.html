@@ -1,0 +1,224 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags is 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+    <section class="content">
+        <div class="row">
+            <section class="col-lg-2 ">
+
+
+            </section>
+
+
+            <section class="col-lg-8 ">
+                <div class="box-body">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Kulüp Üyesi Ekle</h3>
+                    </div>
+                </div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#genel" data-toggle="tab">Genel Bilgiler</a></li>
+                        <li><a href="#iletisim" data-toggle="tab">İletişim Bilgileri</a></li>
+
+                    </ul>
+                    <form method="post" enctype="multipart/form-data" role="form">
+                        <div class="tab-content">
+                            {% csrf_token %}
+                            <div class="active tab-pane" id="genel">
+
+
+                                <div class="box-body">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label> {{ user_form.first_name.label }}</label>
+                                            {{ user_form.first_name }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ person_form.tc.label }}</label>
+                                            {{ person_form.tc }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ person_form.gender.label }}</label>
+                                            {{ person_form.gender }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ person_form.birthDate.label }}</label>
+                                            {{ person_form.birthDate }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+
+                                        <div class="form-group">
+                                            <label> {{ user_form.last_name.label }}</label>
+                                            {{ user_form.last_name }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ sportClubUser_form.role.label }}</label>
+                                            {{ sportClubUser_form.role }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ person_form.bloodType.label }}</label>
+                                            {{ person_form.bloodType }}
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <button type="submit" style="float:right;" class="btn btn-primary">Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+
+
+                                <!-- /.box -->
+
+
+                            </div>
+
+
+                            <div class="tab-pane" id="iletisim">
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label> {{ communication_form.phoneNumber.label }}</label>
+                                            {{ communication_form.phoneNumber }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.phoneNumber2.label }}</label>
+                                            {{ communication_form.phoneNumber2 }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.country.label }}</label>
+                                            {{ communication_form.country }}
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label> {{ user_form.email.label }}</label>
+                                            {{ user_form.email }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.city.label }}</label>
+                                            {{ communication_form.city }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> {{ communication_form.postalCode.label }}</label>
+                                            {{ communication_form.postalCode }}
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label> {{ communication_form.address.label }}</label>
+                                            {{ communication_form.address }}
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div class="box-footer">
+                                        <button type="submit" style="float:right;" class="btn btn-primary">Kaydet
+                                        </button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </section>
+
+            <section class="col-lg-3 ">
+            </section>
+
+
+        </div>
+
+    </section>
+
+{% endblock %}
+
+
+

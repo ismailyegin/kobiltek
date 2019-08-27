@@ -10,7 +10,7 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
-from wushu.models import SportsClub, SportClubUser
+from wushu.models import SportsClub, SportClubUser, Communication
 from wushu.models.ClubRole import ClubRole
 
 
@@ -180,3 +180,36 @@ def updateClubRole(request, pk):
 
     return render(request, 'kulup/kulupRolDuzenle.html',
                   {'clubrole_form': clubrole_form})
+
+
+@login_required
+def clubDelete(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportsClub.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except SportsClub.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def clubUpdate(request, pk):
+    club = SportsClub.objects.get(id=pk)
+    com_id=club.communication.pk
+    communication = Communication.objects.get(id=com_id)
+    club_form = ClubForm(request.POST or None, instance=club)
+    communication_form = CommunicationForm(request.POST or None, instance=communication)
+
+    if club_form.is_valid():
+        club_form.save()
+        messages.warning(request, 'Başarıyla Güncellendi')
+        return redirect('wushu:kulupler')
+    else:
+        messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'kulup/kulupDuzenle.html',
+                  {'club_form': club_form, 'communication_form': communication_form})

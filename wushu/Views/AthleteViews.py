@@ -5,12 +5,14 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from wushu.Forms.BeltForm import BeltForm
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
-from wushu.Forms.BeltForm import BeltForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.models import Athlete, CategoryItem, Person, Communication
+from wushu.models.EnumFields import EnumFields
+from wushu.models.Level import Level
 
 
 @login_required
@@ -20,7 +22,6 @@ def return_add_athlete(request):
     communication_form = CommunicationForm()
 
     if request.method == 'POST':
-        x = User.objects.latest('id')
 
         data = request.POST.copy()
         data['username'] = data['email']
@@ -80,24 +81,41 @@ def return_athletes(request):
 
 @login_required
 def updateathletes(request, pk):
-    user = User.objects.get(pk=pk)
-    person = Person.objects.get(pk=pk)
-    communication = Communication.objects.get(pk=pk)
-
+    athlete = Athlete.objects.get(pk=pk)
+    user = User.objects.get(pk=athlete.user.pk)
+    person = Person.objects.get(pk=athlete.person.pk)
+    communication = Communication.objects.get(pk=athlete.communication.pk)
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    belt_form = BeltForm()
+    belts_form = athlete.belts.all()
 
     if request.method == 'POST':
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
 
-            user_form.save()
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.save()
             person_form.save()
             communication_form.save()
 
-            messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
-            return redirect('wushu:sporcular')
+            belt_form = BeltForm(request.POST)
+
+            if belt_form.is_valid():
+                belt = Level(startDate=belt_form.cleaned_data['startDate'],
+                             durationDay=belt_form.cleaned_data['durationDay'],
+                             definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
+                belt.expireDate=belt.startDate
+                belt.levelType=EnumFields.LEVELTYPE.BELT
+                belt.save()
+                athlete.belts.add(belt)
+                athlete.save()
+
+            messages.success(request, 'Sporcu Başarıyla Güncellenmiştir.')
+            return redirect('wushu:update-athletes', pk=pk)
 
         else:
 
@@ -105,7 +123,7 @@ def updateathletes(request, pk):
 
     return render(request, 'sporcu/sporcuDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form})
+                   'person_form': person_form, 'belts_form': belts_form, 'belt_form': belt_form})
 
 
 @login_required

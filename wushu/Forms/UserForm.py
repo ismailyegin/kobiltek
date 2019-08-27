@@ -6,15 +6,13 @@ from django.forms import ModelForm
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'is_active')
+        fields = ('first_name', 'last_name', 'email', 'is_active')
         labels = {'first_name': 'Ad', 'last_name': 'Soyad'}
         widgets = {
             'first_name': forms.TextInput(
                 attrs={'class': 'form-control ', 'placeholder': ' Ad', 'value': '', 'required': 'required'}),
             'last_name': forms.TextInput(
                 attrs={'class': 'form-control ', 'placeholder': ' Soyad', 'required': 'required'}),
-            'username': forms.TextInput(
-                attrs={'class': 'form-control ', 'placeholder': 'Kullanıcı Adı', 'required': 'required'}),
             'email': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Email', 'required': 'required'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
             # 'password': forms.PasswordInput(attrs={'class': 'form-control ', 'placeholder': 'Şifre',}),

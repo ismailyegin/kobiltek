@@ -39,6 +39,10 @@ urlpatterns = [
         name='ClubRole-delete'),
     url(r'kulup/kulupRolDuzenle/(?P<pk>\d+)$', ClubViews.updateClubRole,
         name='updateClubRole'),
+    url(r'kulup/kulupler/sil/(?P<pk>\d+)$', ClubViews.clubDelete,
+        name='delete-club'),
+    url(r'kulup/kulupDuzenle/(?P<pk>\d+)$', ClubViews.clubUpdate,
+        name='update-club'),
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),

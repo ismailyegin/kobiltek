@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -10,6 +11,7 @@ from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
+from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Athlete, CategoryItem, Person, Communication
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
@@ -76,7 +78,27 @@ def return_add_athlete(request):
 @login_required
 def return_athletes(request):
     athletes = Athlete.objects.all()
-    return render(request, 'sporcu/sporcular.html', {'athletes': athletes})
+    user_form = UserSearchForm()
+
+    if request.method == 'POST':
+        user_form = UserSearchForm(request.POST)
+        if user_form.is_valid():
+            firstName = user_form.cleaned_data.get('first_name')
+            lastName = user_form.cleaned_data.get('last_name')
+            email = user_form.cleaned_data.get('email')
+            if not (firstName or lastName or email):
+                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
+                if firstName:
+                    query &= Q(user__first_name__icontains=firstName)
+                if email:
+                    query &= Q(user__email__icontains=email)
+                athletes = Athlete.objects.filter(query)
+
+    return render(request, 'sporcu/sporcular.html', {'athletes': athletes, 'user_form': user_form})
 
 
 @login_required
@@ -108,8 +130,8 @@ def updateathletes(request, pk):
                 belt = Level(startDate=belt_form.cleaned_data['startDate'],
                              durationDay=belt_form.cleaned_data['durationDay'],
                              definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
-                belt.expireDate=belt.startDate
-                belt.levelType=EnumFields.LEVELTYPE.BELT
+                belt.expireDate = belt.startDate
+                belt.levelType = EnumFields.LEVELTYPE.BELT
                 belt.save()
                 athlete.belts.add(belt)
                 athlete.save()

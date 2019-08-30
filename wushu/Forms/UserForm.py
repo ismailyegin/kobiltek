@@ -14,6 +14,7 @@ class UserForm(ModelForm):
             'last_name': forms.TextInput(
                 attrs={'class': 'form-control ', 'placeholder': ' Soyad', 'required': 'required'}),
             'email': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Email', 'required': 'required'}),
+
             'is_active': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
             # 'password': forms.PasswordInput(attrs={'class': 'form-control ', 'placeholder': 'Şifre',}),
 

@@ -9,7 +9,7 @@ from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.models import Judge, CategoryItem
+from wushu.models import Judge, CategoryItem, Person, Communication
 
 
 @login_required
@@ -67,7 +67,8 @@ def return_add_referee(request):
 
 @login_required
 def return_referees(request):
-    return render(request, 'hakem/hakemler.html')
+    referees = Judge.objects.all()
+    return render(request, 'hakem/hakemler.html', {'referees': referees})
 
 
 @login_required
@@ -115,10 +116,52 @@ def categoryItemUpdate(request, pk):
 
     if category_item_form.is_valid():
         category_item_form.save()
-        messages.warning(request, 'Başarıyla Güncellendi')
+        messages.success(request, 'Başarıyla Güncellendi')
         return redirect('wushu:seviye')
     else:
         messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'hakem/seviyeDuzenle.html',
                   {'category_item_form': category_item_form})
+
+
+@login_required
+def deleteReferee(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = Judge.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Judge.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def updateReferee(request, pk):
+    referee = Judge.objects.get(pk=pk)
+    user = User.objects.get(pk=referee.user.pk)
+    person = Person.objects.get(pk=referee.person.pk)
+    communication = Communication.objects.get(pk=referee.communication.pk)
+    user_form = UserForm(request.POST or None, instance=user)
+    person_form = PersonForm(request.POST or None, instance=person)
+    communication_form = CommunicationForm(request.POST or None, instance=communication)
+
+    if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        user.username = user_form.cleaned_data['email']
+        user.first_name = user_form.cleaned_data['first_name']
+        user.last_name = user_form.cleaned_data['last_name']
+        user.save()
+        person_form.save()
+        communication_form.save()
+
+        messages.success(request, 'Başarıyla Güncellendi')
+        return redirect('wushu:hakemler')
+    else:
+        messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'hakem/hakemDuzenle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form})

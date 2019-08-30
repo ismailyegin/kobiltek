@@ -11,7 +11,6 @@ from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Athlete, CategoryItem, Person, Communication
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
@@ -24,6 +23,7 @@ def return_add_athlete(request):
     communication_form = CommunicationForm()
 
     if request.method == 'POST':
+        x = User.objects.latest('id')
 
         data = request.POST.copy()
         data['username'] = data['email']
@@ -78,27 +78,8 @@ def return_add_athlete(request):
 @login_required
 def return_athletes(request):
     athletes = Athlete.objects.all()
-    user_form = UserSearchForm()
 
-    if request.method == 'POST':
-        user_form = UserSearchForm(request.POST)
-        if user_form.is_valid():
-            firstName = user_form.cleaned_data.get('first_name')
-            lastName = user_form.cleaned_data.get('last_name')
-            email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
-            else:
-                query = Q()
-                if lastName:
-                    query &= Q(user__last_name__icontains=lastName)
-                if firstName:
-                    query &= Q(user__first_name__icontains=firstName)
-                if email:
-                    query &= Q(user__email__icontains=email)
-                athletes = Athlete.objects.filter(query)
-
-    return render(request, 'sporcu/sporcular.html', {'athletes': athletes, 'user_form': user_form})
+    return render(request, 'sporcu/sporcular.html', {'athletes': athletes})
 
 
 @login_required

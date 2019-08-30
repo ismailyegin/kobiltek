@@ -28,6 +28,10 @@ urlpatterns = [
         name='categoryItem-delete-seviye'),
     url(r'hakem/seviye/(?P<pk>\d+)$', RefereeViews.categoryItemUpdate,
         name='categoryItem-duzenle-seviye'),
+    url(r'hakem/hakemler/sil/(?P<pk>\d+)$', RefereeViews.deleteReferee,
+        name='referee-delete'),
+    url(r'hakem/hakemDuzenle/(?P<pk>\d+)$', RefereeViews.updateReferee,
+        name='hakem-duzenle'),
 
     # Kulüler
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
@@ -52,5 +56,9 @@ urlpatterns = [
         name='categoryItem-delete-kademe'),
     url(r'antrenor/kademeDuzenle/(?P<pk>\d+)$', CoachViews.categoryItemUpdate,
         name='categoryItem-duzenle-kademe'),
+    url(r'antrenor/antrenorler/sil/(?P<pk>\d+)$', CoachViews.deleteCoach,
+        name='delete-coach'),
+    url(r'antrenor/antrenorDuzenle/(?P<pk>\d+)$', CoachViews.coachUpdate,
+        name='update-coach'),
 
 ]

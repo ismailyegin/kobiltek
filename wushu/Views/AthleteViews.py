@@ -24,6 +24,7 @@ def return_add_athlete(request):
     communication_form = CommunicationForm()
 
     if request.method == 'POST':
+        x = User.objects.latest('id')
 
         data = request.POST.copy()
         data['username'] = data['email']

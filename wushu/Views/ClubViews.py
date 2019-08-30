@@ -199,7 +199,7 @@ def clubDelete(request, pk):
 @login_required
 def clubUpdate(request, pk):
     club = SportsClub.objects.get(id=pk)
-    com_id=club.communication.pk
+    com_id = club.communication.pk
     communication = Communication.objects.get(id=com_id)
     club_form = ClubForm(request.POST or None, instance=club)
     communication_form = CommunicationForm(request.POST or None, instance=communication)

@@ -27,26 +27,26 @@ def return_add_athlete(request):
     communication_form = CommunicationForm()
 
     if request.method == 'POST':
-        x = User.objects.latest('id')
 
-        data = request.POST.copy()
-        data['username'] = data['email']
-        user_form = UserForm(data)
+        user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
-            user = user_form.save(commit=False)
-            person = person_form.save(commit=False)
-            communication = communication_form.save(commit=False)
-
+            user = User()
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Sporcu')
-            user2 = user_form.save()
             password = User.objects.make_random_password()
             user.set_password(password)
-            user2.groups.add(group)
-
             user.save()
+            user.groups.add(group)
+            user.save()
+
+            person = person_form.save(commit=False)
+            communication = communication_form.save(commit=False)
             person.save()
             communication.save()
 
@@ -56,10 +56,10 @@ def return_add_athlete(request):
 
             athlete.save()
 
-            subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'kayit@oxityazilim.com', user2.email
+            subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'kayit@oxityazilim.com', user.email
             text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
             html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
-            html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user2.username + '</p>'
+            html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
             html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")

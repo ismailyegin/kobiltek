@@ -128,6 +128,51 @@
 
 
     <section class="content">
+        <div class="row">
+            <div class="col-lg-12 ">
+                <div class="box-body">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Antrenör Filtrele</h3>
+                        </div>
+                        <form method="post" role="form">
+                            <div class="box-body">
+                                {% csrf_token %}
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Ara</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
 
         <div class="row">
 
@@ -152,53 +197,53 @@
                             </div>
                         </div>
 
-
-                        <table id="antrenorler" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Ad Soyad</th>
-                                <th>T.C.</th>
-                                <th>Doğum Tarihi</th>
-                                <th>Cep Tel</th>
-                                <th>E-Mail</th>
-                                <th>Güncelle/Sil</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if coachs.all %}
-                                {% for coach in coachs %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
-                                        <td>{{ coach.person.tc }} </td>
-                                        <td>{{ coach.person.birthDate }} </td>
-                                        <td>{{ coach.communication.phoneNumber }} </td>
-                                        <td>{{ coach.user.email }} </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="{% url "wushu:update-coach" coach.pk %}"
-                                                   type="button" class="btn btn-warning"><i
-                                                        class="fa fa-edit"></i> Güncelle
-                                                </a>
-                                                <a class="btn btn-danger"
-                                                   data-toggle="modal" onclick=deleteCoach({{ coach.pk }})><i
-                                                        class="fa fa-trash"></i> Sil</a>
-
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
+                        <div class="box-body">
+                            <table id="antrenorler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Ad Soyad</th>
+                                    <th>Doğum Tarihi</th>
+                                    <th>İl</th>
+                                    <th>Cep Tel</th>
+                                    <th>E-Mail</th>
+                                    <th>Güncelleme</th>
 
 
-                            </tbody>
-                        </table>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if coachs.all %}
+                                    {% for coach in coachs %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
+                                            <td>{{ coach.person.tc }} </td>
+                                            <td>{{ coach.communication.city }} </td>
+                                            <td>{{ coach.communication.phoneNumber }} </td>
+                                            <td>{{ coach.user.email }} </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url "wushu:update-coach" coach.pk %}"
+                                                       type="button" class="btn btn-warning"><i
+                                                            class="fa fa-edit"></i> Güncelle
+                                                    </a>
+                                                    <a class="btn btn-danger"
+                                                       data-toggle="modal" onclick=deleteCoach({{ coach.pk }})><i
+                                                            class="fa fa-trash"></i> Sil</a>
 
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
                     <!-- /.box -->
@@ -245,7 +290,7 @@
                         success: function (result) {
 
                             html = 'Antrenör Başarıyla Silindi';
-                            debugger;
+                        debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

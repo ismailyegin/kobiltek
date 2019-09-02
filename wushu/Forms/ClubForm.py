@@ -10,16 +10,23 @@ class ClubForm(ModelForm):
 
         fields = (
             'name', 'shortName', 'foundingDate', 'logo', 'clubMail')
+        labels = {
+            'name': 'Adı',
+            'shortName': 'Kısa Adı',
+            'foundingDate': 'Kuruluş Tarihi',
+            'clubMail': 'Email'
+
+        }
         widgets = {
 
-            'name': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Kulüp Adı'}),
+            'name': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
-            'shortName': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kulüp Kısa Adı'}),
+            'shortName': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
 
-            'clubMail': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kulüp Mail'}),
+            'clubMail': forms.TextInput(attrs={'class': 'form-control'}),
 
             'foundingDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return false', 'placeholder': 'Kulüp Kuruluş Tarihi'}),
+                       'onkeydown': 'return false', 'required': 'required'}),
 
         }

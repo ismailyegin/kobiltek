@@ -46,257 +46,290 @@
 
     {% endif %}
 
+    <section class="content-header">
+        <h1>
+            Sporcu Güncelle
 
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>Sporcu Güncelle</a></li>
 
-
+        </ol>
+    </section>
     <section class="content">
-        <div class="row">
+
+        <form method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Genel Bilgiler</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ person_form.tc.label }}</label>
+                                        {{ person_form.tc }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ person_form.gender.label }}</label>
+                                        {{ person_form.gender }}
+                                    </div>
 
 
-            <section class="col-lg-12 ">
-                <div class="box-body">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Sporcu Güncelle</h3>
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthDate.label }}</label>
+                                        {{ person_form.birthDate }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
+                                        {{ person_form.bloodType }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <button class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
+
+
                     </div>
+
                 </div>
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#genel" data-toggle="tab">Genel Bilgiler</a></li>
-                        <li><a href="#iletisim" data-toggle="tab">İletişim Bilgileri</a></li>
-                        <li><a href="#kusak" data-toggle="tab">Kuşak Bilgileri</a></li>
-
-
-                    </ul>
-                    <form method="post" enctype="multipart/form-data" role="form">
-                        <div class="tab-content">
-                            {% csrf_token %}
-                            <div class="active tab-pane" id="genel">
-
-
-                                <div class="box-body">
-
-                                    <div class="col-md-6">
-
-                                        <div class="form-group">
-                                            <label> {{ user_form.first_name.label }}</label>
-                                            {{ user_form.first_name }}
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label> {{ person_form.tc.label }}</label>
-                                            {{ person_form.tc }}
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label> {{ person_form.gender.label }}</label>
-                                            {{ person_form.gender }}
-                                        </div>
-
-
+                <div class="col-lg-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">İletişim Bilgileri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
                                     </div>
-
-
-                                    <div class="col-md-6">
-
-
-                                        <div class="form-group">
-                                            <label> {{ user_form.last_name.label }}</label>
-                                            {{ user_form.last_name }}
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label> {{ person_form.bloodType.label }}</label>
-                                            {{ person_form.bloodType }}
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label> {{ person_form.birthDate.label }}</label>
-                                            {{ person_form.birthDate }}
-                                        </div>
-
-
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber.label }}</label>
+                                        {{ communication_form.phoneNumber }}
                                     </div>
-
-                                    <div class="box-footer">
-                                        <button type="submit" style="float:right;" class="btn btn-primary">Kaydet
-                                        </button>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber2.label }}</label>
+                                        {{ communication_form.phoneNumber2 }}
                                     </div>
                                 </div>
-                                <!-- /.box-body -->
-
-
-                                <!-- /.box -->
-
-
-                            </div>
-
-
-                            <div class="tab-pane" id="iletisim">
-                                <div class="box-body">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label> {{ communication_form.phoneNumber.label }}</label>
-                                            {{ communication_form.phoneNumber }}
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label> {{ communication_form.phoneNumber2.label }}</label>
-                                            {{ communication_form.phoneNumber2 }}
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label> {{ communication_form.country.label }}</label>
-                                            {{ communication_form.country }}
-                                        </div>
-
-
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.country.label }}</label>
+                                        {{ communication_form.country }}
                                     </div>
-
-                                    <div class="col-md-6">
-
-                                        <div class="form-group">
-                                            <label> {{ user_form.email.label }}</label>
-                                            {{ user_form.email }}
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label> {{ communication_form.city.label }}</label>
-                                            {{ communication_form.city }}
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label> {{ communication_form.postalCode.label }}</label>
-                                            {{ communication_form.postalCode }}
-                                        </div>
-
-
+                                    <div class="form-group">
+                                        <label> {{ communication_form.city.label }}</label>
+                                        {{ communication_form.city }}
                                     </div>
-
-
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label> {{ communication_form.address.label }}</label>
-                                            {{ communication_form.address }}
-                                        </div>
-
-
+                                    <div class="form-group">
+                                        <label> {{ communication_form.postalCode.label }}</label>
+                                        {{ communication_form.postalCode }}
                                     </div>
-
-
-                                    <div class="box-footer">
-                                        <button type="submit" style="float:right;" class="btn btn-primary">Kaydet
-                                        </button>
-                                    </div>
-
-
                                 </div>
                             </div>
-
-                            <div class="tab-pane" id="kusak">
-                                <div class="box-body">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label> {{ belt_form.startDate.label }}</label>
-                                            {{ belt_form.startDate }}
-                                        </div>
-
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.address.label }}</label>
+                                        {{ communication_form.address }}
                                     </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label> {{ belt_form.durationDay.label }}</label>
-                                            {{ belt_form.durationDay }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label> {{ belt_form.branch.label }}</label>
-                                            {{ belt_form.branch }}
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label> {{ belt_form.definition.label }}</label>
-                                            {{ belt_form.definition }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="box-footer">
-                                        <button type="submit" style="float:right;" class="btn btn-primary">Kaydet
-                                        </button>
-                                    </div>
-
-
                                 </div>
-
-                                <table id="belt" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th> Başlama Tarihi</th>
-                                        <th> Süre</th>
-                                        <th> Branş</th>
-                                        <th> Tanımı</th>
-
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% if belts_form.all %}
-                                        {% for belt in belts_form %}
-                                            <tr>
-                                                <td>{{ forloop.counter }} </td>
-                                                <td>{{ belt.startDate }}  </td>
-                                                <td>{{ belt.durationDay }}  </td>
-                                                <td>{{ belt.branch }}  </td>
-                                                <td>{{ belt.definition }}  </td>
-
-
-                                            </tr>
-
-                                        {% endfor %}
-                                    {% endif %}
-
-
-                                    </tbody>
-                                </table>
-
-
                             </div>
+                        </div>
+                        <div class="box-footer">
+                            <button class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
 
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Kuşak Bilgileri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-header with-border">
+                                <div class="btn-group">
+                                    <a href="{% url "wushu:sporcu-kusak-ekle"  athlete.pk %}"
+                                       type="button" class="btn btn-success"><i
+                                            class="fa fa-edit"></i> Yeni Kuşak Ekle
+                                    </a>
+                                </div>
+                            </div>
+                            <table id="belt" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Başlama Tarihi</th>
+                                    <th> Süre (Gün)</th>
+                                    <th> Bitiş Tarihi</th>
+                                    <th> Branş</th>
+                                    <th> Tanımı</th>
+                                    <th> Onay Durumu</th>
+                                    <th> İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if belts_form.all %}
+                                    {% for belt in belts_form %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ belt.startDate }}  </td>
+                                            <td>{{ belt.durationDay }}  </td>
+                                            <td>{{ belt.expireDate }}  </td>
+                                            <td>{{ belt.branch }}  </td>
+                                            <td>{{ belt.definition }}  </td>
+                                            <td>{{ belt.status }}  </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                       type="button" class="btn btn-warning"><i
+                                                            class="fa fa-edit"></i>Güncelle
+                                                    </a>
+                                                    <a class="btn btn-danger"
+                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                            class="fa fa-trash"></i>Sil</a>
+
+                                                </div>
+                                            </td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
 
                         </div>
-                    </form>
-
-
+                    </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Lisans Bilgileri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-header with-border">
+                                <div class="btn-group">
+                                    <a href="{% url "wushu:sporcu-lisans-ekle"  athlete.pk %}"
+                                       type="button" class="btn btn-success"><i
+                                            class="fa fa-edit"></i> Yeni Lisans Ekle
+                                    </a>
+                                </div>
+                            </div>
+                            <table id="license" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Başlama Tarihi</th>
+                                    <th> Bitiş Tarihi</th>
+                                    <th> Branş</th>
+                                    <th> Kulübü</th>
+                                    <th> Lisans No</th>
+                                    <th> Onay Durumu</th>
+                                    <th> İşlemler</th>
 
-            </section>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if licenses_form.all %}
+                                    {% for license in licenses_form %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ license.startDate }}  </td>
+                                            <td>{{ license.expireDate }}  </td>
+                                            <td>{{ license.branch }}  </td>
+                                            <td>{{ license.sportsClub }}  </td>
+                                            <td>{{ license.licenseNo }}  </td>
+                                            <td>{{ license.status }}  </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                       type="button" class="btn btn-warning"><i
+                                                            class="fa fa-edit"></i>Güncelle
+                                                    </a>
+                                                    <a class="btn btn-danger"
+                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                            class="fa fa-trash"></i>Sil</a>
+
+                                                </div>
+                                            </td>
 
 
-        </div>
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
 
     </section>
 
 
+
+
+
     <script>
         $(function () {
-            $('#sporcular').DataTable({
+            $('#belt').DataTable({
                 'paging': true,
                 'lengthChange': true,
-                'searching': true,
-                'ordering': true,
+                'searching': false,
+                'ordering': false,
+                'info': true,
+                'autoWidth': true
+            })
+            $('#license').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': false,
+                'ordering': false,
                 'info': true,
                 'autoWidth': true
             })

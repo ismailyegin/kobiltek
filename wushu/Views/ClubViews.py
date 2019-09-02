@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from wushu.Forms.ClubForm import ClubForm
@@ -10,7 +11,8 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
-from wushu.models import SportsClub, SportClubUser, Communication
+from wushu.Forms.UserSearchForm import UserSearchForm
+from wushu.models import SportsClub, SportClubUser, Communication, Person
 from wushu.models.ClubRole import ClubRole
 
 
@@ -24,14 +26,8 @@ def return_add_club(request):
         club_form = ClubForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST, request.FILES)
 
-        if club_form.is_valid() and communication_form.is_valid():
-            club = club_form.save(commit=False)
-            communication = communication_form.save(commit=False)
-            communication.save()
-            club.save()
-
-            clubsave = SportsClub(communication=communication,
-                                  name=club_form.cleaned_data['name'],
+        if club_form.is_valid():
+            clubsave = SportsClub(name=club_form.cleaned_data['name'],
                                   shortName=club_form.cleaned_data['shortName'],
                                   foundingDate=club_form.cleaned_data['foundingDate'],
                                   logo=club_form.cleaned_data['logo'],
@@ -39,11 +35,15 @@ def return_add_club(request):
 
                                   )
 
+            communication = communication_form.save(commit=False)
+            communication.save()
+            clubsave.communication = communication
+
             clubsave.save()
 
             messages.success(request, 'Kulüp Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:kulup-ekle')
+            return redirect('wushu:kulupler')
 
         else:
 
@@ -61,14 +61,15 @@ def return_clubs(request):
 
 
 @login_required
-def return_add_club_person(request):
+def return_add_club_person(request, pk):
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
     sportClubUser_form = SportClubUserForm()
 
+    sportClub = SportsClub.objects.get(pk=pk)
+
     if request.method == 'POST':
-        x = User.objects.latest('id')
 
         data = request.POST.copy()
         data['username'] = data['email']
@@ -95,7 +96,7 @@ def return_add_club_person(request):
             club_person = SportClubUser(
                 user=user, person=person, communication=communication,
                 role=sportClubUser_form.cleaned_data['role'],
-                sportClub=sportClubUser_form.cleaned_data['sportClub']
+                sportClub=sportClub
 
             )
 
@@ -112,7 +113,7 @@ def return_add_club_person(request):
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:kulup-uyesi-ekle')
+            return redirect('wushu:update-club', pk=pk)
 
         else:
 
@@ -125,8 +126,67 @@ def return_add_club_person(request):
 
 
 @login_required
+def updateClubPersons(request, pk):
+    athlete = SportClubUser.objects.get(pk=pk)
+    user = User.objects.get(pk=athlete.user.pk)
+    person = Person.objects.get(pk=athlete.person.pk)
+    communication = Communication.objects.get(pk=athlete.communication.pk)
+    sportClub = athlete.sportClub
+    user_form = UserForm(request.POST or None, instance=user)
+    person_form = PersonForm(request.POST or None, instance=person)
+    communication_form = CommunicationForm(request.POST or None, instance=communication)
+    sportClubUser_form = SportClubUserForm(request.POST or None, instance=athlete)
+
+    if request.method == 'POST':
+
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and sportClubUser_form.is_valid():
+
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
+            user.save()
+            person_form.save()
+            communication_form.save()
+            sportClubUser_form.save()
+
+            messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:update-club', pk=sportClub.pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'kulup/kulup-uyesi-duzenle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'sportClubUser_form': sportClubUser_form})
+
+
+@login_required
 def return_club_person(request):
-    return render(request, 'kulup/kulup-uyeleri.html')
+    athletes = SportClubUser.objects.all()
+    user_form = UserSearchForm()
+
+    if request.method == 'POST':
+        user_form = UserSearchForm(request.POST)
+        if user_form.is_valid():
+            firstName = user_form.cleaned_data.get('first_name')
+            lastName = user_form.cleaned_data.get('last_name')
+            email = user_form.cleaned_data.get('email')
+            if not (firstName or lastName or email):
+                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
+                if firstName:
+                    query &= Q(user__first_name__icontains=firstName)
+                if email:
+                    query &= Q(user__email__icontains=email)
+                athletes = SportClubUser.objects.filter(query)
+
+    return render(request, 'kulup/kulup-uyeleri.html', {'athletes': athletes, 'user_form': user_form})
 
 
 @login_required
@@ -171,12 +231,13 @@ def updateClubRole(request, pk):
     clubrole = ClubRole.objects.get(id=pk)
     clubrole_form = ClubRoleForm(request.POST or None, instance=clubrole)
 
-    if clubrole_form.is_valid():
-        clubrole_form.save()
-        messages.warning(request, 'Başarıyla Güncellendi')
-        return redirect('wushu:kulup-uye-rolu')
-    else:
-        messages.warning(request, 'Alanları Kontrol Ediniz')
+    if request.method == 'POST':
+        if clubrole_form.is_valid():
+            clubrole_form.save()
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:kulup-uye-rolu')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'kulup/kulupRolDuzenle.html',
                   {'clubrole_form': clubrole_form})
@@ -203,13 +264,17 @@ def clubUpdate(request, pk):
     communication = Communication.objects.get(id=com_id)
     club_form = ClubForm(request.POST or None, instance=club)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    clubPersons = SportClubUser.objects.filter(sportClub=club)
 
-    if club_form.is_valid():
-        club_form.save()
-        messages.warning(request, 'Başarıyla Güncellendi')
-        return redirect('wushu:kulupler')
-    else:
-        messages.warning(request, 'Alanları Kontrol Ediniz')
+    if request.method == 'POST':
+        if club_form.is_valid():
+            club_form.save()
+            communication_form.save()
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:kulupler')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'kulup/kulupDuzenle.html',
-                  {'club_form': club_form, 'communication_form': communication_form})
+                  {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
+                   'club': club})

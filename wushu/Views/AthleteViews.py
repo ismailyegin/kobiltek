@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -9,10 +11,11 @@ from django.shortcuts import render, redirect
 from wushu.Forms.BeltForm import BeltForm
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.LicenseForm import LicenseForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Athlete, CategoryItem, Person, Communication
+from wushu.models import Athlete, CategoryItem, Person, Communication, License
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 
@@ -64,7 +67,7 @@ def return_add_athlete(request):
 
             messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:sporcu-ekle')
+            return redirect('wushu:sporcular')
 
         else:
 
@@ -105,14 +108,15 @@ def return_athletes(request):
 @login_required
 def updateathletes(request, pk):
     athlete = Athlete.objects.get(pk=pk)
+    belts_form = athlete.belts.all()
+    licenses_form = athlete.licenses.all()
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
     communication = Communication.objects.get(pk=athlete.communication.pk)
+
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
-    belt_form = BeltForm()
-    belts_form = athlete.belts.all()
 
     if request.method == 'POST':
 
@@ -121,21 +125,10 @@ def updateathletes(request, pk):
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
             user.save()
             person_form.save()
             communication_form.save()
-
-            belt_form = BeltForm(request.POST)
-
-            if belt_form.is_valid():
-                belt = Level(startDate=belt_form.cleaned_data['startDate'],
-                             durationDay=belt_form.cleaned_data['durationDay'],
-                             definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
-                belt.expireDate = belt.startDate
-                belt.levelType = EnumFields.LEVELTYPE.BELT
-                belt.save()
-                athlete.belts.add(belt)
-                athlete.save()
 
             messages.success(request, 'Sporcu Başarıyla Güncellenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
@@ -146,7 +139,8 @@ def updateathletes(request, pk):
 
     return render(request, 'sporcu/sporcuDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'belts_form': belts_form, 'belt_form': belt_form})
+                   'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                   'athlete': athlete})
 
 
 @login_required
@@ -192,12 +186,110 @@ def categoryItemUpdate(request, pk):
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
 
-    if category_item_form.is_valid():
-        category_item_form.save()
-        messages.warning(request, 'Başarıyla Güncellendi')
-        return redirect('wushu:kusak')
-    else:
-        messages.warning(request, 'Alanları Kontrol Ediniz')
+    if request.method == 'POST':
+        if category_item_form.is_valid():
+            category_item_form.save()
+            messages.warning(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:kusak')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/kusakDuzenle.html',
                   {'category_item_form': category_item_form})
+
+
+@login_required
+def sporcu_kusak_ekle(request, pk):
+    athlete = Athlete.objects.get(pk=pk)
+    belt_form = BeltForm()
+
+    if request.method == 'POST':
+        belt_form = BeltForm(request.POST)
+        if belt_form.is_valid():
+            belt = Level(startDate=belt_form.cleaned_data['startDate'],
+                         durationDay=belt_form.cleaned_data['durationDay'],
+                         definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
+            belt.expireDate = belt.startDate + timedelta(days=belt.durationDay)
+            belt.levelType = EnumFields.LEVELTYPE.BELT
+            belt.status = Level.WAITED
+            belt.save()
+            athlete.belts.add(belt)
+            athlete.save()
+
+            messages.success(request, 'Kuşak Başarıyla Eklenmiştir.')
+            return redirect('wushu:update-athletes', pk=pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-kusak-ekle.html',
+                  {'belt_form': belt_form})
+
+
+@login_required
+def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
+    belt = Level.objects.get(pk=belt_pk)
+    belt_form = BeltForm(request.POST or None, instance=belt, initial={'definition': belt.definition})
+
+    if request.method == 'POST':
+        if belt_form.is_valid():
+            belt = belt_form.save(commit=False)
+            belt.expireDate = belt.startDate + timedelta(days=belt.durationDay)
+            belt.save()
+
+            messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
+            return redirect('wushu:update-athletes', pk=athlete_pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-kusak-duzenle.html',
+                  {'belt_form': belt_form})
+
+
+@login_required
+def sporcu_lisans_ekle(request, pk):
+    athlete = Athlete.objects.get(pk=pk)
+    license_form = LicenseForm()
+
+    if request.method == 'POST':
+        license_form = LicenseForm(request.POST)
+        if license_form.is_valid():
+            license = license_form.save(commit=False)
+            license.status = License.WAITED
+            license.save()
+            athlete.licenses.add(license)
+            athlete.save()
+
+            messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
+            return redirect('wushu:update-athletes', pk=pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-lisans-ekle.html',
+                  {'license_form': license_form})
+
+
+@login_required
+def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
+    license = License.objects.get(pk=license_pk)
+    license_form = LicenseForm(request.POST or None, instance=license, initial={'sportsClub': license.sportsClub})
+
+    if request.method == 'POST':
+        if license_form.is_valid():
+            license = license_form.save(commit=False)
+            license.save()
+
+            messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
+            return redirect('wushu:update-athletes', pk=athlete_pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-lisans-duzenle.html',
+                  {'license_form': license_form})

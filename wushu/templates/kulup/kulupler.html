@@ -80,7 +80,7 @@
 
                 <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
 
 
                     <ul class="messages">
@@ -153,53 +153,53 @@
                                 </a>
                             </div>
                         </div>
-
-                        <table id="kulupler" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Adı</th>
-                                <th> Kısa Adı</th>
-                                <th>Kuruluş Tarihi</th>
-                                <th>E-Mail</th>
-                                <th>Güncelleme/Silme</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if clubs.all %}
-                                {% for club in clubs %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ club.name }}</td>
-                                        <td>{{ club.shortName }}</td>
-                                        <td>{{ club.foundingDate }}</td>
-                                        <td>{{ club.clubMail }}</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="{% url "wushu:update-club" club.pk %}"
-                                                   type="button" class="btn btn-warning"><i
-                                                        class="fa fa-edit"></i>Güncelle
-                                                </a>
-
-                                                <a class="btn btn-danger"
-                                                   data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                        class="fa fa-trash"></i>Sil</a>
-                                            </div>
-                                        </td>
+                        <div class="box-body">
+                            <table id="kulupler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Adı</th>
+                                    <th> Kısa Adı</th>
+                                    <th>İl</th>
+                                    <th>Kuruluş Tarihi</th>
+                                    <th>Güncelleme/Silme</th>
 
 
-                                    </tr>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if clubs.all %}
+                                    {% for club in clubs %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ club.name }}</td>
+                                            <td>{{ club.shortName }}</td>
+                                            <td>{{ club.communication.city }}</td>
+                                            <td>{{ club.foundingDate }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url "wushu:update-club" club.pk %}"
+                                                       type="button" class="btn btn-warning"><i
+                                                            class="fa fa-edit"></i>Güncelle
+                                                    </a>
 
-                                {% endfor %}
-                            {% endif %}
+                                                    <a class="btn btn-danger"
+                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                            class="fa fa-trash"></i>Sil</a>
+                                                </div>
+                                            </td>
 
 
-                            </tbody>
-                        </table>
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
 
 
+                                </tbody>
+                            </table>
+
+                        </div>
                     </div>
                     <!-- /.box -->
 
@@ -246,7 +246,7 @@
                         success: function (result) {
 
                             html = 'Kulüp Başarıyla Silindi';
-                            debugger;
+                        debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

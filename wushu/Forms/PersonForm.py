@@ -14,15 +14,15 @@ class PersonForm(ModelForm):
 
         widgets = {
 
-            'tc': forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'T.C. Kimlik Numarası'}),
+            'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
-            'height': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Boy'}),
+            'height': forms.TextInput(attrs={'class': 'form-control'}),
 
-            'weight': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kilo'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return false', 'placeholder': 'Doğum Tarihi'}),
+                       'onkeydown': 'return false', 'required': 'required'}),
 
             'bloodType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                              'style': 'width: 100%; '}),

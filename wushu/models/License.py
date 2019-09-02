@@ -2,16 +2,30 @@ import enum
 
 from django.db import models
 
-from wushu.models import EnumFields
-from wushu.models.CategoryItem import CategoryItem
+from wushu.models.City import City
+from wushu.models.EnumFields import EnumFields
 from wushu.models.SportsClub import SportsClub
 
 
 class License(models.Model):
+    WAITED = 'Beklemede'
+    APPROVED = 'Onaylandı'
+    PROPOUND = 'Onaya Gönderildi'
+    DENIED = 'Reddedildi'
+
+    STATUS_CHOICES = (
+        (APPROVED, 'Onaylandı'),
+        (PROPOUND, 'Onaya Gönderildi'),
+        (DENIED, 'Reddedildi'),
+        (WAITED, 'Beklemede'),
+    )
+
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
-    branch = models.CharField(null=True,max_length=329, blank=True)
+    branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
     sportsClub = models.ForeignKey(SportsClub, on_delete=models.CASCADE)
     licenseNo = models.CharField(blank=False, null=False, max_length=255)
-    expireDate = models.DateTimeField()
-    cityHeadShip = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
+    expireDate = models.DateField(blank=False, null=False)
+    cityHeadShip = models.ForeignKey(City, on_delete=models.CASCADE)
+    startDate = models.DateField(blank=False, null=False)
+    status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)

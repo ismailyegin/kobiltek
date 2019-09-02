@@ -34,6 +34,6 @@ class Person(models.Model):
     tc = models.CharField(max_length=120, null=True, blank=True)
     height = models.CharField(max_length=120, null=True, blank=True)
     weight = models.CharField(max_length=120, null=True, blank=True)
-    birthDate = models.DateField(null=True, verbose_name='Doğum Tarihi')
+    birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, default=AB1)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)

@@ -214,8 +214,8 @@
                             <tr>
                                 <th>#</th>
                                 <th> Ad Soyad</th>
-                                <th>T.C.</th>
                                 <th>Doğum Tarihi</th>
+                                <th>İl</th>
                                 <th>Cep Tel</th>
                                 <th>E-Mail</th>
                                 <th>Güncelleme</th>
@@ -229,8 +229,8 @@
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
                                         <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                        <td>{{ athlete.person.tc }} </td>
                                         <td>{{ athlete.person.birthDate }} </td>
+                                        <td>{{ athlete.communication.city }} </td>
                                         <td>{{ athlete.communication.phoneNumber }} </td>
                                         <td>{{ athlete.user.email }} </td>
                                         <td>

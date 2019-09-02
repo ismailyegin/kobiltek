@@ -113,13 +113,13 @@ def categoryItemDelete(request, pk):
 def categoryItemUpdate(request, pk):
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
-
-    if category_item_form.is_valid():
-        category_item_form.save()
-        messages.success(request, 'Başarıyla Güncellendi')
-        return redirect('wushu:seviye')
-    else:
-        messages.warning(request, 'Alanları Kontrol Ediniz')
+    if request.method == 'POST':
+        if category_item_form.is_valid():
+            category_item_form.save()
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:seviye')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'hakem/seviyeDuzenle.html',
                   {'category_item_form': category_item_form})

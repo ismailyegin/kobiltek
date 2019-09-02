@@ -9,15 +9,13 @@ class SportClubUserForm(ModelForm):
         model = SportClubUser
 
         fields = (
-            'role', 'sportClub')
-        labels = {'role': 'Rol'}
+            'role',)
+        labels = {'role': 'Kulüp Rolü'}
 
         widgets = {
 
             'role': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                        'style': 'width: 100%; '}),
+                                        'style': 'width: 100%; ', 'required': 'required'}),
 
-            'sportClub': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                             'style': 'width: 100%; '}),
 
         }

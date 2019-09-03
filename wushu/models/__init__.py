@@ -4,7 +4,6 @@ from .CategoryItem import CategoryItem
 from .Coach import Coach
 from .Communication import Communication
 from .Competition import Competition
-# from .EnumFields import EnumFields
 from .Judge import Judge
 from .Level import Level
 from .License import License
@@ -17,3 +16,6 @@ from .City import City
 from .Country import Country
 from .SportClubUser import SportClubUser
 from .ClubRole import ClubRole
+from .DirectoryCommission import DirectoryCommission
+from .DirectoryMemberRole import DirectoryMemberRole
+from .DirectoryMember import DirectoryMember

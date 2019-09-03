@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews
+from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews
 
 app_name = 'wushu'
 
@@ -67,5 +67,23 @@ urlpatterns = [
         name='delete-coach'),
     url(r'antrenor/antrenorDuzenle/(?P<pk>\d+)$', CoachViews.coachUpdate,
         name='update-coach'),
+
+    # Yönetim Kurulu
+    url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),
+    url(r'yonetim/kurul-uyesi-ekle/$', DirectoryViews.add_directory_member, name='kurul-uyesi-ekle'),
+    url(r'yonetim/kurul-uyesi-duzenle/(?P<pk>\d+)$', DirectoryViews.update_directory_member,
+        name='kurul-uyesi-duzenle'),
+    url(r'yonetim/kurul-uyeleri/sil/(?P<pk>\d+)$', DirectoryViews.delete_directory_member,
+        name='kurul-uyesi-sil'),
+    url(r'yonetim/kurul-uye-rolleri/$', DirectoryViews.return_member_roles, name='kurul-uye-rolleri'),
+    url(r'yonetim/kurul-uye-rolu/sil/(?P<pk>\d+)$', DirectoryViews.delete_member_role,
+        name='kurul_uye_rol_sil'),
+    url(r'yonetim/kurul_uye_rolu_duzenle/(?P<pk>\d+)$', DirectoryViews.update_member_role,
+        name='kurul_uye_rol_guncelle'),
+    url(r'yonetim/kurullar/$', DirectoryViews.return_commissions, name='kurullar'),
+    url(r'yonetim/kurullar/sil/(?P<pk>\d+)$', DirectoryViews.delete_commission,
+        name='kurul_sil'),
+    url(r'yonetim/kurul_duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
+        name='kurul_guncelle'),
 
 ]

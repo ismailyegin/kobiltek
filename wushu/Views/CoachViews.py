@@ -64,7 +64,7 @@ def return_add_coach(request):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, 'antrenor/antrenorler.html.html',
+    return render(request, 'antrenor/antrenorler.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form})
 
 

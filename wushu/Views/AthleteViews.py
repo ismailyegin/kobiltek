@@ -293,3 +293,9 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
     return render(request, 'sporcu/sporcu-lisans-duzenle.html',
                   {'license_form': license_form})
+
+
+@login_required
+def sporcu_kusak_listesi(request):
+    belts = Level.objects.all()
+    return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})

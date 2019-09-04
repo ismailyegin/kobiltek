@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.DirectoryCommissionForm import DirectoryCommissionForm
+from wushu.Forms.DirectoryForm import DirectoryForm
 from wushu.Forms.DirectoryMemberRoleForm import DirectoryMemberRoleForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
@@ -22,14 +23,16 @@ def add_directory_member(request):
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
+    member_form = DirectoryForm()
 
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
+        member_form = DirectoryForm(request.POST)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
@@ -48,6 +51,8 @@ def add_directory_member(request):
             communication.save()
 
             directoryMember = DirectoryMember(user=user, person=person, communication=communication)
+            directoryMember.role = member_form.cleaned_data['role']
+            directoryMember.commission = member_form.cleaned_data['commission']
 
             directoryMember.save()
 
@@ -69,7 +74,7 @@ def add_directory_member(request):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form})
+                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form, 'member_form':member_form})
 
 
 @login_required
@@ -119,8 +124,9 @@ def update_directory_member(request, pk):
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    member_form = DirectoryForm(request.POST or None, instance=member)
     if request.method == 'POST':
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
@@ -129,6 +135,7 @@ def update_directory_member(request, pk):
             user.save()
             person_form.save()
             communication_form.save()
+            member_form.save()
 
             messages.success(request, 'Yönetim Kurulu Üyesi Başarıyla Güncellendi')
             return redirect('wushu:kurul-uyeleri')
@@ -137,7 +144,7 @@ def update_directory_member(request, pk):
 
     return render(request, 'yonetim/kurul-uyesi-duzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form})
+                   'person_form': person_form, 'member_form':member_form})
 
 
 login_required

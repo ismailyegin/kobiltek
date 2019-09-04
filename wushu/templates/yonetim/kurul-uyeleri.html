@@ -203,7 +203,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th> Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
+                                    <th>Rolü</th>
+                                    <th>Kurulu</th>
                                     <th>İl</th>
                                     <th>Cep Tel</th>
                                     <th>E-Mail</th>
@@ -218,7 +219,8 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ member.user.first_name }} {{ member.user.last_name }} </td>
-                                            <td>{{ member.person.tc }} </td>
+                                            <td>{{ member.role }} </td>
+                                            <td>{{ member.commission }} </td>
                                             <td>{{ member.communication.city }} </td>
                                             <td>{{ member.communication.phoneNumber }} </td>
                                             <td>{{ member.user.email }} </td>

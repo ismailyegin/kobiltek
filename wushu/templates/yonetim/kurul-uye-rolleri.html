@@ -138,7 +138,7 @@
                             <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Rol Adı</th>
+                                <th>Rol Tanımı</th>
                                 <th>Güncelleme/Silme</th>
 
                             </tr>
@@ -147,14 +147,14 @@
                             <tbody>
 
 
-                            {% if member_role.all %}
-                                {% for memberRole in member_role %}
+                            {% if memberRoles.all %}
+                                {% for memberRole in memberRoles %}
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
                                         <td>{{ memberRole.name }}</td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{% url "wushu:kurul_uye_rol_guncelle" memberRole.pk %}"
+                                                <a href="{% url "wushu:kurul_uye_rol_duzenle" memberRole.pk %}"
                                                    type="button" class="btn btn-warning"><i
                                                         class="fa fa-edit"></i>Güncelle
                                                 </a>

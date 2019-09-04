@@ -160,9 +160,9 @@ def return_member_roles(request):
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
-    member_role = DirectoryMemberRole.objects.all()
+    memberRoles = DirectoryMemberRole.objects.all()
     return render(request, 'yonetim/kurul-uye-rolleri.html',
-                  {'member_role_form': member_role_form, 'member_role': member_role})
+                  {'member_role_form': member_role_form, 'memberRoles': memberRoles})
 
 
 @login_required
@@ -192,7 +192,7 @@ def update_member_role(request, pk):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, 'yonetim/kurul-uye-rol-duzenle.html',
+    return render(request, 'yonetim/kurul_uye_rol_duzenle.html',
                   {'member_role_form': member_role_form})
 
 

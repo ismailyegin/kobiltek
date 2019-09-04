@@ -76,14 +76,14 @@ urlpatterns = [
     url(r'yonetim/kurul-uyeleri/sil/(?P<pk>\d+)$', DirectoryViews.delete_directory_member,
         name='kurul-uyesi-sil'),
     url(r'yonetim/kurul-uye-rolleri/$', DirectoryViews.return_member_roles, name='kurul-uye-rolleri'),
-    url(r'yonetim/kurul-uye-rolu/sil/(?P<pk>\d+)$', DirectoryViews.delete_member_role,
+    url(r'yonetim/kurul-uye-rolleri/sil/(?P<pk>\d+)$', DirectoryViews.delete_member_role,
         name='kurul_uye_rol_sil'),
-    url(r'yonetim/kurul_uye_rolu_duzenle/(?P<pk>\d+)$', DirectoryViews.update_member_role,
-        name='kurul_uye_rol_guncelle'),
+    url(r'yonetim/kurul_uye_rol_duzenle/(?P<pk>\d+)$', DirectoryViews.update_member_role,
+        name='kurul_uye_rol_duzenle'),
     url(r'yonetim/kurullar/$', DirectoryViews.return_commissions, name='kurullar'),
     url(r'yonetim/kurullar/sil/(?P<pk>\d+)$', DirectoryViews.delete_commission,
         name='kurul_sil'),
     url(r'yonetim/kurul_duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
-        name='kurul_guncelle'),
+        name='kurul_duzenle'),
 
 ]

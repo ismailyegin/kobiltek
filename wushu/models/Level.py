@@ -29,3 +29,4 @@ class Level(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
+    dekont = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dekont ')

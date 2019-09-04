@@ -18,7 +18,7 @@ class BeltForm(ModelForm):
         model = Level
 
         fields = (
-            'startDate', 'durationDay', 'definition', 'branch')
+            'startDate', 'durationDay', 'definition', 'branch', 'dekont')
 
         labels = {'startDate': 'Başlangıç Tarihi', 'durationDay': 'Süre', 'branch': 'Branş'}
 

@@ -130,119 +130,64 @@
     <section class="content">
 
 
-    <div class="row">
-    <section class="col-lg-12 ">
-
-
-        <div class="box-body">
-
-
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Sporcu Filtrele</h3>
-                </div>
-                <form method="post" role="form">
-                    <div class="box-body">
-                        {% csrf_token %}
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label> {{ user_form.first_name.label }}</label>
-                                {{ user_form.first_name }}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label> {{ user_form.last_name.label }}</label>
-                                {{ user_form.last_name }}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label> {{ user_form.email.label }}</label>
-                                {{ user_form.email }}
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <!-- /.box-body -->
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Ara</button>
-                    </div>
-                </form>
-
-
-            </div>
-            <!-- /.box -->
-
-
-        </div>
-    </section>
-</div>
-
-
-
-
-
-
-
         <div class="row">
+            <div class="col-lg-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Kuşak Listesi</h3>
+                    </div>
+                    <div class="box-body">
 
-            <section class="col-lg-12 ">
-
-
-                <div class="box-body">
-
-
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Sporcular</h3>
-                        </div>
-                        <div class="box-header with-border">
-                            <div class="btn-group">
-                                <a href="{% url "wushu:sporcu-ekle" %}"
-                                   type="button" class="btn btn-success"><i
-                                        class="fa fa-edit"></i> Sporcu Ekle
-                                </a>
-                            </div>
-                        </div>
-
-                        <table id="sporcular" class="table table-bordered table-hover">
+                        <table id="belt" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Ad Soyad</th>
-                                <th>T.C.</th>
-                                <th>Doğum Tarihi</th>
-                                <th>Cep Tel</th>
-                                <th>E-Mail</th>
-                                <th>Güncelleme</th>
+                                <th> Ad</th>
+                                <th> Başlama Tarihi</th>
+                                <th> Süre (Gün)</th>
+                                <th> Bitiş Tarihi</th>
+                                <th> Branş</th>
+                                <th> Tanımı</th>
+                                <th> Onay Durumu</th>
+                                <th> Dekont</th>
+                                <th> İşlemler</th>
 
 
                             </tr>
                             </thead>
                             <tbody>
-                            {% if athletes.all %}
-                                {% for athlete in athletes %}
+                            {% if belts.all %}
+                                {% for belt in belts %}
                                     <tr>
+
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                        <td>{{ athlete.person.tc }} </td>
-                                        <td>{{ athlete.person.birthDate }} </td>
-                                        <td>{{ athlete.communication.phoneNumber }} </td>
-                                        <td>{{ athlete.user.email }} </td>
+
+                                        <td>
+                                            <a target="_blank" href="#"> {{ belt.athlete_set.first }}</a>
+
+                                        </td>
+
+
+                                        <td>{{ belt.startDate }}  </td>
+                                        <td>{{ belt.durationDay }}  </td>
+                                        <td>{{ belt.expireDate }}  </td>
+                                        <td>{{ belt.branch }}  </td>
+                                        <td>{{ belt.definition }}  </td>
+                                        <td>{{ belt.status }}  </td>
+                                        <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{% url "wushu:update-athletes" athlete.pk %}"
-                                                   type="button" class="btn btn-warning"><i
-                                                        class="fa fa-edit"></i>Güncelle
+                                                <a href="#"
+                                                   type="button" class="btn btn-success"><i
+                                                        class="fa fa-check"></i>
                                                 </a>
-
+                                                <a class="btn btn-danger"
+                                                   data-toggle="modal"><i
+                                                        class="fa fa-times"></i></a>
 
                                             </div>
                                         </td>
+
 
                                     </tr>
 
@@ -253,23 +198,16 @@
                             </tbody>
                         </table>
 
-
                     </div>
-                    <!-- /.box -->
-
-
                 </div>
-            </section>
-
-
+            </div>
         </div>
-        <!-- /.row (main row) -->
 
     </section>
 
     <script>
         $(function () {
-            $('#sporcular').DataTable({
+            $('#kusak-listesi').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -281,6 +219,20 @@
         })
     </script>
 
+
+    <script>
+        $(function () {
+            $('#belt').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true
+            })
+
+        })
+    </script>
 
 
 

@@ -204,9 +204,10 @@ def sporcu_kusak_ekle(request, pk):
     belt_form = BeltForm()
 
     if request.method == 'POST':
-        belt_form = BeltForm(request.POST)
+        belt_form = BeltForm(request.POST, request.FILES)
         if belt_form.is_valid():
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
+                         dekont=belt_form.cleaned_data['dekont'],
                          durationDay=belt_form.cleaned_data['durationDay'],
                          definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
             belt.expireDate = belt.startDate + timedelta(days=belt.durationDay)
@@ -298,4 +299,5 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 @login_required
 def sporcu_kusak_listesi(request):
     belts = Level.objects.all()
+
     return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})

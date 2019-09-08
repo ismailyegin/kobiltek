@@ -154,6 +154,7 @@ def return_belt(request):
         if category_item_form.is_valid():
 
             categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
+            categoryItem.parent = category_item_form.cleaned_data['parent']
             categoryItem.forWhichClazz = "BELT"
             categoryItem.save()
             messages.success(request, 'Kuşak Başarıyla Kayıt Edilmiştir.')
@@ -184,12 +185,11 @@ def categoryItemDelete(request, pk):
 @login_required
 def categoryItemUpdate(request, pk):
     categoryItem = CategoryItem.objects.get(id=pk)
-    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
-
+    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem, initial={'parent': categoryItem.parent})
     if request.method == 'POST':
         if category_item_form.is_valid():
             category_item_form.save()
-            messages.warning(request, 'Başarıyla Güncellendi')
+            messages.success(request, 'Başarıyla Güncellendi')
             return redirect('wushu:kusak')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')

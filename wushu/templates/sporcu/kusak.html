@@ -124,6 +124,11 @@
                                     {{ category_item_form.name }}
                                 </div>
 
+                                <div class="form-group">
+                                    <label> {{ category_item_form.parent.label }}</label>
+                                    {{ category_item_form.parent }}
+                                </div>
+
 
                             </div>
                             <!-- /.box-body -->
@@ -139,6 +144,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Kuşak Adı</th>
+                                <th>Üst Kuşak Adı</th>
                                 <th>Güncelleme/Silme</th>
 
                             </tr>
@@ -152,6 +158,7 @@
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
                                         <td>{{ category.name }}</td>
+                                        <td>{{ category.parent.name }}</td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{% url "wushu:categoryItem-duzenle" category.pk %}" type="button" class="btn btn-warning"><i

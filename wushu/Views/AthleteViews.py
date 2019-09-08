@@ -232,7 +232,6 @@ def sporcu_kusak_ekle(request, pk):
 def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
     belt = Level.objects.get(pk=belt_pk)
     belt_form = BeltForm(request.POST or None, instance=belt, initial={'definition': belt.definition})
-
     if request.method == 'POST':
         if belt_form.is_valid():
             belt = belt_form.save(commit=False)
@@ -299,5 +298,6 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 @login_required
 def sporcu_kusak_listesi(request):
     belts = Level.objects.all()
+
 
     return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})

@@ -131,84 +131,73 @@
 
 
         <div class="row">
-            <div class="col-lg-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Kuşak Listesi</h3>
-                    </div>
-                    <div class="box-body">
 
-                        <table id="belt" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Ad</th>
-                                <th> Başlama Tarihi</th>
-                                <th> Süre (Gün)</th>
-                                <th> Bitiş Tarihi</th>
-                                <th> Branş</th>
-                                <th> Tanımı</th>
-                                <th> Onay Durumu</th>
-                                <th> Dekont</th>
-                                <th> İşlemler</th>
+            <section class="col-lg-12 ">
 
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if belts.all %}
-                                {% for belt in belts %}
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Sporcu Seç</h3>
+                        </div>
+                        <div class="box-body">
+                            <form method="post" enctype="multipart/form-data" role="form">
+                            {% csrf_token %}
+                                <table id="sporcular" class="table table-bordered table-hover">
+                                    <thead>
                                     <tr>
-
-                                        <td>{{ forloop.counter }} </td>
-
-                                        <td>
-
-                                            <a target="_blank" > {{ belt.athlete_set.first }}</a>
-
-                                        </td>
-
-
-                                        <td>{{ belt.startDate }}  </td>
-                                        <td>{{ belt.durationDay }}  </td>
-                                        <td>{{ belt.expireDate }}  </td>
-                                        <td>{{ belt.branch }}  </td>
-                                        <td>{{ belt.definition }}  </td>
-                                        <td>{{ belt.status }}  </td>
-                                        <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="#"
-                                                   type="button" class="btn btn-success"><i
-                                                        class="fa fa-check"></i>
-                                                </a>
-                                                <a class="btn btn-danger"
-                                                   data-toggle="modal"><i
-                                                        class="fa fa-times"></i></a>
-
-                                            </div>
-                                        </td>
+                                        <th>Seç</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Kuşak</th>
+                                        <th>Lisans No</th>
 
 
                                     </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if athletes.all %}
+                                        {% for athlete in athletes %}
+                                            <tr>
+                                                <td><input type="checkbox" name="selected_options"
+                                                           value="{{ athlete.pk }}"></td>
+                                                <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                                <td>{{ athlete.belts.last.definition.name }}</td>
+                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
 
-                                {% endfor %}
-                            {% endif %}
+                                            </tr>
+
+                                        {% endfor %}
+                                    {% endif %}
 
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
 
+                                <div class="box-header with-border">
+                                        <div class="box-footer">
+                                            <button type="submit" class="btn btn-primary">Devam Et</button>
+                                        </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+                    <!-- /.box -->
+
+
                 </div>
-            </div>
+            </section>
+
+
         </div>
+        <!-- /.row (main row) -->
 
     </section>
 
     <script>
         $(function () {
-            $('#kusak-listesi').DataTable({
+            $('#sporcular').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -221,19 +210,11 @@
     </script>
 
 
-    <script>
-        $(function () {
-            $('#belt').DataTable({
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'ordering': true,
-                'info': true,
-                'autoWidth': true
-            })
 
-        })
-    </script>
+
+
+
+
 
 
 

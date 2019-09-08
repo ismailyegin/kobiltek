@@ -1,0 +1,159 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+    <section class="content-header">
+        <h1>
+            Kulüp Ekle
+
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Sınav Ekle</a></li>
+
+        </ol>
+    </section>
+    <section class="content">
+
+        <form method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Genel Bilgiler</h3>
+                        </div>
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label> {{ exam_form.examDate.label }}</label>
+                                {{ exam_form.examDate }}
+                            </div>
+                            <div class="form-group">
+                                <label> {{ exam_form.coach.label }}</label>
+                                {{ exam_form.coach }}
+                            </div>
+                            <div class="form-group">
+                                <label> {{ exam_form.paymentType.label }}</label>
+                                {{ exam_form.paymentType }}
+                            </div>
+
+                            <div class="form-group">
+                                <label> {{ exam_form.dekontDescription.label }}</label>
+                                {{ exam_form.dekontDescription }}
+                            </div>
+                            <div class="form-group">
+                                <label> {{ exam_form.dekontDate.label }}</label>
+                                {{ exam_form.dekontDate }}
+                            </div>
+                        </div>
+                        {% comment %}<div class="box-footer">
+                            <a href="{% url "wushu:kusak-sinavi-ekle" athletes=athletes %}"
+                               type="button" class="btn btn-success"><i
+                                    class="fa fa-edit"></i> Sınav Oluştur
+                            </a>
+                        </div>{% endcomment %}
+
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Seçili Sporcular</h3>
+                        </div>
+                        <div class="box-body">
+                            <table id="sporcular" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Ad Soyad</th>
+                                    <th>Önceki Kuşak</th>
+                                    <th>Sonraki Kuşak</th>
+                                    <th>Lisans No</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if athletes.all %}
+                                    {% for athlete in athletes %}
+                                        <tr>
+                                            <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                            <td>{{ athlete.belts.last.definition.name }}</td>
+                                            <td>{{ athlete.belts.last.definition.parent.name }}</td>
+                                            <td>{{ athlete.licenses.last.licenseNo }}</td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+
+    </section>
+
+{% endblock %}
+
+
+

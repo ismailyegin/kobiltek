@@ -29,3 +29,6 @@ class License(models.Model):
     cityHeadShip = models.ForeignKey(City, on_delete=models.CASCADE)
     startDate = models.DateField(blank=False, null=False)
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
+
+    def __str__(self):
+        return '%s ' % self.sportsClub.name

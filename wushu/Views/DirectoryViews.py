@@ -38,7 +38,7 @@ def add_directory_member(request):
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
-            group = Group.objects.get(name='Antrenor')
+            group = Group.objects.get(name='Yonetim')
             password = User.objects.make_random_password()
             user.set_password(password)
             user.save()
@@ -199,7 +199,7 @@ def update_member_role(request, pk):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, 'yonetim/kurul_uye_rol_duzenle.html',
+    return render(request, 'yonetim/kurul-uye-rol-duzenle.html',
                   {'member_role_form': member_role_form})
 
 
@@ -253,5 +253,5 @@ def update_commission(request, pk):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, 'yonetim/kurul_duzenle.html',
+    return render(request, 'yonetim/kurul-duzenle.html',
                   {'commission_form': commission_form})

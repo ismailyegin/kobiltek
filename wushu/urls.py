@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews
+from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews
 
 app_name = 'wushu'
 
@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'hakem/hakemDuzenle/(?P<pk>\d+)$', RefereeViews.updateReferee,
         name='hakem-duzenle'),
 
-    # Kulüler
+    # Kulüpler
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
     url(r'kulup/kulupler/$', ClubViews.return_clubs, name='kulupler'),
     url(r'kulup/kulup-uyesi-ekle/(?P<pk>\d+)$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
@@ -55,6 +55,11 @@ urlpatterns = [
         name='delete-club'),
     url(r'kulup/kulupDuzenle/(?P<pk>\d+)$', ClubViews.clubUpdate,
         name='update-club'),
+    url(r'kulup/kusak-sinavlari/$', ClubViews.return_belt_exams, name='kusak-sinavlari'),
+    url(r'kulup/kusak-sinavi-sporcu-sec/$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
+    url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-duzenle/$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
+    url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),
@@ -79,12 +84,18 @@ urlpatterns = [
     url(r'yonetim/kurul-uye-rolleri/$', DirectoryViews.return_member_roles, name='kurul-uye-rolleri'),
     url(r'yonetim/kurul-uye-rolleri/sil/(?P<pk>\d+)$', DirectoryViews.delete_member_role,
         name='kurul_uye_rol_sil'),
-    url(r'yonetim/kurul_uye_rol_duzenle/(?P<pk>\d+)$', DirectoryViews.update_member_role,
-        name='kurul_uye_rol_duzenle'),
+    url(r'yonetim/kurul-uye-rol-duzenle/(?P<pk>\d+)$', DirectoryViews.update_member_role,
+        name='kurul-uye-rol-duzenle'),
     url(r'yonetim/kurullar/$', DirectoryViews.return_commissions, name='kurullar'),
     url(r'yonetim/kurullar/sil/(?P<pk>\d+)$', DirectoryViews.delete_commission,
         name='kurul_sil'),
-    url(r'yonetim/kurul_duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
-        name='kurul_duzenle'),
+    url(r'yonetim/kurul-duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
+        name='kurul-duzenle'),
+
+    # Kullanıcılar
+    url(r'kullanici/kullanicilar/$', UserViews.return_users, name='kullanicilar'),
+    url(r'kullanici/kullanici-duzenle/(?P<pk>\d+)$', UserViews.update_user, name='kullanici-duzenle'),
+    url(r'kullanici/kullanicilar/aktifet/(?P<pk>\d+)$', UserViews.active_user,
+        name='kullanici-aktifet'),
 
 ]

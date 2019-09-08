@@ -129,86 +129,78 @@
 
     <section class="content">
 
-
+        <!-- /.row -->
+        <!-- Main row -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Kuşak Listesi</h3>
+
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Kuşak Sınavları</h3>
+                        </div>
+
+                        <div class="box-header with-border">
+                            <div class="btn-group">
+                                <a href="{% url "wushu:kusak-sinavi-sporcu-sec" %}"
+                                   type="button" class="btn btn-success"><i
+                                        class="fa fa-edit"></i> Sınav Oluştur
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="kulupler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Kulübü</th>
+                                    <th>Sınav Tarihi</th>
+                                    <th>Sınavı Yapan Antrenör</th>
+                                    <th>Onay Durumu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if exams.all %}
+                                    {% for exam in exams %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ exam.sportClub }}</td>
+                                            <td>{{ exam.examDate }}</td>
+                                            <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
+                                            <td>{{ exam.status }}</td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
                     </div>
-                    <div class="box-body">
-
-                        <table id="belt" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Ad</th>
-                                <th> Başlama Tarihi</th>
-                                <th> Süre (Gün)</th>
-                                <th> Bitiş Tarihi</th>
-                                <th> Branş</th>
-                                <th> Tanımı</th>
-                                <th> Onay Durumu</th>
-                                <th> Dekont</th>
-                                <th> İşlemler</th>
+                    <!-- /.box -->
 
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if belts.all %}
-                                {% for belt in belts %}
-                                    <tr>
-
-                                        <td>{{ forloop.counter }} </td>
-
-                                        <td>
-
-                                            <a target="_blank" > {{ belt.athlete_set.first }}</a>
-
-                                        </td>
-
-
-                                        <td>{{ belt.startDate }}  </td>
-                                        <td>{{ belt.durationDay }}  </td>
-                                        <td>{{ belt.expireDate }}  </td>
-                                        <td>{{ belt.branch }}  </td>
-                                        <td>{{ belt.definition }}  </td>
-                                        <td>{{ belt.status }}  </td>
-                                        <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="#"
-                                                   type="button" class="btn btn-success"><i
-                                                        class="fa fa-check"></i>
-                                                </a>
-                                                <a class="btn btn-danger"
-                                                   data-toggle="modal"><i
-                                                        class="fa fa-times"></i></a>
-
-                                            </div>
-                                        </td>
-
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
-                            </tbody>
-                        </table>
-
-                    </div>
                 </div>
-            </div>
+            </section>
+
+
         </div>
+        <!-- /.row (main row) -->
 
     </section>
 
     <script>
         $(function () {
-            $('#kusak-listesi').DataTable({
+            $('#kulupler').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -219,23 +211,49 @@
 
         })
     </script>
+
 
 
     <script>
-        $(function () {
-            $('#belt').DataTable({
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'ordering': true,
-                'info': true,
-                'autoWidth': true
-            })
+        function deleteExam(id) {
 
-        })
+            console.log(id);
+            var html = ''
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:kusak-sinavi-sil" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Sınav Başarıyla Silindi';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:kusak-sinavlari" %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
     </script>
-
-
 
 
 

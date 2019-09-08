@@ -3,8 +3,11 @@ from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
+from wushu.Forms.BeltExamForm import BeltExamForm
 from wushu.Forms.ClubForm import ClubForm
 from wushu.Forms.ClubRoleForm import ClubRoleForm
 from wushu.Forms.CommunicationForm import CommunicationForm
@@ -12,7 +15,7 @@ from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import SportsClub, SportClubUser, Communication, Person
+from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete
 from wushu.models.ClubRole import ClubRole
 
 
@@ -279,3 +282,72 @@ def clubUpdate(request, pk):
     return render(request, 'kulup/kulupDuzenle.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
                    'club': club})
+
+
+@login_required
+def return_belt_exams(request):
+    exams = BeltExam.objects.all()
+
+    return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
+
+
+@login_required
+def choose_athlete(request):
+    athletes = Athlete.objects.all()
+    if request.method == 'POST':
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            students = [int(x) for x in athletes1]
+            instances = Athlete.objects.filter(id__in=students)
+        exam_form = BeltExamForm()
+        return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
+    return render(request, 'kulup/kusak-sinavi-sporcu-sec.html', {'athletes': athletes})
+
+
+@login_required
+def add_belt_exam(request, athletes):
+    exam_form = BeltExamForm()
+    if request.method == 'POST':
+        if exam_form.is_valid():
+            exam_form.save()
+            return redirect('wushu:kusak-sinavlari')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+
+
+@login_required
+def update_belt_exam(request, pk):
+    club = SportsClub.objects.get(id=pk)
+    com_id = club.communication.pk
+    communication = Communication.objects.get(id=com_id)
+    club_form = ClubForm(request.POST or None, instance=club)
+    communication_form = CommunicationForm(request.POST or None, instance=communication)
+    clubPersons = SportClubUser.objects.filter(sportClub=club)
+
+    if request.method == 'POST':
+        if club_form.is_valid():
+            club_form.save()
+            communication_form.save()
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:kulupler')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'kulup/kulupDuzenle.html',
+                  {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
+                   'club': club})
+
+
+@login_required
+def delete_belt_exam(request, pk):
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportsClub.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except SportsClub.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

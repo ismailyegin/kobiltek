@@ -19,3 +19,4 @@ from .ClubRole import ClubRole
 from .DirectoryCommission import DirectoryCommission
 from .DirectoryMemberRole import DirectoryMemberRole
 from .DirectoryMember import DirectoryMember
+from .BeltExam import BeltExam

@@ -6,6 +6,7 @@ class CategoryItem(models.Model):
     forWhichClazz = models.CharField(blank=False, null=False, max_length=255)
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return '%s ' % self.name

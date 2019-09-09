@@ -15,7 +15,7 @@ from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete
+from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach
 from wushu.models.ClubRole import ClubRole
 
 
@@ -269,6 +269,7 @@ def clubUpdate(request, pk):
     club_form = ClubForm(request.POST or None, instance=club)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     clubPersons = SportClubUser.objects.filter(sportClub=club)
+    clubCoachs = club.coachs.all()
 
     if request.method == 'POST':
         if club_form.is_valid():
@@ -281,7 +282,43 @@ def clubUpdate(request, pk):
 
     return render(request, 'kulup/kulupDuzenle.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
-                   'club': club})
+                   'club': club, 'clubCoachs': clubCoachs})
+
+
+@login_required
+def choose_coach(request, pk):
+    coaches = Coach.objects.all()
+    user_form = UserSearchForm()
+    if request.method == 'POST':
+        user_form = UserSearchForm(request.POST)
+        athletes1 = request.POST.getlist('selected_options')
+        if user_form.is_valid():
+            firstName = user_form.cleaned_data.get('first_name')
+            lastName = user_form.cleaned_data.get('last_name')
+            email = user_form.cleaned_data.get('email')
+            if not (firstName or lastName or email):
+                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
+                if firstName:
+                    query &= Q(user__first_name__icontains=firstName)
+                if email:
+                    query &= Q(user__email__icontains=email)
+                coaches = Coach.objects.filter(query)
+        if athletes1:
+            students = [int(x) for x in athletes1]
+            instances = Coach.objects.filter(id__in=students)
+            club = SportsClub.objects.get(pk=pk)
+            for coach in instances :
+                    club.coachs.add(coach)
+            club.save()
+            messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:update-club', pk=pk)
+
+    return render(request, 'antrenor/antrenorsec.html', {'coaches': coaches, 'user_form': user_form})
 
 
 @login_required
@@ -313,7 +350,6 @@ def add_belt_exam(request, athletes):
             return redirect('wushu:kusak-sinavlari')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
-
 
 
 @login_required

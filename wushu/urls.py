@@ -73,6 +73,8 @@ urlpatterns = [
         name='delete-coach'),
     url(r'antrenor/antrenorDuzenle/(?P<pk>\d+)$', CoachViews.coachUpdate,
         name='update-coach'),
+    url(r'antrenor/antrenorSec/(?P<pk>\d+)$', ClubViews.choose_coach,
+        name='choose-coach'),
 
     # Yönetim Kurulu
     url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),

@@ -1,4 +1,6 @@
 from django.db import models
+
+from wushu.models.Coach import Coach
 from wushu.models.Communication import Communication
 
 
@@ -11,6 +13,7 @@ class SportsClub(models.Model):
     communication = models.OneToOneField(Communication, on_delete=models.CASCADE)
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
+    coachs = models.ManyToManyField(Coach)
 
     def __str__(self):
         return '%s %s %s' % (self.shortName, '-', self.name)

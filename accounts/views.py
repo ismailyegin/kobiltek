@@ -21,8 +21,28 @@ def login(request):
         if user is not None:
             # correct username and password login the user
             auth.login(request, user)
-            # return render(request, 'patient/:patient/index', context={})
-            return redirect('wushu:admin')
+
+            if user.groups.all()[0].name == 'Antrenor':
+                return redirect('wushu:antrenor')
+
+            elif user.groups.all()[0].name == 'Hakem':
+                return redirect('wushu:hakem')
+
+            elif user.groups.all()[0].name == 'Sporcu':
+                return redirect('wushu:sporcu')
+
+            elif user.groups.all()[0].name == 'Yonetim':
+                return redirect('wushu:federasyon')
+
+            elif user.groups.all()[0].name == 'Admin':
+                return redirect('wushu:admin')
+
+            elif user.groups.all()[0].name == 'KulupUye':
+                return redirect('wushu:kulup-uyesi')
+
+
+            else:
+                return redirect('accounts:logout')
 
         else:
             messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')

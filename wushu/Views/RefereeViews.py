@@ -48,7 +48,7 @@ def return_add_referee(request):
 
             judge.save()
 
-            subject, from_email, to = 'WUSHU - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'kayit@oxityazilim.com', user.email
+            subject, from_email, to = 'WUSHU - Hakem Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'kayit@oxityazilim.com', user.email
             text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
             html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
             html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'

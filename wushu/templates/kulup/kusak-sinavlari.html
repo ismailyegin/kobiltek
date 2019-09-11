@@ -162,6 +162,7 @@
                                     <th>Sınav Tarihi</th>
                                     <th>Sınavı Yapan Antrenör</th>
                                     <th>Onay Durumu</th>
+                                    <th>İşlemler</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -173,6 +174,16 @@
                                             <td>{{ exam.examDate }}</td>
                                             <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
                                             <td>{{ exam.status }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
+                                                       type="button" class="btn btn-warning"><i
+                                                            class="fa fa-edit"></i>İncele
+                                                    </a>
+
+
+                                                </div>
+                                            </td>
 
 
                                         </tr>
@@ -231,7 +242,7 @@
                         success: function (result) {
 
                             html = 'Sınav Başarıyla Silindi';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

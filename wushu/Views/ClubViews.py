@@ -329,28 +329,65 @@ def return_belt_exams(request):
     return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
 
 
+def detail_belt_exam(request, pk):
+    exam = BeltExam.objects.get(pk=pk)
+
+    return render(request, 'kulup/kusak-sinavi-incele.html', {'exam': exam})
+
+
 @login_required
 def choose_athlete(request):
     athletes = Athlete.objects.all()
+    str = ''
+    athlete = []
     if request.method == 'POST':
+
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
+            for x in athletes1:
+                str = str + x + '-'
+
             students = [int(x) for x in athletes1]
-            instances = Athlete.objects.filter(id__in=students)
+            athlete = Athlete.objects.filter(id__in=students)
         exam_form = BeltExamForm()
-        return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
+        # return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
+        # return redirect('wushu:kusak-sinavi-ekle', pk=str)
+        return redirect(reverse("wushu:kusak-sinavi-ekle", kwargs={'athlete1': str}))
     return render(request, 'kulup/kusak-sinavi-sporcu-sec.html', {'athletes': athletes})
 
 
 @login_required
-def add_belt_exam(request, athletes):
+def add_belt_exam(request, athlete1):
     exam_form = BeltExamForm()
+    x = athlete1.split('-')
+
+    # Remove the element at index 2 in list
+    value = x.pop(len(x) - 1)
+
+    instances = Athlete.objects.filter(id__in=x)
     if request.method == 'POST':
+        exam_form = BeltExamForm(request.POST, request.FILES or None)
         if exam_form.is_valid():
-            exam_form.save()
+            exam = exam_form.save(commit=False)
+
+            login_user = request.user
+
+            sc_user = SportClubUser.objects.get(user=login_user)
+
+            exam.sportClub = sc_user.sportClub
+
+            exam.save()
+
+            for athlete in instances:
+                exam.athletes.add(athlete)
+
+            exam.save()
+
+            messages.success(request, 'Sınav başarıyla oluşturuldu')
             return redirect('wushu:kusak-sinavlari')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
+    return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
 
 
 @login_required

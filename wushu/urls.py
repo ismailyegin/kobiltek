@@ -62,9 +62,10 @@ urlpatterns = [
         name='update-club'),
     url(r'kulup/kusak-sinavlari/$', ClubViews.return_belt_exams, name='kusak-sinavlari'),
     url(r'kulup/kusak-sinavi-sporcu-sec/$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
-    url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
     url(r'kulup/kusak-sinavi-duzenle/$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
     url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
+    url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),

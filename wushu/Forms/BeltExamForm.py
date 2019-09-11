@@ -5,7 +5,6 @@ from wushu.models import BeltExam
 
 
 class BeltExamForm(ModelForm):
-
     class Meta:
         model = BeltExam
 
@@ -19,7 +18,7 @@ class BeltExamForm(ModelForm):
 
             'examDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
-                       'onkeydown': 'return false','required': 'required'}),
+                       'onkeydown': 'return false', 'required': 'required'}),
 
             'dekontDescription': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
 
@@ -32,5 +31,7 @@ class BeltExamForm(ModelForm):
             'dekontDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker3', 'autocomplete': 'off',
                        'onkeydown': 'return false', 'required': 'required'}),
+
+            'dekont': forms.FileInput()
 
         }

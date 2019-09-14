@@ -144,23 +144,27 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Kuşak Sınavları</h3>
                         </div>
-
-                        <div class="box-header with-border">
-                            <div class="btn-group">
-                                <a href="{% url "wushu:kusak-sinavi-sporcu-sec" %}"
-                                   type="button" class="btn btn-success"><i
-                                        class="fa fa-edit"></i> Sınav Oluştur
-                                </a>
+                        {% if user.groups.all.0.name == 'KulupUye' %}
+                            <div class="box-header with-border">
+                                <div class="btn-group">
+                                    <a href="{% url "wushu:kusak-sinavi-sporcu-sec" %}"
+                                       type="button" class="btn btn-success"><i
+                                            class="fa fa-edit"></i> Sınav Oluştur
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                         <div class="box-body">
                             <table id="kulupler" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Kulübü</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Kulübü</th>
+                                    {% endif %}
                                     <th>Sınav Tarihi</th>
                                     <th>Sınavı Yapan Antrenör</th>
+                                    <th>Sporcu Sayısı</th>
                                     <th>Onay Durumu</th>
                                     <th>İşlemler</th>
                                 </tr>
@@ -170,9 +174,12 @@
                                     {% for exam in exams %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ exam.sportClub }}</td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <td>{{ exam.sportClub }}</td>
+                                            {% endif %}
                                             <td>{{ exam.examDate }}</td>
                                             <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
+                                            <td>{{ exam.athletes.count }}</td>
                                             <td>{{ exam.status }}</td>
                                             <td>
                                                 <div class="btn-group">
@@ -242,7 +249,7 @@
                         success: function (result) {
 
                             html = 'Sınav Başarıyla Silindi';
-                            debugger;
+                        debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

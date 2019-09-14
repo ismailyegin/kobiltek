@@ -178,19 +178,19 @@
                         <div class="box-body">
                             <div class="box-header with-border">
                                 <div class="btn-group">
-                                    <a href="{% url "wushu:sporcu-kusak-ekle"  athlete.pk %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Yeni Kuşak Ekle
-                                    </a>
+                                    {% if athlete.licenses.count > 0 %}
+                                        <a href="{% url "wushu:sporcu-kusak-ekle"  athlete.pk %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Denklik/İlk Kuşak Ekle
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                             <table id="belt" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Başlama Tarihi</th>
-                                    <th> Süre (Gün)</th>
-                                    <th> Bitiş Tarihi</th>
+                                    <th> Hak Kazanma Tarihi</th>
                                     <th> Branş</th>
                                     <th> Tanımı</th>
                                     <th> Onay Durumu</th>
@@ -205,8 +205,6 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ belt.startDate }}  </td>
-                                            <td>{{ belt.durationDay }}  </td>
-                                            <td>{{ belt.expireDate }}  </td>
                                             <td>{{ belt.branch }}  </td>
                                             <td>{{ belt.definition }}  </td>
                                             <td>{{ belt.status }}  </td>
@@ -246,6 +244,7 @@
                         <div class="box-body">
                             <div class="box-header with-border">
                                 <div class="btn-group">
+
                                     <a href="{% url "wushu:sporcu-lisans-ekle"  athlete.pk %}"
                                        type="button" class="btn btn-success"><i
                                             class="fa fa-edit"></i> Yeni Lisans Ekle
@@ -259,7 +258,6 @@
                                     <th> Başlama Tarihi</th>
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
-                                    <th> Kulübü</th>
                                     <th> Lisans No</th>
                                     <th> Onay Durumu</th>
                                     <th> İşlemler</th>
@@ -275,7 +273,6 @@
                                             <td>{{ license.startDate }}  </td>
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
-                                            <td>{{ license.sportsClub }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
                                             <td>{{ license.status }}  </td>
                                             <td>

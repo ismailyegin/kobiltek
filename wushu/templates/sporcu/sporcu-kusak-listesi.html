@@ -143,9 +143,10 @@
                             <tr>
                                 <th>#</th>
                                 <th> Ad</th>
-                                <th> Başlama Tarihi</th>
-                                <th> Süre (Gün)</th>
-                                <th> Bitiş Tarihi</th>
+                                {% if user.groups.all.0 == 'Yonetim' or user.groups.all.0 == 'Admin' %}
+                                    <th>Kulüp</th>
+                                {% endif %}
+                                <th> Hak Kazanma Tarihi</th>
                                 <th> Branş</th>
                                 <th> Tanımı</th>
                                 <th> Onay Durumu</th>
@@ -164,14 +165,14 @@
 
                                         <td>
 
-                                            <a target="_blank" > {{ belt.athlete_set.first }}</a>
+                                            <a target="_blank"> {{ belt.athlete_set.first }}</a>
 
                                         </td>
 
-
+                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                            <td>{{ belt.athlete_set.first.licenses.last.sportsClub }}</td>
+                                        {% endif %}
                                         <td>{{ belt.startDate }}  </td>
-                                        <td>{{ belt.durationDay }}  </td>
-                                        <td>{{ belt.expireDate }}  </td>
                                         <td>{{ belt.branch }}  </td>
                                         <td>{{ belt.definition }}  </td>
                                         <td>{{ belt.status }}  </td>

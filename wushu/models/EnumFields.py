@@ -21,14 +21,19 @@ class EnumFields(enum.Enum):
         NATIONAL = 1
         INTERNATIONAL = 2
 
-    TAOLU = 'TAOLU'
-    SANDA = 'SANDA'
+
     WUSHU = 'WUSHU'
+    AIKIDO = 'AIKIDO'
+    WINGCHUN='WING CHUN'
+    KYOKUSHIN = 'KYOKUSHIN ASHIHARA'
+    JEETKUNEDO = 'JEET KUNE DO KULELKAVIDO'
 
     BRANCH = (
-        (TAOLU, 'TAOLU'),
-        (SANDA, 'SANDA'),
+        (AIKIDO, 'AIKIDO'),
+        (WINGCHUN, 'WING CHUN'),
         (WUSHU, 'WUSHU'),
+        (KYOKUSHIN, 'KYOKUSHIN ASHIHARA'),
+        (JEETKUNEDO, 'JEET KUNE DO KULELKAVIDO'),
     )
 
     VISA = 'VISA'

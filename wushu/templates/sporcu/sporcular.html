@@ -210,10 +210,11 @@
                                     <th>#</th>
                                     <th> Ad Soyad</th>
                                     <th>Doğum Tarihi</th>
-                                    <th>Kulüp</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Kulüp</th>
+                                    {% endif %}
                                     <th>Branş</th>
-                                    <th>Cep Tel</th>
-                                    <th>E-Mail</th>
+                                    <th>Kuşak</th>
                                     <th>Güncelleme</th>
 
 
@@ -226,10 +227,11 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
                                             <td>{{ athlete.person.birthDate }} </td>
-                                            <td>{{ athlete.licenses.last }}</td>
-                                            <td>{{ athlete.belts.last }}</td>
-                                            <td>{{ athlete.communication.phoneNumber }} </td>
-                                            <td>{{ athlete.user.email }} </td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <td>{{ athlete.licenses.last.sportsClub }}</td>
+                                            {% endif %}
+                                            <td>{{ athlete.licenses.last.branch }}</td>
+                                            <td>{{ athlete.belts.last.definition }}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "wushu:update-athletes" athlete.pk %}"

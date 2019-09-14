@@ -15,8 +15,9 @@ from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach
+from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
 from wushu.models.ClubRole import ClubRole
+from wushu.models.EnumFields import EnumFields
 
 
 @login_required
@@ -170,7 +171,13 @@ def updateClubPersons(request, pk):
 
 @login_required
 def return_club_person(request):
-    athletes = SportClubUser.objects.all()
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        athletes = SportClubUser.objects.filter(sportClub=sc_user.sportClub)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        athletes = SportClubUser.objects.all()
     user_form = UserSearchForm()
 
     if request.method == 'POST':
@@ -329,6 +336,7 @@ def return_belt_exams(request):
     return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
 
 
+@login_required
 def detail_belt_exam(request, pk):
     exam = BeltExam.objects.get(pk=pk)
 
@@ -336,22 +344,40 @@ def detail_belt_exam(request, pk):
 
 
 @login_required
+def approve_belt_exam(request, pk):
+    exam = BeltExam.objects.get(pk=pk)
+    athletes = exam.athletes.all();
+    for athlete in athletes:
+        level = Level()
+        level.startDate = exam.examDate
+        level.levelType = EnumFields.LEVELTYPE.BELT
+        lastLevel = athlete.belts.last()
+        lastDefinition = lastLevel.definition
+        level.definition = lastDefinition.parent
+        level.status = Level.APPROVED
+        level.save()
+        athlete.belts.add(level)
+        athlete.save()
+
+    exam.status = BeltExam.APPROVED
+    exam.save()
+    messages.success(request, 'Sınav Onaylanmıştır.')
+    return redirect('wushu:kusak-sinavi-incele', pk=pk)
+
+
+@login_required
 def choose_athlete(request):
-    athletes = Athlete.objects.all()
+    login_user = request.user
+    sc_user = SportClubUser.objects.get(user=login_user)
+    athletes = Athlete.objects.filter(licenses__isnull=False,
+                                      licenses__sportsClub=sc_user.sportClub).distinct()
     str = ''
-    athlete = []
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
             for x in athletes1:
                 str = str + x + '-'
-
-            students = [int(x) for x in athletes1]
-            athlete = Athlete.objects.filter(id__in=students)
-        exam_form = BeltExamForm()
-        # return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
-        # return redirect('wushu:kusak-sinavi-ekle', pk=str)
         return redirect(reverse("wushu:kusak-sinavi-ekle", kwargs={'athlete1': str}))
     return render(request, 'kulup/kusak-sinavi-sporcu-sec.html', {'athletes': athletes})
 
@@ -359,6 +385,9 @@ def choose_athlete(request):
 @login_required
 def add_belt_exam(request, athlete1):
     exam_form = BeltExamForm()
+    login_user = request.user
+    sc_user = SportClubUser.objects.get(user=login_user)
+    exam_form.fields['coach'].queryset = Coach.objects.filter(sportsclub=sc_user.sportClub)
     x = athlete1.split('-')
 
     # Remove the element at index 2 in list

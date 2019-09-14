@@ -50,123 +50,143 @@
 
 
     <section class="content">
+        <div class="box-body">
+            <div class="box box-primary">
 
-        <form method="post" enctype="multipart/form-data" role="form">
-            {% csrf_token %}
-            <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Sınav Bilgileri</h3>
-                        </div>
-                        <div class="box-body">
-                            <table id="sporcular" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>Kulüp</th>
-                                    <th>Sınav Tarihi</th>
-                                    <th>Antrenör</th>
-                                    <th>Dekont</th>
-                                    <th>Dekont Tarihi</th>
-                                    <th>Dekont Açıklaması</th>
-                                    <th>Durum</th>
-                                    <th>İşlemler</th>
+                <div class="box-header with-border">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Onay Durumu</h3>
+                    </div>
 
 
-                                </tr>
-                                </thead>
-                                <tbody>
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ exam.status }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <form method="post" enctype="multipart/form-data" role="form">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Sınav Bilgileri</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table id="sporcular" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Kulüp</th>
+                                            <th>Sınav Tarihi</th>
+                                            <th>Antrenör</th>
+                                            <th>Dekont</th>
+                                            <th>Dekont Tarihi</th>
+                                            <th>Dekont Açıklaması</th>
+                                            <th>İşlemler</th>
 
 
-                                <tr>
-                                    <td>{{ exam.sportClub }}  </td>
-                                    <td>{{ exam.examDate }}</td>
-                                    <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
-
-                                    <td><a href="/media/{{ exam.dekont }}" target="_blank"> <i class="fa fa-file-pdf-o fa-2x " style="color: red" aria-hidden="true"></i></a></td>
-
-                                    <td>{{ exam.dekontDate }}</td>
-                                    <td>{{ exam.dekontDescription }}</td>
-                                    <td>{{ exam.status }}</td>
-                                     <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
-                                                       type="button" class="btn btn-success"><i
-                                                            class="fa fa-edit"></i>Onayla
-                                                    </a>
-
-                                                     <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
-                                                       type="button" class="btn btn-danger"><i
-                                                            class="fa fa-edit"></i>Reddet
-                                                    </a>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
 
 
-                                                </div>
+                                        <tr>
+                                            <td>{{ exam.sportClub }}  </td>
+                                            <td>{{ exam.examDate }}</td>
+                                            <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
+
+                                            <td><a href="/media/{{ exam.dekont }}" target="_blank"> <i
+                                                    class="fa fa-file-pdf-o fa-2x " style="color: red"
+                                                    aria-hidden="true"></i></a></td>
+
+                                            <td>{{ exam.dekontDate }}</td>
+                                            <td>{{ exam.dekontDescription }}</td>
+                                            <td>
+                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                    <div class="btn-group">
+                                                        <a href="{% url "wushu:kusak-sinavi-onayla" exam.pk %}"
+                                                           type="button" class="btn btn-success"><i
+                                                                class="fa fa-edit"></i>Onayla
+                                                        </a>
+
+                                                        <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
+                                                           type="button" class="btn btn-danger"><i
+                                                                class="fa fa-edit"></i>Reddet
+                                                        </a>
+
+
+                                                    </div>
+                                                {% endif %}
                                             </td>
 
 
-                                </tr>
-
-
-
-
-
-                                </tbody>
-                            </table>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-                <div class="col-lg-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Seçili Sporcular</h3>
-                        </div>
-                        <div class="box-body">
-                            <table id="sporcular" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>Ad Soyad</th>
-                                    <th>Önceki Kuşak</th>
-                                    <th>Sonraki Kuşak</th>
-                                    <th>Lisans No</th>
-
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if exam.athletes.all %}
-                                    {% for athlete in exam.athletes.all %}
-                                        <tr>
-                                            <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                            <td>{{ athlete.belts.last.definition.name }}</td>
-                                            <td>{{ athlete.belts.last.definition.parent.name }}</td>
-                                            <td>{{ athlete.licenses.last.licenseNo }}</td>
-
                                         </tr>
 
-                                    {% endfor %}
-                                {% endif %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
 
 
-                                </tbody>
-                            </table>
+                            </div>
 
                         </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box box-primary">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Seçili Sporcular</h3>
+                            </div>
+                            <div class="box-body">
+                                <table id="sporcular" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Ad Soyad</th>
+                                        <th>Önceki Kuşak</th>
+                                        <th>Sonraki Kuşak</th>
+                                        <th>Lisans No</th>
 
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if exam.athletes.all %}
+                                        {% for athlete in exam.athletes.all %}
+                                            <tr>
+                                                <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                                <td>{{ athlete.belts.last.definition.name }}</td>
+                                                <td>{{ athlete.belts.last.definition.parent.name }}</td>
+                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
+
+                                            </tr>
+
+                                        {% endfor %}
+                                    {% endif %}
+
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                        </div>
 
                     </div>
 
                 </div>
-
             </div>
 
-        </form>
-
+            </form>
+        </div>
+        </div>
 
     </section>
 

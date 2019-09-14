@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -15,7 +15,7 @@ from wushu.Forms.LicenseForm import LicenseForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Athlete, CategoryItem, Person, Communication, License
+from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 
@@ -56,18 +56,18 @@ def return_add_athlete(request):
 
             athlete.save()
 
-            subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
-            text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
-            html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
-            html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            # subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
+            # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+            # html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
+            # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
+            # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
+            # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
 
             messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:sporcular')
+            return redirect('wushu:update-athletes', pk=athlete.pk)
 
         else:
 
@@ -81,7 +81,13 @@ def return_add_athlete(request):
 
 @login_required
 def return_athletes(request):
-    athletes = Athlete.objects.all()
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        athletes = Athlete.objects.filter(licenses__sportsClub=sc_user.sportClub).distinct()
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        athletes = Athlete.objects.all()
     user_form = UserSearchForm()
 
     if request.method == 'POST':
@@ -153,8 +159,7 @@ def return_belt(request):
 
         if category_item_form.is_valid():
 
-            categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
-            categoryItem.parent = category_item_form.cleaned_data['parent']
+            categoryItem = category_item_form.save(commit=False)
             categoryItem.forWhichClazz = "BELT"
             categoryItem.save()
             messages.success(request, 'Kuşak Başarıyla Kayıt Edilmiştir.')
@@ -185,7 +190,8 @@ def categoryItemDelete(request, pk):
 @login_required
 def categoryItemUpdate(request, pk):
     categoryItem = CategoryItem.objects.get(id=pk)
-    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem, initial={'parent': categoryItem.parent})
+    category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem,
+                                          initial={'parent': categoryItem.parent})
     if request.method == 'POST':
         if category_item_form.is_valid():
             category_item_form.save()
@@ -202,16 +208,17 @@ def categoryItemUpdate(request, pk):
 def sporcu_kusak_ekle(request, pk):
     athlete = Athlete.objects.get(pk=pk)
     belt_form = BeltForm()
+    belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
+                                                                          branch=athlete.licenses.last().branch)
 
     if request.method == 'POST':
         belt_form = BeltForm(request.POST, request.FILES)
         if belt_form.is_valid():
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
                          dekont=belt_form.cleaned_data['dekont'],
-                         durationDay=belt_form.cleaned_data['durationDay'],
-                         definition=belt_form.cleaned_data['definition'], branch=belt_form.cleaned_data['branch'])
-            belt.expireDate = belt.startDate + timedelta(days=belt.durationDay)
+                         definition=belt_form.cleaned_data['definition'])
             belt.levelType = EnumFields.LEVELTYPE.BELT
+            belt.branch = athlete.licenses.last().branch
             belt.status = Level.WAITED
             belt.save()
             athlete.belts.add(belt)
@@ -258,10 +265,27 @@ def sporcu_lisans_ekle(request, pk):
         license_form = LicenseForm(request.POST)
         if license_form.is_valid():
             license = license_form.save(commit=False)
+            login_user = request.user
+            user = User.objects.get(pk=login_user.pk)
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                license.sportsClub = sc_user.sportClub
             license.status = License.WAITED
             license.save()
             athlete.licenses.add(license)
             athlete.save()
+            belts = athlete.belts.filter(branch=license.branch)
+            if not belts:
+                belt = Level()
+                belt.branch = license.branch
+                firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
+                belt.definition = firstBelt.first()
+                belt.startDate = license.startDate
+                belt.levelType = EnumFields.LEVELTYPE.BELT
+                belt.status = Level.APPROVED
+                belt.save()
+                athlete.belts.add(belt)
+                athlete.save()
 
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
@@ -278,10 +302,15 @@ def sporcu_lisans_ekle(request, pk):
 def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
     license = License.objects.get(pk=license_pk)
     license_form = LicenseForm(request.POST or None, instance=license, initial={'sportsClub': license.sportsClub})
+    sportClub = license.sportsClub
 
     if request.method == 'POST':
         if license_form.is_valid():
             license = license_form.save(commit=False)
+            login_user = request.user
+            user = User.objects.get(pk=login_user.pk)
+            if user.groups.filter(name='KulupUye'):
+                license.sportsClub = sportClub
             license.save()
 
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
@@ -298,6 +327,12 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 @login_required
 def sporcu_kusak_listesi(request):
     belts = Level.objects.all()
-
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        belts = Level.objects.filter(athlete__licenses__sportsClub=sc_user.sportClub)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        belts = Level.objects.all()
 
     return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})

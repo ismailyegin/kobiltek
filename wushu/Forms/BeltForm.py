@@ -18,19 +18,14 @@ class BeltForm(ModelForm):
         model = Level
 
         fields = (
-            'startDate', 'durationDay', 'definition', 'branch', 'dekont')
+            'startDate', 'definition', 'dekont')
 
-        labels = {'startDate': 'Başlangıç Tarihi', 'durationDay': 'Süre', 'branch': 'Branş'}
+        labels = {'startDate': 'Hak Kazanma Tarihi'}
 
         widgets = {
 
             'startDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
-                       'onkeydown': 'return false'}),
-
-            'durationDay': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
-
-            'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                          'style': 'width: 100%; '}),
+                       'onkeydown': 'return false'})
 
         }

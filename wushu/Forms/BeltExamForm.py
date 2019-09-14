@@ -1,10 +1,12 @@
 from django import forms
 from django.forms import ModelForm
 
-from wushu.models import BeltExam
+from wushu.models import BeltExam, Coach
 
 
 class BeltExamForm(ModelForm):
+
+
     class Meta:
         model = BeltExam
 

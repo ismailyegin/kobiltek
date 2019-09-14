@@ -3,8 +3,6 @@
 {% block content %}
 
 
-
-
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
@@ -124,9 +122,6 @@
     </div>
 
 
-
-
-
     <section class="content">
 
 
@@ -206,8 +201,9 @@
                                     <th>Rolü</th>
                                     <th>Cep Tel</th>
                                     <th>E-Mail</th>
-                                    <th>Güncelleme</th>
-
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Güncelleme</th>
+                                    {% endif %}
 
                                 </tr>
                                 </thead>
@@ -221,17 +217,19 @@
                                             <td>{{ athlete.role.name }} </td>
                                             <td>{{ athlete.communication.phoneNumber }} </td>
                                             <td>{{ athlete.user.email }} </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "wushu:kulup-uyesi-guncelle" athlete.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>Güncelle
-                                                    </a>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{% url "wushu:kulup-uyesi-guncelle" athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Güncelle
+                                                        </a>
 
 
-                                                </div>
-                                            </td>
+                                                    </div>
+                                                </td>
 
+                                            {% endif %}
                                         </tr>
 
                                     {% endfor %}
@@ -268,11 +266,6 @@
 
         })
     </script>
-
-
-
-
-
 
 
 {% endblock %}

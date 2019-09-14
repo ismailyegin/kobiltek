@@ -10,7 +10,7 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Coach, CategoryItem, Athlete, Person, Communication
+from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser
 
 
 @login_required
@@ -71,6 +71,13 @@ def return_add_coach(request):
 @login_required
 def return_coachs(request):
     coachs = Coach.objects.all()
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        coachs = Coach.objects.filter(sportsclub=sc_user.sportClub)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        coachs = Coach.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)

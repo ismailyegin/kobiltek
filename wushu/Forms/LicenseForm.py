@@ -9,6 +9,7 @@ class LicenseForm(ModelForm):
                                         to_field_name='name',
                                         empty_label="Seçiniz",
                                         label="Kulübü",
+                                        required=False,
                                         widget=forms.Select(
                                             attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                    'style': 'width: 100%; '}))

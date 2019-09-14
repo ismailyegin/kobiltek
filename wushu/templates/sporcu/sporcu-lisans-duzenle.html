@@ -91,11 +91,12 @@
                                         {{ license_form.branch }}
                                     </div>
 
-
-                                    <div class="form-group">
-                                        <label> {{ license_form.sportsClub.label }}</label>
-                                        {{ license_form.sportsClub }}
-                                    </div>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <div class="form-group">
+                                            <label> {{ license_form.sportsClub.label }}</label>
+                                            {{ license_form.sportsClub }}
+                                        </div>
+                                    {% endif %}
 
                                     <div class="form-group">
                                         <label> {{ license_form.cityHeadShip.label }}</label>

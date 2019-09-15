@@ -274,18 +274,6 @@ def sporcu_lisans_ekle(request, pk):
             license.save()
             athlete.licenses.add(license)
             athlete.save()
-            belts = athlete.belts.filter(branch=license.branch)
-            if not belts:
-                belt = Level()
-                belt.branch = license.branch
-                firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
-                belt.definition = firstBelt.first()
-                belt.startDate = license.startDate
-                belt.levelType = EnumFields.LEVELTYPE.BELT
-                belt.status = Level.APPROVED
-                belt.save()
-                athlete.belts.add(belt)
-                athlete.save()
 
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
@@ -296,6 +284,37 @@ def sporcu_lisans_ekle(request, pk):
 
     return render(request, 'sporcu/sporcu-lisans-ekle.html',
                   {'license_form': license_form})
+
+
+@login_required
+def sporcu_lisans_onayla(request, license_pk, athlete_pk):
+    license = License.objects.get(pk=license_pk)
+    license.status = License.APPROVED
+    license.save()
+    athlete = Athlete.objects.get(pk=athlete_pk)
+    belts = athlete.belts.filter(branch=license.branch)
+    if not belts:
+        belt = Level()
+        belt.branch = license.branch
+        firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
+        belt.definition = firstBelt.first()
+        belt.startDate = license.startDate
+        belt.levelType = EnumFields.LEVELTYPE.BELT
+        belt.status = Level.APPROVED
+        belt.save()
+        athlete.belts.add(belt)
+        athlete.save()
+    messages.success(request, 'Lisans Onaylanmıştır')
+    return redirect('wushu:update-athletes', pk=athlete_pk)
+
+@login_required
+def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
+    belt = Level.objects.get(pk=belt_pk)
+    belt.status = Level.APPROVED
+    belt.save()
+
+    messages.success(request, 'Kuşak Onaylanmıştır')
+    return redirect('wushu:update-athletes', pk=athlete_pk)
 
 
 @login_required

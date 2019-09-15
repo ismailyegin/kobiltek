@@ -194,7 +194,6 @@
                                     <th> Branş</th>
                                     <th> Tanımı</th>
                                     <th> Onay Durumu</th>
-                                    <th> İşlemler</th>
 
 
                                 </tr>
@@ -208,19 +207,26 @@
                                             <td>{{ belt.branch }}  </td>
                                             <td>{{ belt.definition }}  </td>
                                             <td>{{ belt.status }}  </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>Güncelle
-                                                    </a>
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                            class="fa fa-trash"></i>Sil</a>
+                                            {% if belt.status != 'Onaylandı' %}
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Güncelle
+                                                        </a>
+                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                            <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i>Onayla
+                                                            </a>
+                                                        {% endif %}
+                                                        <a class="btn btn-danger"
+                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                                class="fa fa-trash"></i>Reddet</a>
 
-                                                </div>
-                                            </td>
-
+                                                    </div>
+                                                </td>
+                                            {% endif %}
 
                                         </tr>
 
@@ -255,12 +261,14 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Kulüp</th>
+                                    {% endif %}
                                     <th> Başlama Tarihi</th>
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
                                     <th> Lisans No</th>
                                     <th> Onay Durumu</th>
-                                    <th> İşlemler</th>
 
 
                                 </tr>
@@ -270,24 +278,36 @@
                                     {% for license in licenses_form %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <td>{{ license.sportsClub }}</td>
+                                            {% endif %}
                                             <td>{{ license.startDate }}  </td>
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
                                             <td>{{ license.status }}  </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>Güncelle
-                                                    </a>
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                            class="fa fa-trash"></i>Sil</a>
+                                            {% if license.status != 'Onaylandı' %}
+                                                <td>
+                                                    <div class="btn-group">
 
-                                                </div>
-                                            </td>
+                                                        <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Güncelle
+                                                        </a>
 
+                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                            <a href="{% url "wushu:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i>Onayla
+                                                            </a>
+                                                        {% endif %}
+                                                        <a class="btn btn-danger"
+                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                                class="fa fa-trash"></i>Reddet</a>
+
+                                                    </div>
+                                                </td>
+                                            {% endif %}
 
                                         </tr>
 

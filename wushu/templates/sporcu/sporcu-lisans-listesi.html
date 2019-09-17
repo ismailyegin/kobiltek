@@ -134,7 +134,7 @@
             <div class="col-lg-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Kuşak Listesi</h3>
+                        <h3 class="box-title">Lisans Listesi</h3>
                     </div>
                     <div class="box-body">
 
@@ -148,39 +148,37 @@
                                 {% endif %}
                                 <th> Hak Kazanma Tarihi</th>
                                 <th> Branş</th>
-                                <th> Tanımı</th>
+                                <th> Lisans No</th>
                                 <th> Onay Durumu</th>
-                                <th> Dekont</th>
                                 <th> İşlemler</th>
 
 
                             </tr>
                             </thead>
                             <tbody>
-                            {% if belts.all %}
-                                {% for belt in belts %}
+                            {% if licenses.all %}
+                                {% for license in licenses %}
                                     <tr>
 
                                         <td>{{ forloop.counter }} </td>
 
                                         <td>
 
-                                            <a target="_blank"> {{ belt.athlete_set.first }}</a>
+                                            <a target="_blank"> {{ license.athlete_set.first }}</a>
 
                                         </td>
 
                                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                            <td>{{ belt.athlete_set.first.licenses.last.sportsClub }}</td>
+                                            <td>{{ license.sportsClub }}</td>
                                         {% endif %}
-                                        <td>{{ belt.startDate }}  </td>
-                                        <td>{{ belt.branch }}  </td>
-                                        <td>{{ belt.definition }}  </td>
-                                        <td>{{ belt.status }}  </td>
-                                        <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
+                                        <td>{{ license.startDate }}  </td>
+                                        <td>{{ license.branch }}  </td>
+                                        <td>{{ license.licenseNo }}  </td>
+                                        <td>{{ license.status }}  </td>
                                         <td>
                                             <div class="btn-group">
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                    <a href="{% url "wushu:sporcu-kusak-listesi-onayla" belt_pk=belt.pk %}"
+                                                    <a href="{% url "wushu:sporcu-lisans-listesi-onayla" license_pk=license.pk %}"
                                                        type="button" class="btn btn-success"><i
                                                             class="fa fa-edit"></i>Onayla
                                                     </a>

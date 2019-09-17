@@ -291,21 +291,38 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
     license = License.objects.get(pk=license_pk)
     license.status = License.APPROVED
     license.save()
-    athlete = Athlete.objects.get(pk=athlete_pk)
-    belts = athlete.belts.filter(branch=license.branch)
-    if not belts:
-        belt = Level()
-        belt.branch = license.branch
-        firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
-        belt.definition = firstBelt.first()
-        belt.startDate = license.startDate
-        belt.levelType = EnumFields.LEVELTYPE.BELT
-        belt.status = Level.APPROVED
-        belt.save()
-        athlete.belts.add(belt)
-        athlete.save()
+    # athlete = Athlete.objects.get(pk=athlete_pk)
+    # belts = athlete.belts.filter(branch=license.branch)
+    # if not belts:
+    #     belt = Level()
+    #     belt.branch = license.branch
+    #     firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
+    #     belt.definition = firstBelt.first()
+    #     belt.startDate = license.startDate
+    #     belt.levelType = EnumFields.LEVELTYPE.BELT
+    #     belt.status = Level.APPROVED
+    #     belt.save()
+    #     athlete.belts.add(belt)
+    #     athlete.save()
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:update-athletes', pk=athlete_pk)
+
+@login_required
+def sporcu_lisans_listesi_onayla(request, license_pk):
+    license = License.objects.get(pk=license_pk)
+    license.status = License.APPROVED
+    license.save()
+    messages.success(request, 'Lisans Onaylanmıştır')
+    return redirect('wushu:lisans-listesi')
+
+@login_required
+def sporcu_kusak_listesi_onayla(request, belt_pk):
+    belt = Level.objects.get(pk=belt_pk)
+    belt.status = Level.APPROVED
+    belt.save()
+    messages.success(request, 'Kuşak Onaylanmıştır')
+    return redirect('wushu:kusak-listesi')
+
 
 @login_required
 def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
@@ -345,13 +362,25 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
 @login_required
 def sporcu_kusak_listesi(request):
-    belts = Level.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
         belts = Level.objects.filter(athlete__licenses__sportsClub=sc_user.sportClub)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        belts = Level.objects.all()
+        belts = Level.objects.all().distinct()
 
     return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})
+
+
+@login_required
+def sporcu_lisans_listesi(request):
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        licenses = License.objects.filter(sportsClub=sc_user.sportClub)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        licenses = License.objects.all().distinct()
+
+    return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses})

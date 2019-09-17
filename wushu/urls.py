@@ -25,6 +25,8 @@ urlpatterns = [
         name='sporcu-lisans-duzenle'),
     url(r'sporcu/sporcuLisansDuzenle/onayla/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
+    url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
+        AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
     url(r'sporcu/kusak/sil/(?P<pk>\d+)$', AthleteViews.categoryItemDelete,
         name='categoryItem-delete'),
@@ -32,9 +34,12 @@ urlpatterns = [
         name='categoryItem-duzenle'),
     url(r'sporcu/sporcuKusakDuzenle/onayla/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-kusak-onayla'),
+    url(r'sporcu/sporcuKusakListesi/onayla/(?P<belt_pk>\d+)$',
+        AthleteViews.sporcu_kusak_listesi_onayla, name='sporcu-kusak-listesi-onayla'),
     url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,
         name='update-athletes'),
     url(r'sporcu/sporcu-kusak-listesi/$', AthleteViews.sporcu_kusak_listesi, name='kusak-listesi'),
+    url(r'sporcu/sporcu-lisans-listesi/$', AthleteViews.sporcu_lisans_listesi, name='lisans-listesi'),
 
     # Hakemler
     url(r'hakem/hakem-ekle/$', RefereeViews.return_add_referee, name='hakem-ekle'),

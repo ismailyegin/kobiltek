@@ -1,8 +1,6 @@
-from django import urls
 from django.contrib.auth import logout
 from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
-
 
 from wushu.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser
 

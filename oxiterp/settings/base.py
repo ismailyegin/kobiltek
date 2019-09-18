@@ -80,6 +80,7 @@ TEMPLATES = [
                 'wushu.services.general_methods.getCoachMenu',
                 'wushu.services.general_methods.getDirectoryMenu',
                 'wushu.services.general_methods.getClubUserMenu',
+                'wushu.services.general_methods.getProfileImage',
 
                 # "education.services.general_methods.append_privileges",
             ],

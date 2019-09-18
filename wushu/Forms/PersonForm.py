@@ -9,7 +9,8 @@ class PersonForm(ModelForm):
         model = Person
 
         fields = (
-            'tc', 'height', 'weight', 'birthDate', 'bloodType', 'gender')
+            'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'fatherName')
         labels = {'tc': 'T.C.', 'gender': 'Cinsiyet'}
 
         widgets = {
@@ -19,6 +20,15 @@ class PersonForm(ModelForm):
             'height': forms.TextInput(attrs={'class': 'form-control'}),
 
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
+
+            'birthplace': forms.TextInput(
+                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+
+            'motherName': forms.TextInput(
+                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+
+            'fatherName': forms.TextInput(
+                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',

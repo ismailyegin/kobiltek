@@ -107,13 +107,14 @@
                                     <li><!-- start message -->
                                         <a href="#">
                                             <div class="pull-left">
-                                                <img src="/static/images/logo.png" class="img-circle" alt="User Image">
+                                                <img src="/media/{{ person.profileImage }}" class="img-circle"
+                                                     alt="User Image">
                                             </div>
                                             <h4>
                                                 TWF
                                                 <small><i class="fa fa-clock-o"></i> 5 dk</small>
                                             </h4>
-                                            <p>Lorem ipsum dolor sit amet.</p>
+                                            <p>Mesaj İçeriği</p>
                                         </a>
                                     </li>
                                     <!-- end message -->
@@ -156,7 +157,9 @@
 
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="/media/elif-akyuz.jpg" class="user-image" alt="KOBİLTEK"
+
+
+                            <img src="/media/{{ person.profileImage }}" class="user-image" alt="KOBİLTEK"
                                  style=" width: 30px;height: 30px;">
                             <span class="hidden-xs">{{ user.first_name }}  {{ user.last_name }}  <i
                                     class="fa fa-angle-down pull-right"></i></span>
@@ -164,7 +167,7 @@
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="/media/elif-akyuz.jpg" class="img-circle" alt="KOBİLTEK">
+                                <img src="/media/{{ person.profileImage }}" class="img-circle" alt="KOBİLTEK">
 
                                 <p>
                                     {{ user.first_name }} {{ user.last_name }}
@@ -208,12 +211,51 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="/media/elif-akyuz.jpg" class="img-circle" alt="User Image"
+                    <img src="/media/{{ person.profileImage }}" class="img-circle" alt="User Image"
                     >
                 </div>
                 <div class="pull-left info">
                     <p> {{ user.first_name }} {{ user.last_name }}</p>
-                    <a><i class="fa fa-circle text-success"></i> Online</a>
+
+
+
+
+
+
+                    {% if user.groups.all.0.name == "Sporcu" %}
+                        <a><i class="fa fa-circle text-success"></i> Sporcu</a>
+
+
+
+
+                    {% elif user.groups.all.0.name == "Hakem" %}
+                        <a><i class="fa fa-circle text-success"></i> Hakem</a>
+
+
+
+                    {% elif user.groups.all.0.name == "Admin" %}
+                        <a><i class="fa fa-circle text-success"></i> Admin</a>
+
+
+                    {% elif user.groups.all.0.name == "Yonetim" %}
+                        <a><i class="fa fa-circle text-success"></i> Yönetim</a>
+
+
+                    {% elif user.groups.all.0.name == "KulupUye" %}
+                        <a><i class="fa fa-circle text-success"></i> Kulüp Üyesi</a>
+
+
+
+
+                    {% elif user.groups.all.0.name == "Antrenor" %}
+                        <a><i class="fa fa-circle text-success"></i> Antrenör</a>
+
+
+                    {% else %}
+                        <a><i class="fa fa-circle text-success"></i> {{ user.groups.all.0.name }}</a>
+                    {% endif %}
+
+
                 </div>
             </div>
 

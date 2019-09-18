@@ -59,6 +59,9 @@ def login(request):
 
 
 def forgot(request):
+    if request.method == 'POST':
+        mail = request.POST.get('email')
+
     return render(request, 'registration/forgot-password.html')
 
 

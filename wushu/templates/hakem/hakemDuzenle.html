@@ -69,28 +69,55 @@
                             <h3 class="box-title">Genel Bilgiler</h3>
                         </div>
                         <div class="box-body">
-                            <div class="row">
+                                 <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label> {{ person_form.tc.label }}</label>
-                                        {{ person_form.tc }}
+                                        <label> {{ person_form.profileImage.label }}</label>
+                                        {{ person_form.profileImage }}
                                     </div>
+
 
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
 
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.motherName.label }}</label>
+                                        {{ person_form.motherName }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthplace.label }}</label>
+                                        {{ person_form.birthplace }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
+                                        {{ person_form.bloodType }}
+                                    </div>
+
+
+                                </div>
+                                <br>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ person_form.tc.label }}</label>
+                                        {{ person_form.tc }}
+                                    </div>
+
+
                                     <div class="form-group">
                                         <label> {{ user_form.last_name.label }}</label>
                                         {{ user_form.last_name }}
                                     </div>
-                                </div>
 
-                                <div class="col-lg-6">
+
                                     <div class="form-group">
-                                        <label> {{ person_form.gender.label }}</label>
-                                        {{ person_form.gender }}
+                                        <label> {{ person_form.fatherName.label }}</label>
+                                        {{ person_form.fatherName }}
                                     </div>
 
 
@@ -99,10 +126,13 @@
                                         {{ person_form.birthDate }}
                                     </div>
 
+
                                     <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
-                                        {{ person_form.bloodType }}
+                                        <label> {{ person_form.gender.label }}</label>
+                                        {{ person_form.gender }}
                                     </div>
+
+
                                 </div>
 
                             </div>

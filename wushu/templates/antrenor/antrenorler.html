@@ -187,7 +187,8 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Antrenörler</h3>
                         </div>
-                        {% if user.groups.all.0 == 'Yonetim' or user.groups.all.0 == 'Admin' %}
+
+                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                             <div class="box-header with-border">
                                 <div class="btn-group">
                                     <a href="{% url "wushu:antrenor-ekle" %}"
@@ -293,7 +294,7 @@
                         success: function (result) {
 
                             html = 'Antrenör Başarıyla Silindi';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

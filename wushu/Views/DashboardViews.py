@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render
+
+from wushu.models import SportClubUser, SportsClub, Coach, Level, License
 
 
 @login_required
@@ -29,4 +32,22 @@ def return_directory_dashboard(request):
 
 @login_required
 def return_club_user_dashboard(request):
-    return render(request, 'anasayfa/kulup-uyesi.html')
+    belts = Level.objects.all()
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        belts = Level.objects.filter(athlete__licenses__sportsClub=sc_user.sportClub)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        belts = Level.objects.all()
+
+    current_user = request.user
+    clubuser = SportClubUser.objects.get(user=current_user)
+
+    club = SportsClub.objects.get(id=clubuser.sportClub.id)
+    total_club_user = SportClubUser.objects.filter(sportClub_id=club).count()
+    total_coach = Coach.objects.filter(sportsclub=club).count()
+    total_athlete = License.objects.filter(sportsClub_id=club).count()
+    return render(request, 'anasayfa/kulup-uyesi.html',
+                  {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
+                   'total_athlete': total_athlete})

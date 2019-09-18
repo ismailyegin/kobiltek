@@ -11,5 +11,8 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('forgot/', views.forgot, name='forgot'),
     url(r'logout/$', views.pagelogout, name='logout'),
+    url(r'permission/(?P<pk>\d+)$', views.permission, name='perm'),
+    url(r'groups/$', views.groups, name='group'),
+    url(r'permission-save-api/$', views.permission_post, name="save-permission"),
 
 ]

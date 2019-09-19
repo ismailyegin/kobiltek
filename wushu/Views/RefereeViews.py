@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -12,10 +13,16 @@ from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Judge, CategoryItem, Person, Communication
+from wushu.services import general_methods
 
 
 @login_required
 def return_add_referee(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
@@ -71,6 +78,11 @@ def return_add_referee(request):
 
 @login_required
 def return_referees(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     referees = Judge.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
@@ -95,6 +107,11 @@ def return_referees(request):
 
 @login_required
 def return_level(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     category_item_form = CategoryItemForm();
 
     if request.method == 'POST':
@@ -119,6 +136,11 @@ def return_level(request):
 
 @login_required
 def categoryItemDelete(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = CategoryItem.objects.get(pk=pk)
@@ -133,6 +155,11 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
     if request.method == 'POST':
@@ -149,6 +176,11 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def deleteReferee(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Judge.objects.get(pk=pk)
@@ -163,6 +195,11 @@ def deleteReferee(request, pk):
 
 @login_required
 def updateReferee(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     judge = Judge.objects.get(pk=pk)
     user = User.objects.get(pk=judge.user.pk)
     person = Person.objects.get(pk=judge.person.pk)

@@ -17,3 +17,6 @@ class SportsClub(models.Model):
 
     def __str__(self):
         return '%s %s %s' % (self.shortName, '-', self.name)
+
+    class Meta:
+        default_permissions = ()

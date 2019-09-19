@@ -34,3 +34,7 @@ class BeltExam(models.Model):
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     sportClub = models.ForeignKey(SportsClub, on_delete=models.CASCADE, null=False, blank=False)
     description = models.CharField(max_length=255, null=True, blank=True)
+
+
+    class Meta:
+        default_permissions = ()

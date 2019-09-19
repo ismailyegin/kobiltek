@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -11,10 +12,16 @@ from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser
+from wushu.services import general_methods
 
 
 @login_required
 def return_add_coach(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
@@ -70,6 +77,11 @@ def return_add_coach(request):
 
 @login_required
 def return_coachs(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     coachs = Coach.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
@@ -101,7 +113,12 @@ def return_coachs(request):
 
 @login_required
 def return_grade(request):
-    category_item_form = CategoryItemForm();
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    category_item_form = CategoryItemForm()
 
     if request.method == 'POST':
 
@@ -125,6 +142,11 @@ def return_grade(request):
 
 @login_required
 def categoryItemDelete(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = CategoryItem.objects.get(pk=pk)
@@ -139,6 +161,11 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
     if request.method == 'POST':
@@ -155,6 +182,11 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def deleteCoach(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Coach.objects.get(pk=pk)
@@ -169,6 +201,11 @@ def deleteCoach(request, pk):
 
 @login_required
 def coachUpdate(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     coach = Coach.objects.get(pk=pk)
     user = User.objects.get(pk=coach.user.pk)
     person = Person.objects.get(pk=coach.person.pk)

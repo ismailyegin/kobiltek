@@ -115,5 +115,7 @@ urlpatterns = [
     url(r'kullanici/kullanici-duzenle/(?P<pk>\d+)$', UserViews.update_user, name='kullanici-duzenle'),
     url(r'kullanici/kullanicilar/aktifet/(?P<pk>\d+)$', UserViews.active_user,
         name='kullanici-aktifet'),
+    url(r'kullanici/kullanicilar/kullanici-bilgi-gonder/(?P<pk>\d+)$', UserViews.send_information,
+        name='kullanici-bilgi-gonder'),
 
 ]

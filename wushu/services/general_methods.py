@@ -43,12 +43,15 @@ def getClubUserMenu(request):
 
 def show_urls(urllist, depth=0):
     urls = []
+
     # show_urls(urls.urlpatterns)
     for entry in urllist:
 
         urls.append(entry)
         perm = Permission(name=entry.name, codename=entry.pattern.regex.pattern, content_type_id=7)
-        perm.save()
+
+        if Permission.objects.filter(name=entry.name).count() == 0:
+            perm.save()
         if hasattr(entry, 'url_patterns'):
             show_urls(entry.url_patterns, depth + 1)
 
@@ -69,7 +72,6 @@ def show_urls_deneme(urllist, depth=0):
 
 
 def control_access(request):
-
     group = request.user.groups.all()[0]
 
     permissions = group.permissions.all()
@@ -81,10 +83,10 @@ def control_access(request):
         if request.resolver_match.url_name == perm.name:
             is_exist = True
 
-    if not is_exist:
-        logout(request)
-        return redirect('accounts:login')
+    if group.name == "Admin":
+        is_exist = True
 
+    return is_exist
 
 
 def getProfileImage(request):
@@ -113,7 +115,7 @@ def getProfileImage(request):
 
         elif current_user.groups.filter(name='Admin').exists():
             person = dict()
-            person['profileImage']= "profile/logo.png"
+            person['profileImage'] = "profile/logo.png"
 
         else:
             person = None

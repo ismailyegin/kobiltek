@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group, Permission, User
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, render_to_response
@@ -9,6 +10,7 @@ from django.contrib import auth, messages
 
 from wushu import urls
 from wushu.models import MenuAthlete, MenuCoach, MenuReferee, MenuDirectory, MenuAdmin, MenuClubUser
+from wushu.services import general_methods
 from wushu.services.general_methods import show_urls
 
 
@@ -60,7 +62,29 @@ def login(request):
 
 def forgot(request):
     if request.method == 'POST':
-        mail = request.POST.get('email')
+        mail = request.POST.get('username')
+        obj = User.objects.filter(username=mail)
+        if obj.count() != 0:
+            obj = obj[0]
+            password = User.objects.make_random_password()
+            obj.set_password(password)
+            # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
+            user = obj.save()
+            html_content = ''
+            subject, from_email, to = 'Wushu Federasyonu Sporcu Bilgi Sistemi Kullanıcı Bilgileri', 'ik@oxityazilim.com', obj.email
+            text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+            # html_content = '<p> <strong>Site adresi:</strong> <a href="http://www.sigortahavuzum.net"></a>www.sigortahavuzum.net</p>'
+            html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
+            html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            messages.success(request,"Giriş bilgileriniz mail adresinize gönderildi. ")
+            return redirect("accounts:login")
+        else:
+            messages.warning(request, "Geçerli bir mail adresi giriniz.")
+            return redirect("accounts:forgot")
 
     return render(request, 'registration/forgot-password.html')
 
@@ -78,6 +102,7 @@ def groups(request):
 
 @login_required
 def permission(request, pk):
+    general_methods.show_urls(urls.urlpatterns,0)
     group = Group.objects.get(pk=pk)
     menu = ""
     ownMenu = ""

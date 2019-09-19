@@ -32,3 +32,6 @@ class License(models.Model):
 
     def __str__(self):
         return '%s ' % self.sportsClub.name
+
+    class Meta:
+        default_permissions = ()

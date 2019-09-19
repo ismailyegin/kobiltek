@@ -15,3 +15,6 @@ class SportClubUser(models.Model):
     role = models.ForeignKey(ClubRole, on_delete=models.CASCADE, verbose_name='Üye Rolü')
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        default_permissions = ()

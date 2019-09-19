@@ -1,37 +1,74 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from wushu.models import SportClubUser, SportsClub, Coach, Level, License
+from wushu.services import general_methods
 
 
 @login_required
 def return_admin_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'anasayfa/admin.html')
 
 
 @login_required
 def return_athlete_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'anasayfa/sporcu.html')
 
 
 @login_required
 def return_referee_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'anasayfa/hakem.html')
 
 
 @login_required
 def return_coach_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'anasayfa/antrenor.html')
 
 
 @login_required
 def return_directory_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'anasayfa/federasyon.html')
 
 
 @login_required
 def return_club_user_dashboard(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    
     belts = Level.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)

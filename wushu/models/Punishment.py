@@ -11,3 +11,6 @@ class Punishment(models.Model):
     durationDay = models.IntegerField()
     #definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     description = models.CharField(blank=True, null=True, max_length=1000)
+
+    class Meta:
+        default_permissions = ()

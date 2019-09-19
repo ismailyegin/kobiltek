@@ -76,6 +76,31 @@
     </div>
 
 
+     <div class="modal modal-warning fade in deneme223" tabindex="-1" role="dialog" id="modal-mail"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Kullanıcı giriş bilgilerini göndermek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
 
     {% if messages %}
         {% for message in messages %}
@@ -232,6 +257,10 @@
                                             {% endif %}
                                             <td>
                                                 <div class="btn-group">
+
+                                                    <a class="btn btn-success"
+                                                       data-toggle="modal" onclick=sendInform({{ user.pk }})><i
+                                                            class="fa  fa-arrow-circle-right"></i>Şifre Gönder</a>
                                                     <a href="{% url "wushu:kullanici-duzenle" user.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>Güncelle
@@ -318,6 +347,46 @@
             });
 
         }
+
+        function sendInform(id) {
+
+            console.log(id);
+            var html = ''
+            $("#modal-mail").on("shown.bs.modal", function (e) {
+                $("#btn-conf1").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:kullanici-bilgi-gonder" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+
+                        },
+                        success: function (result) {
+
+                            html = 'Kullanıcı Bilgileri Başarıyla Gönderildi';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:kullanicilar" %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close1').click(function () {
+                $('#modal-active').modal('hide');
+            });
+
+        }
+
     </script>
 {% endblock %}
 

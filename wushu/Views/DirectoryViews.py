@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -16,10 +17,16 @@ from wushu.models import Person, Communication
 from wushu.models.DirectoryCommission import DirectoryCommission
 from wushu.models.DirectoryMember import DirectoryMember
 from wushu.models.DirectoryMemberRole import DirectoryMemberRole
+from wushu.services import general_methods
 
 
 @login_required
 def add_directory_member(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
@@ -79,6 +86,11 @@ def add_directory_member(request):
 
 @login_required
 def return_directory_members(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     members = DirectoryMember.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
@@ -103,6 +115,11 @@ def return_directory_members(request):
 
 @login_required
 def delete_directory_member(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = DirectoryMember.objects.get(pk=pk)
@@ -117,6 +134,11 @@ def delete_directory_member(request, pk):
 
 @login_required
 def update_directory_member(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     member = DirectoryMember.objects.get(pk=pk)
     user = User.objects.get(pk=member.user.pk)
     person = Person.objects.get(pk=member.person.pk)
@@ -147,10 +169,13 @@ def update_directory_member(request, pk):
                    'person_form': person_form, 'member_form':member_form})
 
 
-login_required
-
-
+@login_required
 def return_member_roles(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     member_role_form = DirectoryMemberRoleForm();
 
     if request.method == 'POST':
@@ -174,6 +199,11 @@ def return_member_roles(request):
 
 @login_required
 def delete_member_role(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = DirectoryMemberRole.objects.get(pk=pk)
@@ -188,6 +218,11 @@ def delete_member_role(request, pk):
 
 @login_required
 def update_member_role(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     memberRole = DirectoryMemberRole.objects.get(id=pk)
     member_role_form = DirectoryMemberRoleForm(request.POST or None, instance=memberRole)
 
@@ -205,7 +240,12 @@ def update_member_role(request, pk):
 
 @login_required
 def return_commissions(request):
-    commission_form = DirectoryCommissionForm();
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    commission_form = DirectoryCommissionForm()
 
     if request.method == 'POST':
 
@@ -228,6 +268,11 @@ def return_commissions(request):
 
 @login_required
 def delete_commission(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = DirectoryCommission.objects.get(pk=pk)
@@ -242,6 +287,11 @@ def delete_commission(request, pk):
 
 @login_required
 def update_commission(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     commission = DirectoryCommission.objects.get(id=pk)
     commission_form = DirectoryCommissionForm(request.POST or None, instance=commission)
 

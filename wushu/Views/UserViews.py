@@ -1,4 +1,4 @@
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.models import User, Group
@@ -23,10 +23,16 @@ from wushu.models import Person, Communication, SportClubUser
 from wushu.models.DirectoryCommission import DirectoryCommission
 from wushu.models.DirectoryMember import DirectoryMember
 from wushu.models.DirectoryMemberRole import DirectoryMemberRole
+from wushu.services import general_methods
 
 
 @login_required
 def return_users(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     users = User.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
@@ -52,11 +58,15 @@ def return_users(request):
 
 @login_required
 def update_user(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user = User.objects.get(pk=pk)
     club_user = SportClubUser.objects.get(user=user)
     person = Person.objects.get(pk=club_user.person.pk)
     communication = Communication.objects.get(pk=club_user.communication.pk)
-
 
     user_form = DisabledUserForm(request.POST or None, instance=user)
     person_form = DisabledPersonForm(request.POST or None, instance=person)
@@ -88,11 +98,16 @@ def update_user(request, pk):
 
     return render(request, 'kullanici/kullanici-duzenle.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
-                   'password_form': password_form, 'club_form':club_form})
+                   'password_form': password_form, 'club_form': club_form})
 
 
 @login_required
 def active_user(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
 
         obj = User.objects.get(pk=pk)
@@ -102,6 +117,38 @@ def active_user(request, pk):
         else:
             obj.is_active = True
             obj.save()
+        print(obj.is_active)
+        return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def send_information(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+
+        obj = User.objects.get(pk=pk)
+
+        password = User.objects.make_random_password()
+        obj.set_password(password)
+        # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
+        user = obj.save()
+        html_content = ''
+        subject, from_email, to = 'Wushu Federasyonu Sporcu Bilgi Sistemi Kullanıcı Bilgileri', 'ik@oxityazilim.com', obj.email
+        text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+        # html_content = '<p> <strong>Site adresi:</strong> <a href="http://www.sigortahavuzum.net"></a>www.sigortahavuzum.net</p>'
+        html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
+        html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
         print(obj.is_active)
         return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 

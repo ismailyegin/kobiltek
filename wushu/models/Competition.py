@@ -15,3 +15,6 @@ class Competition(models.Model):
     branch = models.CharField(null=True,max_length=329, blank=True)
     status = models.CharField(null=True,max_length=329, blank=True)
     type = models.CharField(null=True,max_length=329, blank=True)
+
+    class Meta:
+        default_permissions = ()

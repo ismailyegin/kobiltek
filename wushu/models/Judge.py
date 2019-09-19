@@ -13,3 +13,6 @@ class Judge(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        default_permissions = ()

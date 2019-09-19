@@ -18,10 +18,16 @@ from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level
 from wushu.models.ClubRole import ClubRole
 from wushu.models.EnumFields import EnumFields
+from wushu.services import general_methods
 
 
 @login_required
 def return_add_club(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     club_form = ClubForm()
     communication_form = CommunicationForm()
 
@@ -59,6 +65,11 @@ def return_add_club(request):
 
 @login_required
 def return_clubs(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     clubs = SportsClub.objects.all()
 
     return render(request, 'kulup/kulupler.html', {'clubs': clubs})
@@ -66,6 +77,11 @@ def return_clubs(request):
 
 @login_required
 def return_add_club_person(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
@@ -132,6 +148,11 @@ def return_add_club_person(request, pk):
 
 @login_required
 def updateClubPersons(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athlete = SportClubUser.objects.get(pk=pk)
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
@@ -171,6 +192,11 @@ def updateClubPersons(request, pk):
 
 @login_required
 def return_club_person(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athletes = SportClubUser.objects.all()
     user_form = UserSearchForm()
 
@@ -197,7 +223,12 @@ def return_club_person(request):
 
 @login_required
 def return_club_role(request):
-    club_role_form = ClubRoleForm();
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    club_role_form = ClubRoleForm()
 
     if request.method == 'POST':
 
@@ -220,6 +251,11 @@ def return_club_role(request):
 
 @login_required
 def deleteClubRole(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = ClubRole.objects.get(pk=pk)
@@ -234,6 +270,11 @@ def deleteClubRole(request, pk):
 
 @login_required
 def updateClubRole(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     clubrole = ClubRole.objects.get(id=pk)
     clubrole_form = ClubRoleForm(request.POST or None, instance=clubrole)
 
@@ -251,6 +292,11 @@ def updateClubRole(request, pk):
 
 @login_required
 def clubDelete(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = SportsClub.objects.get(pk=pk)
@@ -265,6 +311,11 @@ def clubDelete(request, pk):
 
 @login_required
 def clubUpdate(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     club = SportsClub.objects.get(id=pk)
     com_id = club.communication.pk
     communication = Communication.objects.get(id=com_id)
@@ -289,6 +340,11 @@ def clubUpdate(request, pk):
 
 @login_required
 def choose_coach(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     coaches = Coach.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
@@ -325,12 +381,22 @@ def choose_coach(request, pk):
 
 @login_required
 def return_belt_exams(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     exams = BeltExam.objects.all()
 
     return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
 
 
 def detail_belt_exam(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     exam = BeltExam.objects.get(pk=pk)
 
     return render(request, 'kulup/kusak-sinavi-incele.html', {'exam': exam})
@@ -338,6 +404,11 @@ def detail_belt_exam(request, pk):
 
 @login_required
 def approve_belt_exam(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     exam = BeltExam.objects.get(pk=pk)
     athletes = exam.athletes.all();
     for athlete in athletes:
@@ -360,6 +431,11 @@ def approve_belt_exam(request, pk):
 
 @login_required
 def choose_athlete(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athletes = Athlete.objects.all()
     str = ''
     athlete = []
@@ -381,6 +457,11 @@ def choose_athlete(request):
 
 @login_required
 def add_belt_exam(request, athlete1):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     exam_form = BeltExamForm()
     x = athlete1.split('-')
 
@@ -415,6 +496,11 @@ def add_belt_exam(request, athlete1):
 
 @login_required
 def update_belt_exam(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     club = SportsClub.objects.get(id=pk)
     com_id = club.communication.pk
     communication = Communication.objects.get(id=com_id)
@@ -438,6 +524,11 @@ def update_belt_exam(request, pk):
 
 @login_required
 def delete_belt_exam(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = SportsClub.objects.get(pk=pk)

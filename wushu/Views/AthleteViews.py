@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -18,10 +19,16 @@ from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
+from wushu.services import general_methods
 
 
 @login_required
 def return_add_athlete(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
@@ -81,6 +88,11 @@ def return_add_athlete(request):
 
 @login_required
 def return_athletes(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):
@@ -113,6 +125,11 @@ def return_athletes(request):
 
 @login_required
 def updateathletes(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
     belts_form = athlete.belts.all()
     licenses_form = athlete.licenses.all()
@@ -151,6 +168,11 @@ def updateathletes(request, pk):
 
 @login_required
 def return_belt(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     category_item_form = CategoryItemForm();
 
     if request.method == 'POST':
@@ -175,6 +197,11 @@ def return_belt(request):
 
 @login_required
 def categoryItemDelete(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = CategoryItem.objects.get(pk=pk)
@@ -189,6 +216,11 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem,
                                           initial={'parent': categoryItem.parent})
@@ -206,6 +238,11 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def sporcu_kusak_ekle(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
     belt_form = BeltForm()
     belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
@@ -237,6 +274,11 @@ def sporcu_kusak_ekle(request, pk):
 
 @login_required
 def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
     belt_form = BeltForm(request.POST or None, instance=belt, initial={'definition': belt.definition})
     if request.method == 'POST':
@@ -258,6 +300,11 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
 
 @login_required
 def sporcu_lisans_ekle(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
     license_form = LicenseForm()
 
@@ -288,6 +335,11 @@ def sporcu_lisans_ekle(request, pk):
 
 @login_required
 def sporcu_lisans_onayla(request, license_pk, athlete_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
     license.status = License.APPROVED
     license.save()
@@ -307,16 +359,28 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:update-athletes', pk=athlete_pk)
 
+
 @login_required
 def sporcu_lisans_listesi_onayla(request, license_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
     license.status = License.APPROVED
     license.save()
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:lisans-listesi')
 
+
 @login_required
 def sporcu_kusak_listesi_onayla(request, belt_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
     belt.status = Level.APPROVED
     belt.save()
@@ -326,6 +390,11 @@ def sporcu_kusak_listesi_onayla(request, belt_pk):
 
 @login_required
 def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
     belt.status = Level.APPROVED
     belt.save()
@@ -336,6 +405,11 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
 
 @login_required
 def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
     license_form = LicenseForm(request.POST or None, instance=license, initial={'sportsClub': license.sportsClub})
     sportClub = license.sportsClub
@@ -362,6 +436,11 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
 @login_required
 def sporcu_kusak_listesi(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):
@@ -375,6 +454,11 @@ def sporcu_kusak_listesi(request):
 
 @login_required
 def sporcu_lisans_listesi(request):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):

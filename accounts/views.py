@@ -54,13 +54,14 @@ def login(request):
                 return redirect('accounts:logout')
 
         else:
-            messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')
+           # messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')
             return render(request, 'registration/login.html')
 
     return render(request, 'registration/login.html')
 
 
 def forgot(request):
+
     if request.method == 'POST':
         mail = request.POST.get('username')
         obj = User.objects.filter(username=mail)

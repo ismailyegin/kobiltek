@@ -27,6 +27,28 @@
         <!-- /.modal-dialog -->
     </div>
 
+
+        <div class="modal modal-danger modal-danger-food fade in" id="modal-success-danger" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarısız</h4>
+                </div>
+                <div class="modal-body successModalD">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -76,7 +98,7 @@
     </div>
 
 
-     <div class="modal modal-warning fade in deneme223" tabindex="-1" role="dialog" id="modal-mail"
+    <div class="modal modal-warning fade in deneme223" tabindex="-1" role="dialog" id="modal-mail"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -89,7 +111,7 @@
                     <p>Kullanıcı giriş bilgilerini göndermek istediğinizden emin misiniz ?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf12"
                             data-dismiss="modal">Evet
                     </button>
                     <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
@@ -265,7 +287,7 @@
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>Güncelle
                                                     </a>
-                                                   <a class="btn btn-danger"
+                                                    <a class="btn btn-danger"
                                                        data-toggle="modal" onclick=activeUser({{ user.pk }})><i
                                                             class="fa fa-trash"></i>Aktif/Pasifleştir</a>
                                                 </div>
@@ -349,11 +371,11 @@
         }
 
         function sendInform(id) {
-
+        debugger;
             console.log(id);
             var html = ''
             $("#modal-mail").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+                $("#btn-conf12").click(function () {
                     $.ajax({
                         url: "{% url "wushu:kullanici-bilgi-gonder" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
                         type: "POST",
@@ -363,27 +385,49 @@
                         },
                         success: function (result) {
 
-                            html = 'Kullanıcı Bilgileri Başarıyla Gönderildi';
-                        debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                            if (result.status == 'Fail') {
+                                html = result.msg;
+                            debugger;
+                                $(".successModalD").html(html);
+                                $('#modal-success-danger').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "wushu:kullanicilar" %}");
+                                        window.location.replace("{% url "wushu:kullanicilar" %}");
 
-                                });
+                                    });
+                                } ).modal('show');
 
-                            }).modal('show');
+
+                            }
+
+                            else{
+                                html = result.msg;
+                            debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "wushu:kullanicilar" %}");
+
+                                    });
+                                } ).modal('show');
 
 
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-active').modal('hide');
+                            }
+
+
+
+                    console.log(result.status)
+                }
             });
+        }
+
+        )
+        ;
+        }).modal('show');
+        $('#btn-close1').click(function () {
+            $('#modal-active').modal('hide');
+        });
 
         }
 

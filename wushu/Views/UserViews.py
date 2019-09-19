@@ -28,7 +28,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_users(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -58,7 +58,7 @@ def return_users(request):
 
 @login_required
 def update_user(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -103,7 +103,7 @@ def update_user(request, pk):
 
 @login_required
 def active_user(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -126,7 +126,7 @@ def active_user(request, pk):
 
 @login_required
 def send_information(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -134,6 +134,9 @@ def send_information(request, pk):
     if request.method == 'POST' and request.is_ajax():
 
         obj = User.objects.get(pk=pk)
+
+        if not obj.is_active:
+            return JsonResponse({'status': 'Fail', 'msg': 'Kullanıcıyı aktifleştirin.'})
 
         password = User.objects.make_random_password()
         obj.set_password(password)
@@ -150,7 +153,7 @@ def send_information(request, pk):
         msg.send()
 
         print(obj.is_active)
-        return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        return JsonResponse({'status': 'Success', 'msg': 'Şifre başarıyla gönderildi'})
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

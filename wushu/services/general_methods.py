@@ -2,7 +2,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 
-from wushu.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser
+from wushu.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser, \
+    SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember
 
 
 def getMenu(request):
@@ -86,3 +87,37 @@ def control_access(request):
 
 
 
+def getProfileImage(request):
+    if (request.user.id):
+        current_user = request.user
+
+        if current_user.groups.filter(name='KulupUye').exists():
+            athlete = SportClubUser.objects.get(user=current_user)
+            person = Person.objects.get(id=athlete.person.id)
+
+        elif current_user.groups.filter(name='Sporcu').exists():
+            athlete = Athlete.objects.get(user=current_user)
+            person = Person.objects.get(id=athlete.person.id)
+
+        elif current_user.groups.filter(name='Antrenor').exists():
+            athlete = Coach.objects.get(user=current_user)
+            person = Person.objects.get(id=athlete.person.id)
+
+        elif current_user.groups.filter(name='Hakem').exists():
+            athlete = Judge.objects.get(user=current_user)
+            person = Person.objects.get(id=athlete.person.id)
+
+        elif current_user.groups.filter(name='Yonetim').exists():
+            athlete = DirectoryMember.objects.get(user=current_user)
+            person = Person.objects.get(id=athlete.person.id)
+
+        elif current_user.groups.filter(name='Admin').exists():
+            person = dict()
+            person['profileImage']= "profile/logo.png"
+
+        else:
+            person = None
+
+        return {'person': person}
+
+    return {}

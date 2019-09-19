@@ -11,10 +11,15 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.DirectoryCommissionForm import DirectoryCommissionForm
 from wushu.Forms.DirectoryForm import DirectoryForm
 from wushu.Forms.DirectoryMemberRoleForm import DirectoryMemberRoleForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
+from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Person, Communication
+from wushu.models import Person, Communication, SportClubUser
 from wushu.models.DirectoryCommission import DirectoryCommission
 from wushu.models.DirectoryMember import DirectoryMember
 from wushu.models.DirectoryMemberRole import DirectoryMemberRole
@@ -48,12 +53,20 @@ def return_users(request):
 @login_required
 def update_user(request, pk):
     user = User.objects.get(pk=pk)
-    user_form = UserForm(request.POST or None, instance=user)
+    club_user = SportClubUser.objects.get(user=user)
+    person = Person.objects.get(pk=club_user.person.pk)
+    communication = Communication.objects.get(pk=club_user.communication.pk)
+
+
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    club_form = DisabledSportClubUserForm(request.POST or None, instance=club_user)
     password_form = SetPasswordForm(request.user, request.POST)
 
     if request.method == 'POST':
 
-        if user_form.is_valid() and password_form.is_valid():
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid() and club_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
@@ -61,6 +74,12 @@ def update_user(request, pk):
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()
+
+            person_form.save()
+            communication_form.save()
+            club_form.save()
+            password_form.save()
+
             update_session_auth_hash(request, user)
             messages.success(request, 'Kullanıcı Başarıyla Güncellendi')
             return redirect('wushu:kullanicilar')
@@ -68,22 +87,23 @@ def update_user(request, pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'kullanici/kullanici-duzenle.html',
-                  {'user_form': user_form, 'password_form': password_form})
+                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                   'password_form': password_form, 'club_form':club_form})
+
 
 @login_required
 def active_user(request, pk):
     if request.method == 'POST' and request.is_ajax():
 
-            obj = User.objects.get(pk=pk)
-            if obj.is_active:
-                obj.is_active=False
-                obj.save()
-            else:
-                obj.is_active = True
-                obj.save()
-            print(obj.is_active)
-            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        obj = User.objects.get(pk=pk)
+        if obj.is_active:
+            obj.is_active = False
+            obj.save()
+        else:
+            obj.is_active = True
+            obj.save()
+        print(obj.is_active)
+        return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-

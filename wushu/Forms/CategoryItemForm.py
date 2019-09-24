@@ -5,7 +5,7 @@ from wushu.models import CategoryItem
 
 
 class CategoryItemForm(ModelForm):
-    parent = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='BELT'),
+    parent = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='BELT').distinct(),
                                     to_field_name='name',
                                     required=False,
                                     empty_label="Seçiniz",

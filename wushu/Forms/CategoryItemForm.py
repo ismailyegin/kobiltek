@@ -14,11 +14,13 @@ class CategoryItemForm(ModelForm):
                 attrs={'class': 'form-control ', 'required': 'required'}),
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
-            'isFirst': forms.CheckboxInput(attrs={'class': 'iCheck-helper'})
+            'isFirst': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
+            'parent': forms.Select(choices=[], attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                      'style': 'width: 100%; '})
         }
-        parent = forms.ChoiceField(choices=[], required=False)
 
         def __init__(self, *args, **kwargs):
             super(CategoryItemForm, self).__init__(*args, **kwargs)
+            self.fields['parent'].empty_label = 'Seçiniz'
             self.fields['parent'].choices = CategoryItem.objects.filter(forWhichClazz='BELT').values_list("name",
                                                                                                           "name").distinct()

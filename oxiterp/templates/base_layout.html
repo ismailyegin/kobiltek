@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">
     <!-- Ionicons -->
     <link rel="stylesheet" href="{% static 'bower_components/Ionicons/css/ionicons.min.css' %} ">
-
+    <link rel="shortcut icon" type="image/png" href="/media/favicon.png"/>
 
     <link rel="stylesheet" href="{% static 'plugins/iCheck/all.css' %}">
 
@@ -94,65 +94,7 @@
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
 
-                    <li class="dropdown messages-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">4</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">1 Adet Mesajınız Var</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li><!-- start message -->
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="/media/{{ person.profileImage }}" class="img-circle"
-                                                     alt="User Image">
-                                            </div>
-                                            <h4>
-                                                TWF
-                                                <small><i class="fa fa-clock-o"></i> 5 dk</small>
-                                            </h4>
-                                            <p>Mesaj İçeriği</p>
-                                        </a>
-                                    </li>
-                                    <!-- end message -->
 
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">Tüm Mesajları Görüntüle</a></li>
-                        </ul>
-                    </li>
-
-
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
-                            <span class="label label-warning">2</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">'2 Adet Bildiriminiz var'</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> Müsabakanız Yaklaşıyor
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-warning text-yellow"></i> 3 Sporcu Eklendi
-                                        </a>
-                                    </li>
-
-
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">Hepsini Görüntüle</a></li>
-                        </ul>
-                    </li>
 
 
                     <li class="dropdown user user-menu">
@@ -174,12 +116,12 @@
 
 
 
-                                      {% if user.groups.all.0.name == "Sporcu" %}
+                                    {% if user.groups.all.0.name == "Sporcu" %}
                                         <small> Sporcu</small>
 
 
                                     {% elif user.groups.all.0.name == "Hakem" %}
-                                         <small> Hakem</small>
+                                        <small> Hakem</small>
 
 
 
@@ -198,7 +140,7 @@
 
 
                                     {% elif user.groups.all.0.name == "Antrenor" %}
-                                       <small> Antrenör</small>
+                                        <small> Antrenör</small>
 
 
                                     {% else %}
@@ -209,7 +151,6 @@
 
 
                                     <small>Kayıt Tarihi: {{ user.date_joined }}</small>
-
 
 
                                 </p>

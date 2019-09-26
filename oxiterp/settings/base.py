@@ -165,6 +165,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join('oxiterp/static'),)
 
-LOGIN_REDIRECT_URL = '/patient'
+LOGIN_URL ='/'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

@@ -40,6 +40,8 @@ urlpatterns = [
         name='update-athletes'),
     url(r'sporcu/sporcu-kusak-listesi/$', AthleteViews.sporcu_kusak_listesi, name='kusak-listesi'),
     url(r'sporcu/sporcu-lisans-listesi/$', AthleteViews.sporcu_lisans_listesi, name='lisans-listesi'),
+    url(r'sporcu/sporcu-profil-guncelle/(?P<pk>\d+)$', AthleteViews.updateAthleteProfile,
+        name='sporcu-profil-guncelle'),
 
     # Hakemler
     url(r'hakem/hakem-ekle/$', RefereeViews.return_add_referee, name='hakem-ekle'),
@@ -53,6 +55,8 @@ urlpatterns = [
         name='referee-delete'),
     url(r'hakem/hakemDuzenle/(?P<pk>\d+)$', RefereeViews.updateReferee,
         name='hakem-duzenle'),
+    url(r'hakem/hakem-profil-guncelle/(?P<pk>\d+)$', RefereeViews.updateRefereeProfile,
+        name='hakem-profil-guncelle'),
 
     # Kulüpler
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
@@ -76,6 +80,8 @@ urlpatterns = [
     url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
     url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
     url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
+    url(r'kulup/kulup-uyesi-profil-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersonsProfile,
+        name='kulup-uyesi-profil-guncelle'),
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),
@@ -91,6 +97,8 @@ urlpatterns = [
         name='update-coach'),
     url(r'antrenor/antrenorSec/(?P<pk>\d+)$', ClubViews.choose_coach,
         name='choose-coach'),
+    url(r'antrenor/antrenor-profil-guncelle/(?P<pk>\d+)$', CoachViews.updateCoachProfile,
+        name='antrenor-profil-guncelle'),
 
     # Yönetim Kurulu
     url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),
@@ -109,6 +117,8 @@ urlpatterns = [
         name='kurul_sil'),
     url(r'yonetim/kurul-duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
         name='kurul-duzenle'),
+    url(r'yonetim/yonetim-kurul-profil-guncelle/(?P<pk>\d+)$', DirectoryViews.updateDirectoryProfile,
+        name='yonetim-kurul-profil-guncelle'),
 
     # Kullanıcılar
     url(r'kullanici/kullanicilar/$', UserViews.return_users, name='kullanicilar'),

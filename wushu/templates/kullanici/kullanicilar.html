@@ -283,13 +283,10 @@
                                                     <a class="btn btn-success"
                                                        data-toggle="modal" onclick=sendInform({{ user.pk }})><i
                                                             class="fa  fa-arrow-circle-right"></i>Şifre Gönder</a>
-                                                    <a href="{% url "wushu:kullanici-duzenle" user.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>Güncelle
-                                                    </a>
+
                                                     <a class="btn btn-danger"
                                                        data-toggle="modal" onclick=activeUser({{ user.pk }})><i
-                                                            class="fa fa-trash"></i>Aktif/Pasifleştir</a>
+                                                            class="fa fa-lock"></i>Aktif/Pasifleştir</a>
                                                 </div>
                                             </td>
 

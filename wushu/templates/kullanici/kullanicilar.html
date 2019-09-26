@@ -28,7 +28,7 @@
     </div>
 
 
-        <div class="modal modal-danger modal-danger-food fade in" id="modal-success-danger" style="display: none;">
+    <div class="modal modal-danger modal-danger-food fade in" id="modal-success-danger" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -114,7 +114,7 @@
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf12"
                             data-dismiss="modal">Evet
                     </button>
-                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                    <button type="button" class="btn btn-outline" id="btn-close2">Hayır</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -376,58 +376,54 @@
             var html = ''
             $("#modal-mail").on("shown.bs.modal", function (e) {
                 $("#btn-conf12").click(function () {
-                    $.ajax({
-                        url: "{% url "wushu:kullanici-bilgi-gonder" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                        $.ajax({
+                            url: "{% url "wushu:kullanici-bilgi-gonder" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
 
-                        },
-                        success: function (result) {
+                            },
+                            success: function (result) {
 
-                            if (result.status == 'Fail') {
-                                html = result.msg;
-                            debugger;
-                                $(".successModalD").html(html);
-                                $('#modal-success-danger').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                if (result.status == 'Fail') {
+                                    html = result.msg;
+                                debugger;
+                                    $(".successModalD").html(html);
+                                    $('#modal-success-danger').on("shown.bs.modal", function (e) {
+                                        $(".btn-ok").click(function () {
 
-                                        window.location.replace("{% url "wushu:kullanicilar" %}");
+                                            window.location.replace("{% url "wushu:kullanicilar" %}");
 
-                                    });
-                                } ).modal('show');
+                                        });
+                                    }).modal('show');
 
 
+                                } else {
+                                    html = result.msg;
+                                debugger;
+                                    $(".successModal").html(html);
+                                    $('#modal-success').on("shown.bs.modal", function (e) {
+                                        $(".btn-ok").click(function () {
+
+                                            window.location.replace("{% url "wushu:kullanicilar" %}");
+
+                                        });
+                                    }).modal('show');
+
+
+                                }
+
+
+                                console.log(result.status)
                             }
-
-                            else{
-                                html = result.msg;
-                            debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
-
-                                        window.location.replace("{% url "wushu:kullanicilar" %}");
-
-                                    });
-                                } ).modal('show');
-
-
-                            }
-
-
-
-                    console.log(result.status)
-                }
+                        });
+                    }
+                )
+                ;
+            }).modal('show');
+            $('#btn-close2').click(function () {
+                $('#modal-mail').modal('hide');
             });
-        }
-
-        )
-        ;
-        }).modal('show');
-        $('#btn-close1').click(function () {
-            $('#modal-active').modal('hide');
-        });
 
         }
 

@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
@@ -12,6 +13,9 @@ from django.shortcuts import render, redirect
 from wushu.Forms.BeltForm import BeltForm
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.LicenseForm import LicenseForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
@@ -468,3 +472,53 @@ def sporcu_lisans_listesi(request):
         licenses = License.objects.all().distinct()
 
     return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses})
+
+
+
+@login_required
+def updateAthleteProfile(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+
+    user = User.objects.get(pk=pk)
+    directory_user = Athlete.objects.get(user=user)
+    person = Person.objects.get(pk=directory_user.person.pk)
+    communication = Communication.objects.get(pk=directory_user.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    password_form = SetPasswordForm(request.user, request.POST)
+
+
+
+
+    if request.method == 'POST':
+
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid()  and password_form.is_valid():
+
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
+            user.set_password(password_form.cleaned_data['new_password1'])
+            user.save()
+
+            person_form.save()
+            communication_form.save()
+            password_form.save()
+
+            messages.success(request, 'Sporcu Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:sporcu-profil-guncelle')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-profil-guncelle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'password_form': password_form})

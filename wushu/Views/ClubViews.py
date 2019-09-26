@@ -1,4 +1,6 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
@@ -11,6 +13,10 @@ from wushu.Forms.BeltExamForm import BeltExamForm
 from wushu.Forms.ClubForm import ClubForm
 from wushu.Forms.ClubRoleForm import ClubRoleForm
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
@@ -539,3 +545,54 @@ def delete_belt_exam(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def updateClubPersonsProfile(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+
+    user = User.objects.get(pk=pk)
+    club_user = SportClubUser.objects.get(user=user)
+    person = Person.objects.get(pk=club_user.person.pk)
+    communication = Communication.objects.get(pk=club_user.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    club_form = DisabledSportClubUserForm(request.POST or None, instance=club_user)
+    password_form = SetPasswordForm(request.user, request.POST)
+
+
+
+
+    if request.method == 'POST':
+
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and club_form.is_valid() and password_form.is_valid():
+
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
+            user.set_password(password_form.cleaned_data['new_password1'])
+            user.save()
+
+            person_form.save()
+            communication_form.save()
+            club_form.save()
+            password_form.save()
+
+            messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:kulup-uyesi-profil-guncelle')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'kulup/kulup-uyesi-profil-guncelle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'password_form': password_form ,'club_form':club_form})

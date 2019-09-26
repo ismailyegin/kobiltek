@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SPORCU BİLGİ SİSTEMİ </title>
-    <meta name="description" content="SPORCU BİLGİ SİSTEMİ"/>
-    <meta name="keywords" content="SPORCU BİLGİ SİSTEMİ"/>
+    <title>TWF BİLGİ SİSTEMİ </title>
+    <meta name="description" content="TWF BİLGİ SİSTEMİ"/>
+    <meta name="keywords" content="TWF BİLGİ SİSTEMİ"/>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -59,7 +59,6 @@
     <script src="{% static 'fieldChooser/js/jquery.lwMultiSelect.js' %}"></script>
 
 
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -83,7 +82,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>TWF</b></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>TWF BİLGİ SİSTEMİ</b> </span>
+            <span class="logo-lg"><img src="/media/twf-wushu.png" alt="User Image" style="margin-bottom: 5px;"> </span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
@@ -172,7 +171,47 @@
 
                                 <p>
                                     {{ user.first_name }} {{ user.last_name }}
+
+
+
+                                      {% if user.groups.all.0.name == "Sporcu" %}
+                                        <small> Sporcu</small>
+
+
+                                    {% elif user.groups.all.0.name == "Hakem" %}
+                                         <small> Hakem</small>
+
+
+
+                                    {% elif user.groups.all.0.name == "Admin" %}
+                                        <small> Admin</small>
+
+
+                                    {% elif user.groups.all.0.name == "Yonetim" %}
+                                        <small> Yönetim</small>
+
+
+                                    {% elif user.groups.all.0.name == "KulupUye" %}
+                                        <small> Kulüp Üyesi</small>
+
+
+
+
+                                    {% elif user.groups.all.0.name == "Antrenor" %}
+                                       <small> Antrenör</small>
+
+
+                                    {% else %}
+                                        <a><i class="fa fa-circle text-success"></i> {{ user.groups.all.0.name }}</a>
+                                    {% endif %}
+
+
+
+
                                     <small>Kayıt Tarihi: {{ user.date_joined }}</small>
+
+
+
                                 </p>
                             </li>
                             <!-- Menu Body -->
@@ -191,8 +230,46 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="{% url "wushu:kullanici-duzenle" user.pk %}"
-                                       class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+                                    {% if user.groups.all.0.name == "Sporcu" %}
+                                        <a href="{% url "wushu:sporcu-profil-guncelle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+
+                                    {% elif user.groups.all.0.name == "Hakem" %}
+                                        <a href="{% url "wushu:hakem-profil-guncelle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+
+                                    {% elif user.groups.all.0.name == "Admin" %}
+                                        <a href="{% url "wushu:kullanici-duzenle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+                                    {% elif user.groups.all.0.name == "Yonetim" %}
+                                        <a href="{% url "wushu:yonetim-kurul-profil-guncelle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+                                    {% elif user.groups.all.0.name == "KulupUye" %}
+                                        <a href="{% url "wushu:kulup-uyesi-profil-guncelle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+
+
+                                    {% elif user.groups.all.0.name == "Antrenor" %}
+                                        <a href="{% url "wushu:antrenor-profil-guncelle" user.pk %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+
+                                    {% else %}
+                                        <a><i class="fa fa-circle text-success"></i> {{ user.groups.all.0.name }}</a>
+                                    {% endif %}
+
+
                                 </div>
                                 <div class="pull-right">
                                     <a href="{% url 'accounts:logout' %}" class="btn btn-default btn-flat">Çıkış Yap</a>
@@ -209,56 +286,6 @@
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-            <!-- Sidebar user panel -->
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="/media/{{ person.profileImage }}" class="img-circle" alt="User Image"
-                    >
-                </div>
-                <div class="pull-left info">
-                    <p> {{ user.first_name }} {{ user.last_name }}</p>
-
-
-
-
-
-
-                    {% if user.groups.all.0.name == "Sporcu" %}
-                        <a><i class="fa fa-circle text-success"></i> Sporcu</a>
-
-
-
-
-                    {% elif user.groups.all.0.name == "Hakem" %}
-                        <a><i class="fa fa-circle text-success"></i> Hakem</a>
-
-
-
-                    {% elif user.groups.all.0.name == "Admin" %}
-                        <a><i class="fa fa-circle text-success"></i> Admin</a>
-
-
-                    {% elif user.groups.all.0.name == "Yonetim" %}
-                        <a><i class="fa fa-circle text-success"></i> Yönetim</a>
-
-
-                    {% elif user.groups.all.0.name == "KulupUye" %}
-                        <a><i class="fa fa-circle text-success"></i> Kulüp Üyesi</a>
-
-
-
-
-                    {% elif user.groups.all.0.name == "Antrenor" %}
-                        <a><i class="fa fa-circle text-success"></i> Antrenör</a>
-
-
-                    {% else %}
-                        <a><i class="fa fa-circle text-success"></i> {{ user.groups.all.0.name }}</a>
-                    {% endif %}
-
-
-                </div>
-            </div>
 
 
             <ul class="sidebar-menu" data-widget="tree">

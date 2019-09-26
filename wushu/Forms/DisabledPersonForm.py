@@ -15,24 +15,24 @@ class DisabledPersonForm(ModelForm):
 
         widgets = {
 
-            'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required', 'readonly': 'readonly'}),
+            'tc': forms.TextInput(attrs={'class': 'form-control ',  'readonly': 'readonly'}),
 
             'height': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
 
             'weight': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
 
             'birthplace': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required', 'readonly': 'readonly'}),
+                attrs={'class': 'form-control ', 'value': '',  'readonly': 'readonly'}),
 
             'motherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required', 'readonly': 'readonly'}),
+                attrs={'class': 'form-control ', 'value': '', 'readonly': 'readonly'}),
 
             'fatherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required', 'readonly': 'readonly'}),
+                attrs={'class': 'form-control ', 'value': '',  'readonly': 'readonly'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return false', 'required': 'required', 'readonly': 'readonly'}),
+                       'onkeydown': 'return false',  'readonly': 'readonly'}),
 
             'bloodType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                              'style': 'width: 100%; ', 'disabled': 'disabled'}),

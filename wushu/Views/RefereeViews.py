@@ -1,5 +1,6 @@
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
@@ -9,6 +10,9 @@ from django.shortcuts import render, redirect
 
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
@@ -18,7 +22,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_add_referee(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -78,7 +82,7 @@ def return_add_referee(request):
 
 @login_required
 def return_referees(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -107,7 +111,7 @@ def return_referees(request):
 
 @login_required
 def return_level(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -136,7 +140,7 @@ def return_level(request):
 
 @login_required
 def categoryItemDelete(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -155,7 +159,7 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -176,7 +180,7 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def deleteReferee(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -195,7 +199,7 @@ def deleteReferee(request, pk):
 
 @login_required
 def updateReferee(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -226,3 +230,67 @@ def updateReferee(request, pk):
     return render(request, 'hakem/hakemDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form})
+
+
+@login_required
+def updateRefereeProfile(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    user = User.objects.get(pk=pk)
+    referee_user = Judge.objects.get(user=user)
+    person = Person.objects.get(pk=referee_user.person.pk)
+    communication = Communication.objects.get(pk=referee_user.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, request.FILES or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    password_form = SetPasswordForm(request.user, request.POST)
+
+    if request.method == 'POST':
+        data = request.POST.copy()
+        data['bloodType'] = "AB Rh+"
+        data['gender'] = "Erkek"
+        person_form = DisabledPersonForm(data)
+
+        if person_form.is_valid() and password_form.is_valid():
+            if len(request.FILES)>0:
+                person.profileImage = request.FILES['profileImage']
+                person.save()
+                messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
+
+            user.set_password(password_form.cleaned_data['new_password2'])
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+            return redirect('wushu:hakem-profil-guncelle', user.pk)
+
+
+
+        elif person_form.is_valid() and not password_form.is_valid():
+            if len(request.FILES)>0:
+                person.profileImage = request.FILES['profileImage']
+                person.save()
+                messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
+            return redirect('wushu:hakem-profil-guncelle', pk)
+
+
+        elif not person_form.is_valid() and password_form.is_valid():
+            user.set_password(password_form.cleaned_data['new_password2'])
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+            return redirect('wushu:hakem-profil-guncelle', user.pk)
+
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz.')
+
+            return redirect('wushu:hakem-profil-guncelle', pk)
+
+    return render(request, 'hakem/hakem-profil-guncelle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'password_form': password_form})

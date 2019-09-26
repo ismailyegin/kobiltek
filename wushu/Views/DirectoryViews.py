@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
@@ -10,6 +11,11 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.DirectoryCommissionForm import DirectoryCommissionForm
 from wushu.Forms.DirectoryForm import DirectoryForm
 from wushu.Forms.DirectoryMemberRoleForm import DirectoryMemberRoleForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledDirectoryForm import DisabledDirectoryForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
@@ -305,3 +311,55 @@ def update_commission(request, pk):
 
     return render(request, 'yonetim/kurul-duzenle.html',
                   {'commission_form': commission_form})
+
+
+
+@login_required
+def updateDirectoryProfile(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+
+    user = User.objects.get(pk=pk)
+    directory_user = DirectoryMember.objects.get(user=user)
+    person = Person.objects.get(pk=directory_user.person.pk)
+    communication = Communication.objects.get(pk=directory_user.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    member_form = DisabledDirectoryForm(request.POST or None, instance=directory_user)
+    password_form = SetPasswordForm(request.user, request.POST)
+
+
+
+
+    if request.method == 'POST':
+
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and member_form.is_valid() and password_form.is_valid():
+
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
+            user.email = user_form.cleaned_data['email']
+            user.set_password(password_form.cleaned_data['new_password1'])
+            user.save()
+
+            person_form.save()
+            communication_form.save()
+            member_form.save()
+            password_form.save()
+
+            messages.success(request, 'Yönetim Kurul Üyesi Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:yonetim-kurul-profil-guncelle')
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'yonetim/yonetim-kurul-profil-guncelle.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'password_form': password_form, 'member_form': member_form})

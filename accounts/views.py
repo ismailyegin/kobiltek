@@ -54,14 +54,13 @@ def login(request):
                 return redirect('accounts:logout')
 
         else:
-           # messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')
+            messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')
             return render(request, 'registration/login.html')
 
     return render(request, 'registration/login.html')
 
 
 def forgot(request):
-
     if request.method == 'POST':
         mail = request.POST.get('username')
         obj = User.objects.filter(username=mail)
@@ -72,16 +71,16 @@ def forgot(request):
             # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
             user = obj.save()
             html_content = ''
-            subject, from_email, to = 'Wushu Federasyonu Sporcu Bilgi Sistemi Kullanıcı Bilgileri', 'ik@oxityazilim.com', obj.email
+            subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', obj.email
             text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            # html_content = '<p> <strong>Site adresi:</strong> <a href="http://www.sigortahavuzum.net"></a>www.sigortahavuzum.net</p>'
+            html_content = '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr</p>'
             html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
             html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            messages.success(request,"Giriş bilgileriniz mail adresinize gönderildi. ")
+            messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
             return redirect("accounts:login")
         else:
             messages.warning(request, "Geçerli bir mail adresi giriniz.")
@@ -103,7 +102,7 @@ def groups(request):
 
 @login_required
 def permission(request, pk):
-    general_methods.show_urls(urls.urlpatterns,0)
+    general_methods.show_urls(urls.urlpatterns, 0)
     group = Group.objects.get(pk=pk)
     menu = ""
     ownMenu = ""

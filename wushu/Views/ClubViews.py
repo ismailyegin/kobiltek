@@ -47,7 +47,8 @@ def return_add_club(request):
                                   shortName=club_form.cleaned_data['shortName'],
                                   foundingDate=club_form.cleaned_data['foundingDate'],
                                   logo=club_form.cleaned_data['logo'],
-                                  clubMail=club_form.cleaned_data['clubMail']
+                                  clubMail=club_form.cleaned_data['clubMail'],
+                                  isFormal=club_form.cleaned_data['isFormal'],
 
                                   )
 

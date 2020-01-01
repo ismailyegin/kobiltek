@@ -158,8 +158,7 @@ def antrenor_kademe_ekle(request, pk):
 
     coach = Coach.objects.get(pk=pk)
     grade_form = GradeForm()
-    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='GRADE',
-                                                                          branch=Coach.grades)
+    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='GRADE')
 
     if request.method == 'POST':
         grade_form = GradeForm(request.POST, request.FILES)

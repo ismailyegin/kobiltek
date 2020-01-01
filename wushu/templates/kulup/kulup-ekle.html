@@ -83,6 +83,10 @@
                                 <label> {{ club_form.foundingDate.label }}</label>
                                 {{ club_form.foundingDate }}
                             </div>
+                             <div class="form-group">
+                                <label> {{ club_form.isFormal.label }}</label>
+                                {{ club_form.isFormal }}
+                            </div>
                             <div class="form-group">
                                 <label>{{ club_form.logo.label }}</label>
                                 <img src="/media/{{ club_form.logo.value|default_if_none:"" }}" width="100"

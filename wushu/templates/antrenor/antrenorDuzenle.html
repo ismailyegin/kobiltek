@@ -235,7 +235,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if belts_form.all %}
+                                {% if grades_form.all %}
                                     {% for grade in grades_form %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
@@ -243,15 +243,15 @@
                                             <td>{{ grade.branch }}  </td>
                                             <td>{{ grade.definition }}  </td>
                                             <td>{{ grade.status }}  </td>
-                                            {% if grade.status != 'Onaylandı' %}
+                                             {% if grade.status != 'Onaylandı' %}
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=grade.pk athlete_pk=athlete.pk %}"
+                                                        <a href=""
                                                            type="button" class="btn btn-warning"><i
                                                                 class="fa fa-edit"></i>Güncelle
                                                         </a>
                                                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                            <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=grade.pk athlete_pk=athlete.pk %}"
+                                                            <a href=""
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-edit"></i>Onayla
                                                             </a>

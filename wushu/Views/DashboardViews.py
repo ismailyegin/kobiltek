@@ -60,6 +60,7 @@ def return_directory_dashboard(request):
 @login_required
 def return_club_user_dashboard(request):
     perm =general_methods.control_access(request)
+    x = general_methods.import_csv()
 
     if not perm:
         logout(request)

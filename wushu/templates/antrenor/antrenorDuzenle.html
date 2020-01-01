@@ -204,6 +204,81 @@
         </form>
 
 
+
+      <div class="row">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Kuşak Bilgileri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-header with-border">
+                                <div class="btn-group">
+
+                                        <a href="{% url 'wushu:antrenor-kademe-ekle' coach %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Kademe Ekle
+                                        </a>
+
+                                </div>
+                            </div>
+                            <table id="belt" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Hak Kazanma Tarihi</th>
+                                    <th> Branş</th>
+                                    <th> Tanımı</th>
+                                    <th> Onay Durumu</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if belts_form.all %}
+                                    {% for grade in grades_form %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ grade.startDate }}  </td>
+                                            <td>{{ grade.branch }}  </td>
+                                            <td>{{ grade.definition }}  </td>
+                                            <td>{{ grade.status }}  </td>
+                                            {% if grade.status != 'Onaylandı' %}
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=grade.pk athlete_pk=athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Güncelle
+                                                        </a>
+                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                            <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=grade.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i>Onayla
+                                                            </a>
+                                                        {% endif %}
+                                                        <a class="btn btn-danger"
+                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                                class="fa fa-trash"></i>Reddet</a>
+
+                                                    </div>
+                                                </td>
+                                            {% endif %}
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
     </section>
 
 {% endblock %}

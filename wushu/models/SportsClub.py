@@ -14,6 +14,7 @@ class SportsClub(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     coachs = models.ManyToManyField(Coach)
+    isFormal = models.BooleanField()
 
     def __str__(self):
         return '%s %s %s' % (self.shortName, '-', self.name)

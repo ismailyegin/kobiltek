@@ -136,7 +136,7 @@ def return_add_club_person(request, pk):
             html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            #msg.send()
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Kayıt Edilmiştir.')
 

@@ -1,9 +1,12 @@
+import csv
+
+from django.conf import settings
 from django.contrib.auth import logout
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User, Group
 from django.shortcuts import redirect
 
 from wushu.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser, \
-    SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember
+    SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember, SportsClub, Communication, City, Country, ClubRole
 
 
 def getMenu(request):
@@ -123,3 +126,69 @@ def getProfileImage(request):
         return {'person': person}
 
     return {}
+
+
+def import_csv():
+    doc_root = settings.BASE_DIR + '/media/wushu_csv.csv'
+    with open(doc_root) as csv_file:
+        file_reader = csv.reader(csv_file, delimiter=';')
+        next(file_reader, None)  # skip the headers
+        for row in file_reader:
+            club = SportsClub()
+            club.name = row[14]
+            club.shortName = row[15]
+            club.foundingDate = row[16]
+
+            club.save()
+
+            comClub = Communication()
+            comClub.city = City.objects.get(name__icontains =row[18].strip())
+            comClub.phoneNumber = row[17]
+            comClub.address = row[19]
+            comClub.country = Country.objects.get(name__icontains="TÜRKİYE")
+            comClub.save()
+
+            club.comminication = comClub
+
+            club.save()
+
+
+            user = User()
+            user.first_name = row[1]
+            user.last_name = row[2]
+            user.username = row[10]
+
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.save()
+
+            user.groups.add(Group.objects.get(name='KulupUye'))
+            user.save()
+
+            person = Person()
+            person.tc = row[0]
+            person.motherName = row[3]
+            person.fatherName = row[4]
+            person.gender = row[5]
+            person.birthDate = row[7]
+            person.birthplace = row[6]
+            person.bloodType = row[8]
+            person.save()
+
+            comClubUser = Communication()
+            comClubUser.city = City.objects.get(name__icontains=row[12].strip())
+            comClubUser.phoneNumber = row[11]
+            comClubUser.address = row[13]
+            comClubUser.country = Country.objects.get(name="TÜRKİYE")
+            comClubUser.save()
+
+            sportClubUser = SportClubUser()
+            sportClubUser.person = person
+            sportClubUser.user = user
+            sportClubUser.communication = comClubUser
+            sportClubUser.sportClub = club
+            sportClubUser.role =ClubRole.objects.get(name__icontains=row[9].strip())
+
+            sportClubUser.save()
+
+            print(row)

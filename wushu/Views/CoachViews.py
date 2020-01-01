@@ -12,10 +12,12 @@ from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
 from wushu.Forms.DisabledPersonForm import DisabledPersonForm
 from wushu.Forms.DisabledUserForm import DisabledUserForm
+from wushu.Forms.GradeForm import GradeForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser
+from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level
+from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
 
 
@@ -65,7 +67,7 @@ def return_add_coach(request):
             html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            #msg.send()
 
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
@@ -144,6 +146,48 @@ def return_grade(request):
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
 
 
+
+
+@login_required
+def antrenor_kademe_ekle(request, pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    coach = Coach.objects.get(pk=pk)
+    grade_form = GradeForm()
+    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='GRADE',
+                                                                          branch=Coach.grades)
+
+    if request.method == 'POST':
+        grade_form = GradeForm(request.POST, request.FILES)
+        if grade_form.is_valid():
+            grade = Level(startDate=grade_form.cleaned_data['startDate'],
+                         dekont=grade_form.cleaned_data['dekont'],
+                         definition=grade_form.cleaned_data['definition'])
+            grade.levelType = EnumFields.LEVELTYPE.GRADE
+           # grade.branch = coach.licenses.last().branch
+            grade.status = Level.WAITED
+            grade.save()
+            coach.grades.add(grade)
+            coach.save()
+
+            messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
+            return redirect('wushu:update-coach', pk=pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/antrenor-kademe-ekle.html',
+                  {'grade_form': grade_form})
+
+
+
+
+
 @login_required
 def categoryItemDelete(request, pk):
     perm =general_methods.control_access(request)
@@ -211,6 +255,7 @@ def coachUpdate(request, pk):
         logout(request)
         return redirect('accounts:login')
     coach = Coach.objects.get(pk=pk)
+    grade_form = coach.grades.all()
     user = User.objects.get(pk=coach.user.pk)
     person = Person.objects.get(pk=coach.person.pk)
     communication = Communication.objects.get(pk=coach.communication.pk)
@@ -235,7 +280,7 @@ def coachUpdate(request, pk):
 
     return render(request, 'antrenor/antrenorDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form})
+                   'person_form': person_form,'grades_form':grade_form,'coach' :coach.pk})
 
 
 

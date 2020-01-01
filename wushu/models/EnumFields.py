@@ -7,6 +7,10 @@ class EnumFields(enum.Enum):
         GRADE = 2
         BELT = 3
 
+    class LEVELTYPECOACH(enum.Enum):
+        VISA = 1
+        GRADE = 2
+
     class BRANCH2(enum.Enum):
         TAOLU = 1
         SANDA = 2
@@ -21,10 +25,9 @@ class EnumFields(enum.Enum):
         NATIONAL = 1
         INTERNATIONAL = 2
 
-
     WUSHU = 'WUSHU'
     AIKIDO = 'AIKIDO'
-    WINGCHUN='WING CHUN'
+    WINGCHUN = 'WING CHUN'
     KYOKUSHIN = 'KYOKUSHIN ASHIHARA'
     JEETKUNEDO = 'JEET KUNE DO KULELKAVIDO'
 

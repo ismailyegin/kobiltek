@@ -9,7 +9,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_admin_dashboard(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -19,7 +19,7 @@ def return_admin_dashboard(request):
 
 @login_required
 def return_athlete_dashboard(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -29,7 +29,7 @@ def return_athlete_dashboard(request):
 
 @login_required
 def return_referee_dashboard(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -39,7 +39,7 @@ def return_referee_dashboard(request):
 
 @login_required
 def return_coach_dashboard(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -49,7 +49,7 @@ def return_coach_dashboard(request):
 
 @login_required
 def return_directory_dashboard(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -59,31 +59,30 @@ def return_directory_dashboard(request):
 
 @login_required
 def return_club_user_dashboard(request):
-    perm =general_methods.control_access(request)
-    x = general_methods.import_csv()
+    perm = general_methods.control_access(request)
+    # x = general_methods.import_csv()
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    
+
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    
+
     belts = Level.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    current_user = request.user
+    clubuser = SportClubUser.objects.get(user=current_user)
+    club = SportsClub.objects.filter(clubUser=clubuser)[0]
     if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        belts = Level.objects.filter(athlete__licenses__sportsClub=sc_user.sportClub)
+
+        belts = Level.objects.filter(athlete__licenses__sportsClub=club)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         belts = Level.objects.all()
 
-    current_user = request.user
-    clubuser = SportClubUser.objects.get(user=current_user)
-
-    club = SportsClub.objects.get(id=clubuser.sportClub.id)
-    total_club_user = SportClubUser.objects.filter(sportClub_id=club).count()
+    total_club_user = club.clubUser.count()
     total_coach = Coach.objects.filter(sportsclub=club).count()
     total_athlete = License.objects.filter(sportsClub_id=club).count()
     return render(request, 'anasayfa/kulup-uyesi.html',

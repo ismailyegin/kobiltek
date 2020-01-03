@@ -61,12 +61,18 @@ urlpatterns = [
     # Kulüpler
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
     url(r'kulup/kulupler/$', ClubViews.return_clubs, name='kulupler'),
-    url(r'kulup/kulup-uyesi-ekle/(?P<pk>\d+)$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
+    url(r'kulup/kulup-uyesi-ekle/$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
     url(r'kulup/kulup-uyesi-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersons, name='kulup-uyesi-guncelle'),
     url(r'kulup/kulup-uyeleri/$', ClubViews.return_club_person, name='kulup-uyeleri'),
     url(r'kulup/kulup-uye-rolu/$', ClubViews.return_club_role, name='kulup-uye-rolu'),
     url(r'kulup/kulup-uye-rolu/sil/(?P<pk>\d+)$', ClubViews.deleteClubRole,
         name='ClubRole-delete'),
+    url(r'kulup/kulup-uyeleri/sil/(?P<pk>\d+)$', ClubViews.deleteClubUser,
+        name='ClubUser-delete'),
+
+    url(r'kulup/kulup-uyeleri/cikar/(?P<pk>\d+)/(?P<club_pk>\d+)/$', ClubViews.deleteClubUserFromClub,
+        name='ClubUser-cikar'),
+
     url(r'kulup/kulupRolDuzenle/(?P<pk>\d+)$', ClubViews.updateClubRole,
         name='updateClubRole'),
     url(r'kulup/kulupler/sil/(?P<pk>\d+)$', ClubViews.clubDelete,
@@ -82,6 +88,10 @@ urlpatterns = [
     url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
     url(r'kulup/kulup-uyesi-profil-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersonsProfile,
         name='kulup-uyesi-profil-guncelle'),
+
+    url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
+        name='choose-sport-club-user'),
+
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),

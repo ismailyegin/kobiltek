@@ -3,6 +3,8 @@
 {% block content %}
 
 
+
+
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
@@ -122,19 +124,16 @@
     </div>
 
 
+
+
+
     <section class="content">
-
-
         <div class="row">
-            <section class="col-lg-12 ">
-
-
+            <div class="col-lg-12 ">
                 <div class="box-body">
-
-
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Üye Filtrele</h3>
+                            <h3 class="box-title">Antrenör Filtrele</h3>
                         </div>
                         <form method="post" role="form">
                             <div class="box-body">
@@ -170,85 +169,72 @@
 
 
                     </div>
-                    <!-- /.box -->
-
-
                 </div>
-            </section>
+                <!-- /.box -->
+            </div>
         </div>
 
-
         <div class="row">
+
 
             <section class="col-lg-12 ">
 
 
                 <div class="box-body">
 
+                    <form method="post" enctype="multipart/form-data" role="form">
+                    {% csrf_token %}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Kulüp Üyeleri</h3>
+                            </div>
 
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Kulüp Üyeleri</h3>
-                        </div>
-
-                        <div class="box-body">
-                         <div class="box-header with-border">
+                            <div class="box-header with-border">
                                 <div class="btn-group">
-                                    <a href="{% url "wushu:kulup-uyesi-ekle" %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Kulüp Üyesi Ekle
-                                    </a>
+                                    <div class="box-footer">
+                                        <button type="submit" class="btn btn-primary">Kulüp Üyesi Seç</button>
+                                    </div>
                                 </div>
                             </div>
-                            <table id="sporcular" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Ad Soyad</th>
-                                    <th>Kulüp</th>
-                                    <th>Rolü</th>
-                                    <th>Cep Tel</th>
-                                    <th>E-Mail</th>
-                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Güncelleme</th>
+
+                            <div class="box-body">
+                                <table id="antrenorler" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Seç</th>
+                                        <th> Ad Soyad</th>
+                                        <th>Doğum Tarihi</th>
+                                        <th>İl</th>
+                                        <th>Cep Tel</th>
+                                        <th>E-Mail</th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if coaches.all %}
+                                        {% for coach in coaches %}
+                                            <tr>
+                                                <td><input type="checkbox" name="selected_options"
+                                                           value="{{ coach.pk }}"></td>
+                                                <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
+                                                <td>{{ coach.person.tc }} </td>
+                                                <td>{{ coach.communication.city }} </td>
+                                                <td>{{ coach.communication.phoneNumber }} </td>
+                                                <td>{{ coach.user.email }} </td>
+
+                                            </tr>
+
+                                        {% endfor %}
                                     {% endif %}
 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if athletes.all %}
-                                    {% for athlete in athletes %}
-                                        <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                            <td>{{ athlete.sportClub.name }} </td>
-                                            <td>{{ athlete.role.name }} </td>
-                                            <td>{{ athlete.communication.phoneNumber }} </td>
-                                            <td>{{ athlete.user.email }} </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a href="{% url "wushu:kulup-uyesi-guncelle" athlete.pk %}"
-                                                           type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i>Güncelle
-                                                        </a>
 
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                                    </div>
-                                                </td>
-
-                                            {% endif %}
-                                        </tr>
-
-                                    {% endfor %}
-                                {% endif %}
-
-
-                                </tbody>
-                            </table>
                         </div>
-
-                    </div>
+                    </form>
                     <!-- /.box -->
 
 
@@ -263,7 +249,7 @@
 
     <script>
         $(function () {
-            $('#sporcular').DataTable({
+            $('#antrenorler').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -274,6 +260,12 @@
 
         })
     </script>
+
+
+
+
+
+
 
 
 {% endblock %}

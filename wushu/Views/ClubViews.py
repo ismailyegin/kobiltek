@@ -29,7 +29,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_add_club(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -72,7 +72,7 @@ def return_add_club(request):
 
 @login_required
 def return_clubs(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -83,8 +83,8 @@ def return_clubs(request):
 
 
 @login_required
-def return_add_club_person(request, pk):
-    perm =general_methods.control_access(request)
+def return_add_club_person(request):
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -93,8 +93,6 @@ def return_add_club_person(request, pk):
     person_form = PersonForm()
     communication_form = CommunicationForm()
     sportClubUser_form = SportClubUserForm()
-
-    sportClub = SportsClub.objects.get(pk=pk)
 
     if request.method == 'POST':
 
@@ -124,7 +122,6 @@ def return_add_club_person(request, pk):
             club_person = SportClubUser(
                 user=user, person=person, communication=communication,
                 role=sportClubUser_form.cleaned_data['role'],
-                sportClub=sportClub
 
             )
 
@@ -137,11 +134,11 @@ def return_add_club_person(request, pk):
             html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
-            #msg.send()
+            # msg.send()
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:update-club', pk=pk)
+            return redirect('wushu:kulup-uyeleri')
 
         else:
 
@@ -155,7 +152,7 @@ def return_add_club_person(request, pk):
 
 @login_required
 def updateClubPersons(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -164,7 +161,7 @@ def updateClubPersons(request, pk):
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
     communication = Communication.objects.get(pk=athlete.communication.pk)
-    sportClub = athlete.sportClub
+    # sportClub = athlete.sportClub
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
@@ -186,7 +183,7 @@ def updateClubPersons(request, pk):
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 
-            return redirect('wushu:update-club', pk=sportClub.pk)
+            return redirect('wushu:kulup-uyeleri')
 
         else:
 
@@ -199,14 +196,25 @@ def updateClubPersons(request, pk):
 
 @login_required
 def return_club_person(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    athletes = SportClubUser.objects.all()
-    user_form = UserSearchForm()
 
+    user_form = UserSearchForm()
+    user = request.user
+    club_user_array = []
+    if user.groups.filter(name='KulupUye'):
+
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
+
+        for club in clubs:
+            club_user_array.append(club.clubUser.all())
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        club_user_array = SportClubUser.objects.all()
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
         if user_form.is_valid():
@@ -223,14 +231,15 @@ def return_club_person(request):
                     query &= Q(user__first_name__icontains=firstName)
                 if email:
                     query &= Q(user__email__icontains=email)
-                athletes = SportClubUser.objects.filter(query)
 
-    return render(request, 'kulup/kulup-uyeleri.html', {'athletes': athletes, 'user_form': user_form})
+
+
+    return render(request, 'kulup/kulup-uyeleri.html', {'athletes': club_user_array, 'user_form': user_form})
 
 
 @login_required
 def return_club_role(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -258,7 +267,7 @@ def return_club_role(request):
 
 @login_required
 def deleteClubRole(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -276,8 +285,50 @@ def deleteClubRole(request, pk):
 
 
 @login_required
+def deleteClubUser(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportClubUser.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
+        except ClubRole.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def deleteClubUserFromClub(request, pk, club_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportClubUser.objects.get(pk=pk)
+            club = SportsClub.objects.get(pk=club_pk)
+
+            club.clubUser.remove(obj)
+            club.save()
+
+            return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
+        except ClubRole.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
 def updateClubRole(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -299,7 +350,7 @@ def updateClubRole(request, pk):
 
 @login_required
 def clubDelete(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -318,7 +369,7 @@ def clubDelete(request, pk):
 
 @login_required
 def clubUpdate(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -328,7 +379,8 @@ def clubUpdate(request, pk):
     communication = Communication.objects.get(id=com_id)
     club_form = ClubForm(request.POST or None, instance=club)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
-    clubPersons = SportClubUser.objects.filter(sportClub=club)
+    clubPersons = club.clubUser.all()
+
     clubCoachs = club.coachs.all()
 
     if request.method == 'POST':
@@ -347,7 +399,7 @@ def clubUpdate(request, pk):
 
 @login_required
 def choose_coach(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -379,7 +431,7 @@ def choose_coach(request, pk):
             for coach in instances:
                 club.coachs.add(coach)
             club.save()
-            messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
+            messages.success(request, 'Kulüp Başarıyla Güncellenmiştir.')
 
             return redirect('wushu:update-club', pk=pk)
 
@@ -387,8 +439,50 @@ def choose_coach(request, pk):
 
 
 @login_required
+def choose_sport_club_user(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    sportClubUsers = SportClubUser.objects.all()
+    user_form = UserSearchForm()
+    if request.method == 'POST':
+        user_form = UserSearchForm(request.POST)
+        athletes1 = request.POST.getlist('selected_options')
+        if user_form.is_valid():
+            firstName = user_form.cleaned_data.get('first_name')
+            lastName = user_form.cleaned_data.get('last_name')
+            email = user_form.cleaned_data.get('email')
+            if not (firstName or lastName or email):
+                print("asasa")
+                # messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
+                if firstName:
+                    query &= Q(user__first_name__icontains=firstName)
+                if email:
+                    query &= Q(user__email__icontains=email)
+                sportClubUsers = SportClubUser.objects.filter(query)
+        if athletes1:
+            students = [int(x) for x in athletes1]
+            instances = SportClubUser.objects.filter(id__in=students)
+            club = SportsClub.objects.get(pk=pk)
+            for club_user in instances:
+                club.clubUser.add(club_user)
+            club.save()
+            messages.success(request, 'Kulüp Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:update-club', pk=pk)
+
+    return render(request, 'kulup/kulupuyesisec.html', {'coaches': sportClubUsers, 'user_form': user_form})
+
+
+@login_required
 def return_belt_exams(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -399,7 +493,7 @@ def return_belt_exams(request):
 
 
 def detail_belt_exam(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -411,7 +505,7 @@ def detail_belt_exam(request, pk):
 
 @login_required
 def approve_belt_exam(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -438,7 +532,7 @@ def approve_belt_exam(request, pk):
 
 @login_required
 def choose_athlete(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -464,7 +558,7 @@ def choose_athlete(request):
 
 @login_required
 def add_belt_exam(request, athlete1):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -503,7 +597,7 @@ def add_belt_exam(request, athlete1):
 
 @login_required
 def update_belt_exam(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -531,7 +625,7 @@ def update_belt_exam(request, pk):
 
 @login_required
 def delete_belt_exam(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -550,12 +644,11 @@ def delete_belt_exam(request, pk):
 
 @login_required
 def updateClubPersonsProfile(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
 
     user = User.objects.get(pk=pk)
     club_user = SportClubUser.objects.get(user=user)
@@ -566,9 +659,6 @@ def updateClubPersonsProfile(request, pk):
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     club_form = DisabledSportClubUserForm(request.POST or None, instance=club_user)
     password_form = SetPasswordForm(request.user, request.POST)
-
-
-
 
     if request.method == 'POST':
 
@@ -596,4 +686,4 @@ def updateClubPersonsProfile(request, pk):
 
     return render(request, 'kulup/kulup-uyesi-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'password_form': password_form ,'club_form':club_form})
+                   'person_form': person_form, 'password_form': password_form, 'club_form': club_form})

@@ -1,5 +1,6 @@
 from django.db import models
 
+from wushu.models.SportClubUser import SportClubUser
 from wushu.models.Coach import Coach
 from wushu.models.Communication import Communication
 
@@ -15,6 +16,7 @@ class SportsClub(models.Model):
     modificationDate = models.DateTimeField(auto_now=True)
     coachs = models.ManyToManyField(Coach)
     isFormal = models.BooleanField()
+    clubUser = models.ManyToManyField(SportClubUser)
 
     def __str__(self):
         return '%s %s %s' % (self.shortName, '-', self.name)

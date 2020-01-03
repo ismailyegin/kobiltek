@@ -20,7 +20,7 @@ from wushu.Forms.LicenseForm import LicenseForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser
+from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 from wushu.services import general_methods
@@ -101,7 +101,11 @@ def return_athletes(request):
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
-        athletes = Athlete.objects.filter(licenses__sportsClub=sc_user.sportClub).distinct()
+        clubsPk = []
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         athletes = Athlete.objects.all()
     user_form = UserSearchForm()
@@ -310,19 +314,25 @@ def sporcu_lisans_ekle(request, pk):
         logout(request)
         return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
+    user = request.user
+    sc_user = SportClubUser.objects.get(user=user)
     license_form = LicenseForm()
+    clubs = SportsClub.objects.filter(clubUser=sc_user)
+
+    if user.groups.filter(name='KulupUye'):
+
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.all()
 
     if request.method == 'POST':
         license_form = LicenseForm(request.POST)
         if license_form.is_valid():
-            license = license_form.save(commit=False)
-            login_user = request.user
-            user = User.objects.get(pk=login_user.pk)
-            if user.groups.filter(name='KulupUye'):
-                sc_user = SportClubUser.objects.get(user=user)
-                license.sportsClub = sc_user.sportClub
-            license.status = License.WAITED
-            license.save()
+            license = license_form.save()
             athlete.licenses.add(license)
             athlete.save()
 
@@ -347,20 +357,23 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
     license = License.objects.get(pk=license_pk)
     license.status = License.APPROVED
     license.save()
-    # athlete = Athlete.objects.get(pk=athlete_pk)
-    # belts = athlete.belts.filter(branch=license.branch)
-    # if not belts:
-    #     belt = Level()
-    #     belt.branch = license.branch
-    #     firstBelt = CategoryItem.objects.filter(forWhichClazz="BELT", isFirst=True, branch=license.branch)
-    #     belt.definition = firstBelt.first()
-    #     belt.startDate = license.startDate
-    #     belt.levelType = EnumFields.LEVELTYPE.BELT
-    #     belt.status = Level.APPROVED
-    #     belt.save()
-    #     athlete.belts.add(belt)
-    #     athlete.save()
+
     messages.success(request, 'Lisans Onaylanmıştır')
+    return redirect('wushu:update-athletes', pk=athlete_pk)
+
+
+@login_required
+def sporcu_lisans_reddet(request, license_pk, athlete_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    license = License.objects.get(pk=license_pk)
+    license.status = License.DENIED
+    license.save()
+
+    messages.success(request, 'Lisans Reddedilmiştir')
     return redirect('wushu:update-athletes', pk=athlete_pk)
 
 
@@ -408,6 +421,21 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
 
 
 @login_required
+def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
+    perm =general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt = Level.objects.get(pk=belt_pk)
+    belt.status = Level.DENIED
+    belt.save()
+
+    messages.success(request, 'Kuşak Reddedilmiştir')
+    return redirect('wushu:update-athletes', pk=athlete_pk)
+
+
+@login_required
 def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
     perm =general_methods.control_access(request)
 
@@ -447,9 +475,14 @@ def sporcu_kusak_listesi(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    clubuser = SportClubUser.objects.get(user=user)
+    clubs = SportsClub.objects.filter(clubUser=clubuser)
+    clubsPk = []
+    for club in clubs:
+        clubsPk.append(club.pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
-        belts = Level.objects.filter(athlete__licenses__sportsClub=sc_user.sportClub)
+        belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         belts = Level.objects.all().distinct()
 

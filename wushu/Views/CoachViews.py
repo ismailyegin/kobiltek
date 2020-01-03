@@ -16,7 +16,7 @@ from wushu.Forms.GradeForm import GradeForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level
+from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
 
@@ -88,12 +88,15 @@ def return_coachs(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    coachs = Coach.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
-        coachs = Coach.objects.filter(sportsclub=sc_user.sportClub)
+        clubsPk = []
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+        coachs = Coach.objects.filter(sportsclub__in=clubsPk).distinct()
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         coachs = Coach.objects.all()
     user_form = UserSearchForm()

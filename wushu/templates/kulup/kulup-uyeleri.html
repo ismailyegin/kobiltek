@@ -192,6 +192,7 @@
                         </div>
 
                         <div class="box-body">
+                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
                          <div class="box-header with-border">
                                 <div class="btn-group">
                                     <a href="{% url "wushu:kulup-uyesi-ekle" %}"
@@ -200,19 +201,18 @@
                                     </a>
                                 </div>
                             </div>
+                        {% endif %}
                             <table id="sporcular" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Ad Soyad</th>
-                                    <th>Kulüp</th>
                                     <th>Rolü</th>
                                     <th>Cep Tel</th>
                                     <th>E-Mail</th>
-                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Güncelleme</th>
+                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
+                                    <th>İşlemler</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -221,7 +221,6 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                            <td>{{ athlete.sportClub.name }} </td>
                                             <td>{{ athlete.role.name }} </td>
                                             <td>{{ athlete.communication.phoneNumber }} </td>
                                             <td>{{ athlete.user.email }} </td>
@@ -236,7 +235,6 @@
 
                                                     </div>
                                                 </td>
-
                                             {% endif %}
                                         </tr>
 

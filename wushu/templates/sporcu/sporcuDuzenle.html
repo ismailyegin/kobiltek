@@ -68,11 +68,16 @@
                             <h3 class="box-title">Genel Bilgiler</h3>
                         </div>
                         <div class="box-body">
-                               <div class="row">
+                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ person_form.profileImage.label }}</label>
                                         {{ person_form.profileImage }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.tc.label }}</label>
+                                        {{ person_form.tc }}
                                     </div>
 
 
@@ -80,6 +85,22 @@
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.bloodType.label }}</label>
+                                        {{ person_form.bloodType }}
+                                    </div>
+
+
+                                </div>
+                                <br>
+                                <div class="col-lg-6">
 
 
                                     <div class="form-group">
@@ -89,34 +110,13 @@
 
 
                                     <div class="form-group">
-                                        <label> {{ person_form.birthplace.label }}</label>
-                                        {{ person_form.birthplace }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
-                                        {{ person_form.bloodType }}
-                                    </div>
-
-
-                                </div>
-                                <br>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ person_form.tc.label }}</label>
-                                        {{ person_form.tc }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
-                                    </div>
-
-
-                                    <div class="form-group">
                                         <label> {{ person_form.fatherName.label }}</label>
                                         {{ person_form.fatherName }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthplace.label }}</label>
+                                        {{ person_form.birthplace }}
                                     </div>
 
 
@@ -249,10 +249,15 @@
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-edit"></i>Onayla
                                                             </a>
+                                                            <a href="{% url "wushu:sporcu-kusak-reddet" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-trash"></i>Reddet
+                                                            </a>
+
                                                         {% endif %}
                                                         <a class="btn btn-danger"
-                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                                class="fa fa-trash"></i>Reddet</a>
+                                                           data-toggle="modal" onclick=deleteClub({{ belt.pk }})><i
+                                                                class="fa fa-trash"></i>Sil</a>
 
                                                     </div>
                                                 </td>
@@ -291,14 +296,13 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Kulüp</th>
-                                    {% endif %}
+                                    <th>Kulüp</th>
                                     <th> Başlama Tarihi</th>
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
                                     <th> Lisans No</th>
                                     <th> Onay Durumu</th>
+                                    <th> İşlemler</th>
 
 
                                 </tr>
@@ -308,9 +312,7 @@
                                     {% for license in licenses_form %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <td>{{ license.sportsClub }}</td>
-                                            {% endif %}
+                                            <td>{{ license.sportsClub }}</td>
                                             <td>{{ license.startDate }}  </td>
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
@@ -330,10 +332,14 @@
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-edit"></i>Onayla
                                                             </a>
+                                                            <a href="{% url "wushu:sporcu-lisans-reddet" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-trash"></i>Reddet
+                                                            </a>
                                                         {% endif %}
                                                         <a class="btn btn-danger"
-                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                                class="fa fa-trash"></i>Reddet</a>
+                                                           data-toggle="modal" onclick=deleteClub({{ license.pk }})><i
+                                                                class="fa fa-trash"></i>Sil</a>
 
                                                     </div>
                                                 </td>

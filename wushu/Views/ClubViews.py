@@ -127,6 +127,7 @@ def return_add_club_person(request):
 
             club_person.save()
 
+
             subject, from_email, to = 'WUSHU - Kulüp Üye Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
             text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
             html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
@@ -209,12 +210,17 @@ def return_club_person(request):
 
         clubuser = SportClubUser.objects.get(user=user)
         clubs = SportsClub.objects.filter(clubUser=clubuser)
-
+        clubsPk= []
         for club in clubs:
-            club_user_array.append(club.clubUser.all())
+            clubsPk.append(club.pk)
+
+
+        club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk)
+
 
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         club_user_array = SportClubUser.objects.all()
+
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
         if user_form.is_valid():
@@ -325,6 +331,28 @@ def deleteClubUserFromClub(request, pk, club_pk):
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+login_required
+def deleteCoachFromClub(request, pk, club_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = Coach.objects.get(pk=pk)
+            club = SportsClub.objects.get(pk=club_pk)
+
+            club.coachs.remove(obj)
+            club.save()
+
+            return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
+        except ClubRole.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 @login_required
 def updateClubRole(request, pk):
@@ -407,8 +435,7 @@ def choose_coach(request, pk):
     coaches = Coach.objects.all()
     user_form = UserSearchForm()
     if request.method == 'POST':
-        user_form = UserSearchForm(request.POST)
-        athletes1 = request.POST.getlist('selected_options')
+
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
@@ -424,6 +451,8 @@ def choose_coach(request, pk):
                 if email:
                     query &= Q(user__email__icontains=email)
                 coaches = Coach.objects.filter(query)
+        user_form = UserSearchForm(request.POST)
+        athletes1 = request.POST.getlist('selected_options')
         if athletes1:
             students = [int(x) for x in athletes1]
             instances = Coach.objects.filter(id__in=students)
@@ -431,7 +460,7 @@ def choose_coach(request, pk):
             for coach in instances:
                 club.coachs.add(coach)
             club.save()
-            messages.success(request, 'Kulüp Başarıyla Güncellenmiştir.')
+            messages.success(request, 'Antrenör Başarıyla Eklenmiştir.')
 
             return redirect('wushu:update-club', pk=pk)
 
@@ -473,7 +502,7 @@ def choose_sport_club_user(request, pk):
             for club_user in instances:
                 club.clubUser.add(club_user)
             club.save()
-            messages.success(request, 'Kulüp Başarıyla Güncellenmiştir.')
+            messages.success(request, 'Kulüp Üyesi Başarıyla Eklenmiştir.')
 
             return redirect('wushu:update-club', pk=pk)
 
@@ -487,7 +516,22 @@ def return_belt_exams(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    exams = BeltExam.objects.all()
+
+    user = request.user
+
+    if user.groups.filter(name='KulupUye'):
+
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+
+        exams = BeltExam.objects.filter(sportClub__in=clubsPk)
+
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        exams = BeltExam.objects.all()
 
     return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
 

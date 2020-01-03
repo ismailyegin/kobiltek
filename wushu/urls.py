@@ -25,6 +25,8 @@ urlpatterns = [
         name='sporcu-lisans-duzenle'),
     url(r'sporcu/sporcuLisansDuzenle/onayla/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
+    url(r'sporcu/sporcuLisansDuzenle/reddet/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
+        AthleteViews.sporcu_lisans_reddet, name='sporcu-lisans-reddet'),
     url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
@@ -33,9 +35,12 @@ urlpatterns = [
     url(r'sporcu/kusakDuzenle/(?P<pk>\d+)$', AthleteViews.categoryItemUpdate,
         name='categoryItem-duzenle'),
     url(r'sporcu/sporcuKusakDuzenle/onayla/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
-        AthleteViews.sporcu_lisans_onayla, name='sporcu-kusak-onayla'),
+        AthleteViews.sporcu_kusak_onayla, name='sporcu-kusak-onayla'),
+    url(r'sporcu/sporcuKusakDuzenle/reddet/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
+        AthleteViews.sporcu_kusak_reddet, name='sporcu-kusak-reddet'),
     url(r'sporcu/sporcuKusakListesi/onayla/(?P<belt_pk>\d+)$',
         AthleteViews.sporcu_kusak_listesi_onayla, name='sporcu-kusak-listesi-onayla'),
+
     url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,
         name='update-athletes'),
     url(r'sporcu/sporcu-kusak-listesi/$', AthleteViews.sporcu_kusak_listesi, name='kusak-listesi'),
@@ -72,6 +77,8 @@ urlpatterns = [
 
     url(r'kulup/kulup-uyeleri/cikar/(?P<pk>\d+)/(?P<club_pk>\d+)/$', ClubViews.deleteClubUserFromClub,
         name='ClubUser-cikar'),
+    url(r'kulup/kulup-antrenorleri/cikar/(?P<pk>\d+)/(?P<club_pk>\d+)/$', ClubViews.deleteCoachFromClub,
+        name='ClubCoach-cikar'),
 
     url(r'kulup/kulupRolDuzenle/(?P<pk>\d+)$', ClubViews.updateClubRole,
         name='updateClubRole'),
@@ -91,7 +98,6 @@ urlpatterns = [
 
     url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
-
 
     # Antrenörler
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),

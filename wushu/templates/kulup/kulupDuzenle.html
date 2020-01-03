@@ -46,7 +46,7 @@
 
     {% endif %}
 
-<div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -66,7 +66,7 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -125,7 +125,7 @@
                                 <label> {{ club_form.foundingDate.label }}</label>
                                 {{ club_form.foundingDate }}
                             </div>
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label> {{ club_form.isFormal.label }}</label>
                                 {{ club_form.isFormal }}
                             </div>
@@ -234,7 +234,7 @@
                                             <td>{{ athlete.role.name }} </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a onclick="deleteCoach({{ athlete.id }}, {{ club.pk}})"
+                                                    <a onclick="deleteClubPerson({{ athlete.id }}, {{ club.pk }})"
                                                        type="button" class="btn btn-danger"><i
                                                             class="fa fa-edit"></i>Çıkar
                                                     </a>
@@ -275,7 +275,7 @@
                                     <th>#</th>
                                     <th>Ad Soyad</th>
                                     <th>Kademe</th>
-                                    <th>Güncelleme</th>
+                                    <th>İşlemler</th>
 
 
                                 </tr>
@@ -289,9 +289,9 @@
                                             <td>{{ coach.grades.last.definition.name }} </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a href="{% url "wushu:update-coach" coach.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>Güncelle
+                                                    <a onclick="deleteClubCoach({{ coach.id }}, {{ club.pk }})"
+                                                       type="button" class="btn btn-danger"><i
+                                                            class="fa fa-edit"></i>Çıkar
                                                     </a>
 
 
@@ -346,15 +346,15 @@
         })
     </script>
 
-      <script>
-        function deleteCoach(id, club_id) {
+    <script>
+        function deleteClubPerson(id, club_id) {
 
             console.log(id);
             var html = '';
             $("#modal-danger").on("shown.bs.modal", function (e) {
                 $("#btn-conf").click(function () {
                     $.ajax({
-                        url: "{% url "wushu:ClubUser-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/,club_id.toString()),
+                        url: "{% url "wushu:ClubUser-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -363,7 +363,48 @@
                         success: function (result) {
 
                             html = 'Kulüp üyesi başarıyla çıkarıldı.';
-                            debugger;
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:update-club" club.pk %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+    </script>
+    <script>
+
+        function deleteClubCoach(id, club_id) {
+
+            console.log(id);
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:ClubCoach-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Antrenör başarıyla çıkarıldı.';
+                        debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

@@ -27,6 +27,8 @@ urlpatterns = [
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
     url(r'sporcu/sporcuLisansDuzenle/reddet/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_reddet, name='sporcu-lisans-reddet'),
+    url(r'sporcu/sporcuLisansDuzenle/lisanssil/(?P<pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_lisans_sil,
+        name='sporcu-lisans-sil'),
     url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
@@ -38,6 +40,8 @@ urlpatterns = [
         AthleteViews.sporcu_kusak_onayla, name='sporcu-kusak-onayla'),
     url(r'sporcu/sporcuKusakDuzenle/reddet/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_kusak_reddet, name='sporcu-kusak-reddet'),
+    url(r'sporcu/sporcuKusakDuzenle/kusaksil/(?P<pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_sil,
+        name='sporcu-kusak-sil'),
     url(r'sporcu/sporcuKusakListesi/onayla/(?P<belt_pk>\d+)$',
         AthleteViews.sporcu_kusak_listesi_onayla, name='sporcu-kusak-listesi-onayla'),
 

@@ -1,6 +1,52 @@
 {% extends 'base_layout.html' %}
 {% block content %}
 
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     {% if messages %}
         {% for message in messages %}
 
@@ -223,6 +269,7 @@
                                     <th> Hak Kazanma Tarihi</th>
                                     <th> Branş</th>
                                     <th> Tanımı</th>
+                                    <th> Dekont</th>
                                     <th> Onay Durumu</th>
 
 
@@ -236,6 +283,9 @@
                                             <td>{{ belt.startDate }}  </td>
                                             <td>{{ belt.branch }}  </td>
                                             <td>{{ belt.definition }}  </td>
+                                            <td><a href="/media/{{ belt.dekont }}" target="_blank"> <i
+                                                    class="fa fa-file-image-o fa-2x " style="color: red"
+                                                    aria-hidden="true"></i></a></td>
                                             <td>{{ belt.status }}  </td>
                                             {% if belt.status != 'Onaylandı' %}
                                                 <td>
@@ -255,9 +305,10 @@
                                                             </a>
 
                                                         {% endif %}
-                                                        <a class="btn btn-danger"
-                                                           data-toggle="modal" onclick=deleteClub({{ belt.pk }})><i
-                                                                class="fa fa-trash"></i>Sil</a>
+                                                        <a onclick="deleteKusak({{ belt.id }}, {{ athlete.pk }})"
+                                                           type="button" class="btn btn-danger"><i
+                                                                class="fa fa-edit"></i>Sil
+                                                        </a>
 
                                                     </div>
                                                 </td>
@@ -301,6 +352,7 @@
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
                                     <th> Lisans No</th>
+                                    <th> Lisans Foto.</th>
                                     <th> Onay Durumu</th>
                                     <th> İşlemler</th>
 
@@ -317,6 +369,9 @@
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
+                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
+                                                    class="fa fa-file-image-o fa-2x " style="color: red"
+                                                    aria-hidden="true"></i></a></td>
                                             <td>{{ license.status }}  </td>
                                             {% if license.status != 'Onaylandı' %}
                                                 <td>
@@ -337,9 +392,10 @@
                                                                     class="fa fa-trash"></i>Reddet
                                                             </a>
                                                         {% endif %}
-                                                        <a class="btn btn-danger"
-                                                           data-toggle="modal" onclick=deleteClub({{ license.pk }})><i
-                                                                class="fa fa-trash"></i>Sil</a>
+                                                        <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
+                                                           type="button" class="btn btn-danger"><i
+                                                                class="fa fa-edit"></i>Sil
+                                                        </a>
 
                                                     </div>
                                                 </td>
@@ -388,6 +444,87 @@
             })
 
         })
+    </script>
+
+    <script>
+        function deleteKusak(id, club_id) {
+
+            console.log(id);
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-kusak-sil" pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Kuşak Başarıyla Silindi.';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:update-athletes" athlete.pk %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+    </script>
+    <script>
+        function deleteLisans(id, club_id) {
+
+            console.log(id);
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-lisans-sil" pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Lisans Başarıyla Silindi.';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:update-athletes" athlete.pk %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
     </script>
 
 

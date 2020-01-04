@@ -9,7 +9,7 @@ class LicenseForm(ModelForm):
                                         to_field_name='name',
                                         empty_label="Seçiniz",
                                         label="Kulübü",
-                                        required=False,
+                                        required=True,
                                         widget=forms.Select(
                                             attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                    'style': 'width: 100%; '}))
@@ -18,10 +18,10 @@ class LicenseForm(ModelForm):
         model = License
 
         fields = (
-            'startDate', 'sportsClub', 'branch', 'licenseNo', 'cityHeadShip', 'expireDate')
+            'startDate', 'sportsClub', 'branch', 'licenseNo', 'cityHeadShip', 'expireDate','lisansPhoto')
 
         labels = {'startDate': 'Başlangıç Tarihi', 'branch': 'Branş', 'sportsClub': 'Kulüp',
-                  'licenseNo': 'Lisans No', 'cityHeadShip': 'Verildiği İl', 'expireDate':'Geçer. Süresi'}
+                  'licenseNo': 'Lisans No', 'cityHeadShip': 'Verildiği İl', 'expireDate':'Geçer. Süresi','lisansPhoto':'Lisans Foto'}
 
         widgets = {
 
@@ -40,5 +40,7 @@ class LicenseForm(ModelForm):
 
             'cityHeadShip': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
+
+
 
         }

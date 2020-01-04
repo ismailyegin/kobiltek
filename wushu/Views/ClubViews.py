@@ -607,7 +607,20 @@ def add_belt_exam(request, athlete1):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    exam_form = BeltExamForm()
+    exam_form = BeltExamForm(request.POST, request.FILES or None)
+    user = request.user
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+        exam_form.fields['coach'].queryset = Coach.objects.filter(sportsclub__in=clubsPk)
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
+        exam_form.fields['coach'].queryset = Coach.objects.all()
     x = athlete1.split('-')
 
     # Remove the element at index 2 in list
@@ -617,20 +630,12 @@ def add_belt_exam(request, athlete1):
     if request.method == 'POST':
         exam_form = BeltExamForm(request.POST, request.FILES or None)
         if exam_form.is_valid():
-            exam = exam_form.save(commit=False)
-
-            login_user = request.user
-
-            sc_user = SportClubUser.objects.get(user=login_user)
-
-            exam.sportClub = sc_user.sportClub
-
-            exam.save()
+            exam = exam_form.save()
 
             for athlete in instances:
                 exam.athletes.add(athlete)
 
-            exam.save()
+
 
             messages.success(request, 'Sınav başarıyla oluşturuldu')
             return redirect('wushu:kusak-sinavlari')

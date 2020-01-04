@@ -28,7 +28,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_add_athlete(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -92,7 +92,7 @@ def return_add_athlete(request):
 
 @login_required
 def return_athletes(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -133,7 +133,7 @@ def return_athletes(request):
 
 @login_required
 def updateathletes(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -176,7 +176,7 @@ def updateathletes(request, pk):
 
 @login_required
 def return_belt(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -205,7 +205,7 @@ def return_belt(request):
 
 @login_required
 def categoryItemDelete(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -224,7 +224,7 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -246,18 +246,18 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def sporcu_kusak_ekle(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
-    belt_form = BeltForm()
+    belt_form = BeltForm(request.POST, request.FILES or None)
     belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
                                                                           branch=athlete.licenses.last().branch)
 
     if request.method == 'POST':
-        belt_form = BeltForm(request.POST, request.FILES)
+        belt_form = BeltForm(request.POST, request.FILES or None)
         if belt_form.is_valid():
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
                          dekont=belt_form.cleaned_data['dekont'],
@@ -282,18 +282,16 @@ def sporcu_kusak_ekle(request, pk):
 
 @login_required
 def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
-    belt_form = BeltForm(request.POST or None, instance=belt, initial={'definition': belt.definition})
+    belt_form = BeltForm(request.POST, instance=belt, initial={'definition': belt.definition})
     if request.method == 'POST':
         if belt_form.is_valid():
-            belt = belt_form.save(commit=False)
-            belt.expireDate = belt.startDate + timedelta(days=belt.durationDay)
-            belt.save()
+            belt_form.save()
 
             messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
@@ -307,20 +305,41 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
 
 
 @login_required
+def sporcu_kusak_sil(request, pk, athlete_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = Level.objects.get(pk=pk)
+            athlete = Athlete.objects.get(pk=athlete_pk)
+            athlete.belts.remove(obj)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Level.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
 def sporcu_lisans_ekle(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
     user = request.user
-    sc_user = SportClubUser.objects.get(user=user)
-    license_form = LicenseForm()
-    clubs = SportsClub.objects.filter(clubUser=sc_user)
+
+    license_form = LicenseForm(request.POST, request.FILES or None)
 
     if user.groups.filter(name='KulupUye'):
-
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
         clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
@@ -330,11 +349,10 @@ def sporcu_lisans_ekle(request, pk):
         license_form.fields['sportsClub'].queryset = SportsClub.objects.all()
 
     if request.method == 'POST':
-        license_form = LicenseForm(request.POST)
+        license_form = LicenseForm(request.POST, request.FILES or None)
         if license_form.is_valid():
             license = license_form.save()
             athlete.licenses.add(license)
-            athlete.save()
 
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
@@ -349,7 +367,7 @@ def sporcu_lisans_ekle(request, pk):
 
 @login_required
 def sporcu_lisans_onayla(request, license_pk, athlete_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -379,7 +397,7 @@ def sporcu_lisans_reddet(request, license_pk, athlete_pk):
 
 @login_required
 def sporcu_lisans_listesi_onayla(request, license_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -393,7 +411,7 @@ def sporcu_lisans_listesi_onayla(request, license_pk):
 
 @login_required
 def sporcu_kusak_listesi_onayla(request, belt_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -407,7 +425,7 @@ def sporcu_kusak_listesi_onayla(request, belt_pk):
 
 @login_required
 def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -422,7 +440,7 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
 
 @login_required
 def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -437,24 +455,28 @@ def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
 
 @login_required
 def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
     license_form = LicenseForm(request.POST or None, instance=license, initial={'sportsClub': license.sportsClub})
-    sportClub = license.sportsClub
+    user = request.user
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.all()
 
     if request.method == 'POST':
         if license_form.is_valid():
-            license = license_form.save(commit=False)
-            login_user = request.user
-            user = User.objects.get(pk=login_user.pk)
-            if user.groups.filter(name='KulupUye'):
-                license.sportsClub = sportClub
-            license.save()
-
+            license_form.save()
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
 
@@ -463,12 +485,33 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/sporcu-lisans-duzenle.html',
-                  {'license_form': license_form})
+                  {'license_form': license_form, 'license': license})
+
+
+@login_required
+def sporcu_lisans_sil(request, pk, athlete_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = License.objects.get(pk=pk)
+            athlete = Athlete.objects.get(pk=athlete_pk)
+            athlete.licenses.remove(obj)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Level.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 @login_required
 def sporcu_kusak_listesi(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -491,7 +534,7 @@ def sporcu_kusak_listesi(request):
 
 @login_required
 def sporcu_lisans_listesi(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -507,15 +550,13 @@ def sporcu_lisans_listesi(request):
     return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses})
 
 
-
 @login_required
 def updateAthleteProfile(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
 
     user = User.objects.get(pk=pk)
     directory_user = Athlete.objects.get(user=user)
@@ -526,12 +567,9 @@ def updateAthleteProfile(request, pk):
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     password_form = SetPasswordForm(request.user, request.POST)
 
-
-
-
     if request.method == 'POST':
 
-        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid()  and password_form.is_valid():
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']

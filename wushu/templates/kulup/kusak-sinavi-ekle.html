@@ -50,11 +50,11 @@
 
     <section class="content-header">
         <h1>
-            Kulüp Ekle
+            Sınav Ekle
 
         </h1>
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Sınav Ekle</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i>Sınav Ekle</a></li>
 
         </ol>
     </section>
@@ -92,9 +92,14 @@
                                 <label> {{ exam_form.dekontDate.label }}</label>
                                 {{ exam_form.dekontDate }}
                             </div>
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label> {{ exam_form.dekont.label }}</label>
                                 {{ exam_form.dekont }}
+                            </div>
+
+                            <div class="form-group">
+                                <label> {{ exam_form.sportClub.label }}</label>
+                                {{ exam_form.sportClub }}
                             </div>
                         </div>
                         {% comment %}<div class="box-footer">
@@ -105,7 +110,7 @@
                         </div>{% endcomment %}
 
 
-                         <div class="box-footer">
+                        <div class="box-footer">
                             <button class="btn btn-primary" type="submit">Kaydet</button>
                         </div>
 

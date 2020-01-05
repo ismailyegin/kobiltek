@@ -72,11 +72,11 @@ def forgot(request):
             user = obj.save()
             html_content = ''
             subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', obj.email
-            text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            html_content = '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr:81</p>'
+            html_content = '<h2>Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.</h2>'
+            html_content = html_content+'<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr:81</p>'
             html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
             html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 

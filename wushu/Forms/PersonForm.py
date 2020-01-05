@@ -41,3 +41,14 @@ class PersonForm(ModelForm):
                                           'style': 'width: 100%; '}),
 
         }
+
+    def clean_tc(self):
+
+        data = self.cleaned_data['tc']
+        print(self.instance)
+        if self.instance is None:
+            if Person.objects.filter(tc=data).exists():
+                raise forms.ValidationError("This tc already used")
+            return data
+        else:
+            return data

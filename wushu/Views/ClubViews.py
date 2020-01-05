@@ -328,9 +328,8 @@ def deleteClubUserFromClub(request, pk, club_pk):
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
-login_required
 
-
+@login_required
 def deleteCoachFromClub(request, pk, club_pk):
     perm = general_methods.control_access(request)
 

@@ -23,7 +23,7 @@ from wushu.services import general_methods
 
 @login_required
 def return_add_coach(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -67,7 +67,7 @@ def return_add_coach(request):
             html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
-            #msg.send()
+            # msg.send()
 
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
@@ -83,7 +83,7 @@ def return_add_coach(request):
 
 @login_required
 def return_coachs(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -122,7 +122,7 @@ def return_coachs(request):
 
 @login_required
 def return_grade(request):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -149,11 +149,9 @@ def return_grade(request):
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
 
 
-
-
 @login_required
 def antrenor_kademe_ekle(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -167,10 +165,10 @@ def antrenor_kademe_ekle(request, pk):
         grade_form = GradeForm(request.POST, request.FILES)
         if grade_form.is_valid():
             grade = Level(startDate=grade_form.cleaned_data['startDate'],
-                         dekont=grade_form.cleaned_data['dekont'],
-                         definition=grade_form.cleaned_data['definition'])
+                          dekont=grade_form.cleaned_data['dekont'],
+                          definition=grade_form.cleaned_data['definition'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
-           # grade.branch = coach.licenses.last().branch
+            # grade.branch = coach.licenses.last().branch
             grade.status = Level.WAITED
             grade.save()
             coach.grades.add(grade)
@@ -187,12 +185,9 @@ def antrenor_kademe_ekle(request, pk):
                   {'grade_form': grade_form})
 
 
-
-
-
 @login_required
 def categoryItemDelete(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -211,7 +206,7 @@ def categoryItemDelete(request, pk):
 
 @login_required
 def categoryItemUpdate(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -232,7 +227,7 @@ def categoryItemUpdate(request, pk):
 
 @login_required
 def deleteCoach(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -251,7 +246,7 @@ def deleteCoach(request, pk):
 
 @login_required
 def coachUpdate(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
@@ -262,15 +257,23 @@ def coachUpdate(request, pk):
     person = Person.objects.get(pk=coach.person.pk)
     communication = Communication.objects.get(pk=coach.communication.pk)
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     if request.method == 'POST':
+        user = User.objects.get(pk=coach.user.pk)
+        user_form = UserForm(request.POST or None, instance=user)
+        # person_form = PersonForm(request.POST,request.FILES, instance=person)
+        communication_form = CommunicationForm(request.POST or None, instance=communication)
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
-            user.username = user_form.cleaned_data['email']
+            """user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
+            """
+
+            user = user_form.save(commit=False)
+            user.username = user_form.cleaned_data['email']
             user.save()
             person_form.save()
             communication_form.save()
@@ -282,18 +285,16 @@ def coachUpdate(request, pk):
 
     return render(request, 'antrenor/antrenorDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form,'grades_form':grade_form,'coach' :coach.pk})
-
+                   'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,'personCoach':person})
 
 
 @login_required
 def updateCoachProfile(request, pk):
-    perm =general_methods.control_access(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
 
     user = User.objects.get(pk=pk)
     directory_user = Coach.objects.get(user=user)
@@ -304,12 +305,9 @@ def updateCoachProfile(request, pk):
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     password_form = SetPasswordForm(request.user, request.POST)
 
-
-
-
     if request.method == 'POST':
 
-        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid()  and password_form.is_valid():
+        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']

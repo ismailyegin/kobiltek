@@ -18,3 +18,14 @@ class UserForm(ModelForm):
             'is_active': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
 
         }
+
+    def clean_email(self):
+
+        data = self.cleaned_data['email']
+        print(self.instance)
+        if  self.instance is None:
+            if User.objects.filter(email=data).exists():
+                raise forms.ValidationError("This email already used")
+            return data
+        else:
+            return data

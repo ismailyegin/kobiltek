@@ -288,7 +288,7 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
-    belt_form = BeltForm(request.POST, instance=belt, initial={'definition': belt.definition})
+    belt_form = BeltForm(request.POST,request.FILES or None, instance=belt, initial={'definition': belt.definition})
     if request.method == 'POST':
         if belt_form.is_valid():
             belt_form.save()
@@ -461,7 +461,7 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
-    license_form = LicenseForm(request.POST or None, instance=license, initial={'sportsClub': license.sportsClub})
+    license_form = LicenseForm(request.POST or None,request.FILES or None, instance=license, initial={'sportsClub': license.sportsClub})
     user = request.user
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
@@ -563,7 +563,7 @@ def updateAthleteProfile(request, pk):
     person = Person.objects.get(pk=directory_user.person.pk)
     communication = Communication.objects.get(pk=directory_user.communication.pk)
     user_form = DisabledUserForm(request.POST or None, instance=user)
-    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    person_form = DisabledPersonForm(request.POST or None,request.FILES or None, instance=person)
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     password_form = SetPasswordForm(request.user, request.POST)
 

@@ -127,7 +127,6 @@ def return_add_club_person(request):
 
             club_person.save()
 
-
             subject, from_email, to = 'WUSHU - Kulüp Üye Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
             text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
             html_content = '<p> <strong>Site adresi: </strong> <a href="https://www.twf.gov.tr/"></a>https://www.twf.gov.tr/</p>'
@@ -210,10 +209,9 @@ def return_club_person(request):
 
         clubuser = SportClubUser.objects.get(user=user)
         clubs = SportsClub.objects.filter(clubUser=clubuser)
-        clubsPk= []
+        clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
-
 
         club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk)
 
@@ -237,8 +235,6 @@ def return_club_person(request):
                     query &= Q(user__first_name__icontains=firstName)
                 if email:
                     query &= Q(user__email__icontains=email)
-
-
 
     return render(request, 'kulup/kulup-uyeleri.html', {'athletes': club_user_array, 'user_form': user_form})
 
@@ -331,7 +327,10 @@ def deleteClubUserFromClub(request, pk, club_pk):
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
 login_required
+
+
 def deleteCoachFromClub(request, pk, club_pk):
     perm = general_methods.control_access(request)
 
@@ -635,8 +634,6 @@ def add_belt_exam(request, athlete1):
             for athlete in instances:
                 exam.athletes.add(athlete)
 
-
-
             messages.success(request, 'Sınav başarıyla oluşturuldu')
             return redirect('wushu:kusak-sinavlari')
         else:
@@ -704,7 +701,7 @@ def updateClubPersonsProfile(request, pk):
     person = Person.objects.get(pk=club_user.person.pk)
     communication = Communication.objects.get(pk=club_user.communication.pk)
     user_form = DisabledUserForm(request.POST or None, instance=user)
-    person_form = DisabledPersonForm(request.POST or None, instance=person)
+    person_form = DisabledPersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     club_form = DisabledSportClubUserForm(request.POST or None, instance=club_user)
     password_form = SetPasswordForm(request.user, request.POST)

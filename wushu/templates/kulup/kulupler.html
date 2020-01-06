@@ -147,10 +147,12 @@
 
                         <div class="box-header with-border">
                             <div class="btn-group">
-                                <a href="{% url "wushu:kulup-ekle" %}"
-                                   type="button" class="btn btn-success"><i
-                                        class="fa fa-edit"></i> Kulüp Ekle
-                                </a>
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                    <a href="{% url "wushu:kulup-ekle" %}"
+                                       type="button" class="btn btn-success"><i
+                                            class="fa fa-edit"></i> Kulüp Ekle
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="box-body">
@@ -182,10 +184,11 @@
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>Güncelle
                                                     </a>
-
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
-                                                            class="fa fa-trash"></i>Sil</a>
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                        <a class="btn btn-danger"
+                                                           data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
+                                                                class="fa fa-trash"></i>Sil</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
 

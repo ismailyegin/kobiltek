@@ -137,7 +137,9 @@
                             </div>
                         </div>
                         <div class="box-footer">
+                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                             <button class="btn btn-primary" type="submit">Kaydet</button>
+                            {% endif %}
                         </div>
 
 
@@ -190,7 +192,9 @@
                             </div>
                         </div>
                         <div class="box-footer">
+                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                             <button class="btn btn-primary" type="submit">Kaydet</button>
+                            {% endif %}
                         </div>
 
 
@@ -208,10 +212,12 @@
                         <div class="box-body">
                             <div class="box-header with-border">
                                 <div class="btn-group">
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <a href="{% url "wushu:choose-sport-club-user"  club.pk %}"
                                        type="button" class="btn btn-success"><i
                                             class="fa fa-edit"></i> Kulüp Üyesi Ekle
                                     </a>
+                                    {% endif %}
                                 </div>
                             </div>
                             <table id="sporcular" class="table table-bordered table-hover">
@@ -234,10 +240,12 @@
                                             <td>{{ athlete.role.name }} </td>
                                             <td>
                                                 <div class="btn-group">
+                                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                     <a onclick="deleteClubPerson({{ athlete.id }}, {{ club.pk }})"
                                                        type="button" class="btn btn-danger"><i
                                                             class="fa fa-edit"></i>Çıkar
                                                     </a>
+                                                    {% endif %}
 
 
                                                 </div>
@@ -263,10 +271,12 @@
                         <div class="box-body">
                             <div class="box-header with-border">
                                 <div class="btn-group">
+                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <a href="{% url "wushu:choose-coach"  club.pk %}"
                                        type="button" class="btn btn-success"><i
                                             class="fa fa-edit"></i> Antrenör Ekle
                                     </a>
+                                    {% endif %}
                                 </div>
                             </div>
                             <table id="antrenorler" class="table table-bordered table-hover">
@@ -289,10 +299,12 @@
                                             <td>{{ coach.grades.last.definition.name }} </td>
                                             <td>
                                                 <div class="btn-group">
+                                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                     <a onclick="deleteClubCoach({{ coach.id }}, {{ club.pk }})"
                                                        type="button" class="btn btn-danger"><i
                                                             class="fa fa-edit"></i>Çıkar
                                                     </a>
+                                                    {% endif %}
 
 
                                                 </div>

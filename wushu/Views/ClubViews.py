@@ -171,7 +171,7 @@ def updateClubPersons(request, pk):
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and sportClubUser_form.is_valid():
 
-            user = User()
+            user = user_form.save(commit=False)
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
@@ -579,21 +579,24 @@ def choose_athlete(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    athletes = Athlete.objects.all()
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubsPk = []
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        athletes = Athlete.objects.all()
     str = ''
-    athlete = []
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
             for x in athletes1:
                 str = str + x + '-'
-
-            students = [int(x) for x in athletes1]
-            athlete = Athlete.objects.filter(id__in=students)
-        exam_form = BeltExamForm()
-        # return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
-        # return redirect('wushu:kusak-sinavi-ekle', pk=str)
         return redirect(reverse("wushu:kusak-sinavi-ekle", kwargs={'athlete1': str}))
     return render(request, 'kulup/kusak-sinavi-sporcu-sec.html', {'athletes': athletes})
 

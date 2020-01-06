@@ -541,11 +541,17 @@ def sporcu_lisans_listesi(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+
     if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        licenses = License.objects.filter(sportsClub=sc_user.sportClub)
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        licenses = License.objects.filter(athlete__licenses__sportsClub__in=clubsPk)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         licenses = License.objects.all().distinct()
+
 
     return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses})
 

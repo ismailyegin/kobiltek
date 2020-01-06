@@ -77,7 +77,13 @@ def return_clubs(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    clubs = SportsClub.objects.all()
+    user = request.user
+    if user.groups.filter(name='KulupUye'):
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        clubs = SportsClub.objects.all()
 
     return render(request, 'kulup/kulupler.html', {'clubs': clubs})
 
@@ -326,7 +332,6 @@ def deleteClubUserFromClub(request, pk, club_pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-
 
 
 @login_required

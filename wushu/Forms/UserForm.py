@@ -23,9 +23,9 @@ class UserForm(ModelForm):
 
         data = self.cleaned_data['email']
         print(self.instance)
-        if  self.instance is None:
+        if  self.instance.id is None:
             if User.objects.filter(email=data).exists():
-                raise forms.ValidationError("This email already used")
+                raise forms.ValidationError("Bu email başka bir kullanıcı tarafından kullanılmaktadır.")
             return data
         else:
             return data

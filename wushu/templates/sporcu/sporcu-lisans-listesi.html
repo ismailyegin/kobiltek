@@ -160,7 +160,7 @@
                                 {% for license in licenses %}
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ license.athlete_set }}</td>
+                                        <td>{{ license.athlete_set.first }}</td>
                                         <td>{{ license.sportsClub }}</td>
                                         <td>{{ license.startDate }}  </td>
                                         <td>{{ license.expireDate }}  </td>

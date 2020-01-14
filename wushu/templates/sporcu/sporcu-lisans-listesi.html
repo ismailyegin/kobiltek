@@ -172,10 +172,7 @@
                                                 <td>
                                                     <div class="btn-group">
 
-                                                        <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
-                                                           type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i>Güncelle
-                                                        </a>
+
 
                                                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                             <a href="{% url "wushu:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
@@ -187,10 +184,7 @@
                                                                     class="fa fa-trash"></i>Reddet
                                                             </a>
                                                         {% endif %}
-                                                        <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
-                                                           type="button" class="btn btn-danger"><i
-                                                                class="fa fa-edit"></i>Sil
-                                                        </a>
+
 
                                                     </div>
                                                 </td>

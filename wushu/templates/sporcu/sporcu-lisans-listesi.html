@@ -155,8 +155,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {% if licenses_form.all %}
-                                    {% for license in licenses_form %}
+                            {% if licenses.all %}
+                                    {% for license in licenses %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ license.sportsClub }}</td>

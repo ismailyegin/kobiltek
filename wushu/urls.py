@@ -32,6 +32,8 @@ urlpatterns = [
         name='sporcu-lisans-sil'),
     url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
+    url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
+        AthleteViews.sporcu_lisans_listesi_reddet, name='sporcu-lisans-listesi-reddet'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
     url(r'sporcu/kusak/sil/(?P<pk>\d+)$', AthleteViews.categoryItemDelete,
         name='categoryItem-delete'),

@@ -698,14 +698,14 @@ def delete_belt_exam(request, pk):
 
 
 @login_required
-def updateClubPersonsProfile(request, pk):
+def updateClubPersonsProfile(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
 
-    user = User.objects.get(pk=pk)
+    user = request.user
     club_user = SportClubUser.objects.get(user=user)
     person = Person.objects.get(pk=club_user.person.pk)
     communication = Communication.objects.get(pk=club_user.communication.pk)
@@ -717,19 +717,10 @@ def updateClubPersonsProfile(request, pk):
 
     if request.method == 'POST':
 
-        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and club_form.is_valid() and password_form.is_valid():
+        if password_form.is_valid():
 
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
-            user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()
-
-            person_form.save()
-            communication_form.save()
-            club_form.save()
-            password_form.save()
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 

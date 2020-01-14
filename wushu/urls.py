@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
-from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews
+from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
+    CompetitionViews
 
 app_name = 'wushu'
 
@@ -97,7 +98,7 @@ urlpatterns = [
     url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
     url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
     url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
-    url(r'kulup/kulup-uyesi-profil-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersonsProfile,
+    url(r'kulup/kulup-uyesi-profil-guncelle/$', ClubViews.updateClubPersonsProfile,
         name='kulup-uyesi-profil-guncelle'),
 
     url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
@@ -148,5 +149,15 @@ urlpatterns = [
         name='kullanici-aktifet'),
     url(r'kullanici/kullanicilar/kullanici-bilgi-gonder/(?P<pk>\d+)$', UserViews.send_information,
         name='kullanici-bilgi-gonder'),
+
+    # Competition
+    url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
+    url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
+    url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),
+    url(r'musabaka/musabakalar/musabaka-sil(?P<pk>\d+)$', CompetitionViews.musabaka_sil, name='musabaka-sil'),
+    url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
+        name='musabaka-sporcu-sec'),
+    url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
+        name='musabaka-sporcu-kaldir'),
 
 ]

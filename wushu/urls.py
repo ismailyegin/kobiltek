@@ -151,13 +151,13 @@ urlpatterns = [
         name='kullanici-bilgi-gonder'),
 
     # Competition
-    # url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
-    # url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
-    # url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),
-    # url(r'musabaka/musabakalar/musabaka-sil(?P<pk>\d+)$', CompetitionViews.musabaka_sil, name='musabaka-sil'),
-    # url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
-    #     name='musabaka-sporcu-sec'),
-    # url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
-    #     name='musabaka-sporcu-kaldir'),
+    url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
+    url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
+    url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),
+    url(r'musabaka/musabakalar/musabaka-sil(?P<pk>\d+)$', CompetitionViews.musabaka_sil, name='musabaka-sil'),
+    url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
+        name='musabaka-sporcu-sec'),
+    url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
+        name='musabaka-sporcu-kaldir'),
 
 ]

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews
+    CompetitionViews, AdminViews
 
 app_name = 'wushu'
 
@@ -50,7 +50,7 @@ urlpatterns = [
         name='update-athletes'),
     url(r'sporcu/sporcu-kusak-listesi/$', AthleteViews.sporcu_kusak_listesi, name='kusak-listesi'),
     url(r'sporcu/sporcu-lisans-listesi/$', AthleteViews.sporcu_lisans_listesi, name='lisans-listesi'),
-    url(r'sporcu/sporcu-profil-guncelle/(?P<pk>\d+)$', AthleteViews.updateAthleteProfile,
+    url(r'sporcu/sporcu-profil-guncelle/$', AthleteViews.updateAthleteProfile,
         name='sporcu-profil-guncelle'),
 
     # Hakemler
@@ -65,7 +65,7 @@ urlpatterns = [
         name='referee-delete'),
     url(r'hakem/hakemDuzenle/(?P<pk>\d+)$', RefereeViews.updateReferee,
         name='hakem-duzenle'),
-    url(r'hakem/hakem-profil-guncelle/(?P<pk>\d+)$', RefereeViews.updateRefereeProfile,
+    url(r'hakem/hakem-profil-guncelle/$', RefereeViews.updateRefereeProfile,
         name='hakem-profil-guncelle'),
 
     # Kulüpler
@@ -118,7 +118,7 @@ urlpatterns = [
         name='update-coach'),
     url(r'antrenor/antrenorSec/(?P<pk>\d+)$', ClubViews.choose_coach,
         name='choose-coach'),
-    url(r'antrenor/antrenor-profil-guncelle/(?P<pk>\d+)$', CoachViews.updateCoachProfile,
+    url(r'antrenor/antrenor-profil-guncelle/$', CoachViews.updateCoachProfile,
         name='antrenor-profil-guncelle'),
     url(r'antrenor/antrenorkademeekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
 
@@ -139,18 +139,22 @@ urlpatterns = [
         name='kurul_sil'),
     url(r'yonetim/kurul-duzenle/(?P<pk>\d+)$', DirectoryViews.update_commission,
         name='kurul-duzenle'),
-    url(r'yonetim/yonetim-kurul-profil-guncelle/(?P<pk>\d+)$', DirectoryViews.updateDirectoryProfile,
+    url(r'yonetim/yonetim-kurul-profil-guncelle/$', DirectoryViews.updateDirectoryProfile,
         name='yonetim-kurul-profil-guncelle'),
+
+    # Admin
+    url(r'admin/admin-profil-guncelle/$', AdminViews.updateProfile,
+        name='admin-profil-guncelle'),
 
     # Kullanıcılar
     url(r'kullanici/kullanicilar/$', UserViews.return_users, name='kullanicilar'),
-    url(r'kullanici/kullanici-duzenle/$', UserViews.update_user, name='kullanici-duzenle'),
+    url(r'kullanici/kullanici-duzenle/(?P<pk>\d+)$', UserViews.update_user, name='kullanici-duzenle'),
     url(r'kullanici/kullanicilar/aktifet/(?P<pk>\d+)$', UserViews.active_user,
         name='kullanici-aktifet'),
     url(r'kullanici/kullanicilar/kullanici-bilgi-gonder/(?P<pk>\d+)$', UserViews.send_information,
         name='kullanici-bilgi-gonder'),
 
-    # Competition
+    #Competition
     url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
     url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
     url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),

@@ -170,11 +170,14 @@
                             <li class="user-footer">
                                 <div class="pull-left">
 
+
                                     {% if user.groups.all.0.name == "Sporcu" %}
                                         <a href="{% url "wushu:sporcu-profil-guncelle" %}"
                                            class="btn btn-default btn-flat">Profil Bilgisi</a>
 
-
+                                    {% elif user.groups.all.0.name == "Admin" %}
+                                        <a href="{% url "wushu:admin-profil-guncelle" %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
 
                                     {% elif user.groups.all.0.name == "Hakem" %}
                                         <a href="{% url "wushu:hakem-profil-guncelle" %}"

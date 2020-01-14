@@ -290,14 +290,14 @@ def coachUpdate(request, pk):
 
 
 @login_required
-def updateCoachProfile(request, pk):
+def updateCoachProfile(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
 
-    user = User.objects.get(pk=pk)
+    user =request.user
     directory_user = Coach.objects.get(user=user)
     person = Person.objects.get(pk=directory_user.person.pk)
     communication = Communication.objects.get(pk=directory_user.communication.pk)

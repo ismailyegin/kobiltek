@@ -316,7 +316,7 @@ def update_commission(request, pk):
 
 
 @login_required
-def updateDirectoryProfile(request, pk):
+def updateDirectoryProfile(request):
     perm =general_methods.control_access(request)
 
     if not perm:
@@ -324,7 +324,7 @@ def updateDirectoryProfile(request, pk):
         return redirect('accounts:login')
 
 
-    user = User.objects.get(pk=pk)
+    user = request.user
     directory_user = DirectoryMember.objects.get(user=user)
     person = Person.objects.get(pk=directory_user.person.pk)
     communication = Communication.objects.get(pk=directory_user.communication.pk)

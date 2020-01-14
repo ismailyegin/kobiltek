@@ -1,4 +1,4 @@
-from django.contrib.auth import logout
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
@@ -716,20 +716,47 @@ def updateClubPersonsProfile(request):
     password_form = SetPasswordForm(request.user, request.POST)
 
     if request.method == 'POST':
+        data = request.POST.copy()
+        data['bloodType'] = "AB Rh+"
+        data['gender'] = "Erkek"
+        person_form = DisabledPersonForm(data)
 
-        if password_form.is_valid():
+        if person_form.is_valid() and password_form.is_valid():
+            if len(request.FILES) > 0:
+                person.profileImage = request.FILES['profileImage']
+                person.save()
+                messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
 
-            user.set_password(password_form.cleaned_data['new_password1'])
+            user.set_password(password_form.cleaned_data['new_password2'])
             user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+            return redirect('wushu:kulup-uyesi-profil-guncelle')
 
-            messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 
+
+        elif person_form.is_valid() and not password_form.is_valid():
+            if len(request.FILES) > 0:
+                person.profileImage = request.FILES['profileImage']
+                person.save()
+                messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
+            return redirect('wushu:kulup-uyesi-profil-guncelle')
+
+
+        elif not person_form.is_valid() and password_form.is_valid():
+            user.set_password(password_form.cleaned_data['new_password2'])
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
             return redirect('wushu:kulup-uyesi-profil-guncelle')
 
         else:
+            messages.warning(request, 'Alanları Kontrol Ediniz.')
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+            return redirect('wushu:kulup-uyesi-profil-guncelle')
 
     return render(request, 'kulup/kulup-uyesi-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'password_form': password_form, 'club_form': club_form})
+                   'person_form': person_form, 'password_form': password_form,'club_form':club_form})

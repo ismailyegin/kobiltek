@@ -234,14 +234,14 @@ def updateReferee(request, pk):
 
 
 @login_required
-def updateRefereeProfile(request, pk):
+def updateRefereeProfile(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
 
-    user = User.objects.get(pk=pk)
+    user = request.user
     referee_user = Judge.objects.get(user=user)
     person = Person.objects.get(pk=referee_user.person.pk)
     communication = Communication.objects.get(pk=referee_user.communication.pk)
@@ -266,7 +266,7 @@ def updateRefereeProfile(request, pk):
             user.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
-            return redirect('wushu:hakem-profil-guncelle', user.pk)
+            return redirect('wushu:hakem-profil-guncelle')
 
 
 
@@ -277,7 +277,7 @@ def updateRefereeProfile(request, pk):
                 messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
             else:
                 messages.warning(request, 'Alanları Kontrol Ediniz')
-            return redirect('wushu:hakem-profil-guncelle', pk)
+            return redirect('wushu:hakem-profil-guncelle')
 
 
         elif not person_form.is_valid() and password_form.is_valid():
@@ -285,12 +285,12 @@ def updateRefereeProfile(request, pk):
             user.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
-            return redirect('wushu:hakem-profil-guncelle', user.pk)
+            return redirect('wushu:hakem-profil-guncelle')
 
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz.')
 
-            return redirect('wushu:hakem-profil-guncelle', pk)
+            return redirect('wushu:hakem-profil-guncelle')
 
     return render(request, 'hakem/hakem-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,

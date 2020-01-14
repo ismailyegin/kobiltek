@@ -49,14 +49,18 @@
 
     <section class="content-header">
         <h1>
-            Kulüp Üyesi Düzenle
+            Profil Düzenle
 
         </h1>
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i>Kulüp Üyesi Düzenle</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i>Profil Düzenle</a></li>
 
         </ol>
     </section>
+
+
+
+
     <section class="content">
 
         <form method="post" enctype="multipart/form-data" role="form">
@@ -75,6 +79,7 @@
                                         <label> {{ person_form.profileImage.label }}</label>
                                         {{ person_form.profileImage }}
                                     </div>
+
 
                                     <div class="form-group">
                                         <label> </label>
@@ -176,11 +181,11 @@
                                         <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
                                         {{ person_form.bloodType }}
                                     </div>
-
                                     <div class="form-group">
                                         <label> {{ person_form.gender.label }}</label>
                                         {{ person_form.gender }}
                                     </div>
+
                                 </div>
                                 <br>
                                 <div class="col-lg-6">
@@ -210,11 +215,6 @@
                                     </div>
 
 
-                                    <div class="form-group">
-                                        <label> {{ club_form.role.label }}</label>
-                                        {{ club_form.role }}
-                                    </div>
-
                                 </div>
 
                             </div>
@@ -228,6 +228,12 @@
             </div>
 
         </form>
+        <script>
+
+            $('#id_new_password2').prop('required', false);
+            $('#id_new_password1').prop('required', false);
+
+        </script>
 
 
     </section>

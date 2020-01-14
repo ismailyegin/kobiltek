@@ -9,6 +9,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from wushu.Forms.CommunicationForm import CommunicationForm
+from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
+from wushu.Forms.DisabledPersonForm import DisabledPersonForm
+from wushu.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
+from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
@@ -130,3 +134,6 @@ def send_information(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+

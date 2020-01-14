@@ -409,6 +409,19 @@ def sporcu_lisans_listesi_onayla(request, license_pk):
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:lisans-listesi')
 
+@login_required
+def sporcu_lisans_listesi_reddet(request, license_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    license = License.objects.get(pk=license_pk)
+    license.status = License.DENIED
+    license.save()
+    messages.success(request, 'Lisans Reddedilmiştir')
+    return redirect('wushu:lisans-listesi')
+
 
 @login_required
 def sporcu_kusak_listesi_onayla(request, belt_pk):
@@ -422,6 +435,8 @@ def sporcu_kusak_listesi_onayla(request, belt_pk):
     belt.save()
     messages.success(request, 'Kuşak Onaylanmıştır')
     return redirect('wushu:kusak-listesi')
+
+
 
 
 @login_required

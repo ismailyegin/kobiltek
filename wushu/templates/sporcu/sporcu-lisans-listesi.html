@@ -175,11 +175,11 @@
 
 
                                                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                            <a href="{% url "wushu:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                            <a href="{% url "wushu:sporcu-lisans-listesi-onayla" license_pk=license.pk  %}"
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-edit"></i>Onayla
                                                             </a>
-                                                            <a href="{% url "wushu:sporcu-lisans-reddet" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                            <a href="{% url "wushu:sporcu-lisans-listesi-reddet" license_pk=license.pk  %}"
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-trash"></i>Reddet
                                                             </a>

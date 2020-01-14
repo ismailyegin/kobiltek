@@ -141,59 +141,60 @@
                         <table id="belt" class="table table-bordered table-hover">
                             <thead>
                             <tr>
-                                    <th>#</th>
-                                    <th>Kulüp</th>
-                                    <th> Başlama Tarihi</th>
-                                    <th> Bitiş Tarihi</th>
-                                    <th> Branş</th>
-                                    <th> Lisans No</th>
-                                    <th> Lisans Foto.</th>
-                                    <th> Onay Durumu</th>
-                                    <th> İşlemler</th>
+                                <th>#</th>
+                                <th>İsim Soyisim</th>
+                                <th>Kulüp</th>
+                                <th> Başlama Tarihi</th>
+                                <th> Bitiş Tarihi</th>
+                                <th> Branş</th>
+                                <th> Lisans No</th>
+                                <th> Lisans Foto.</th>
+                                <th> Onay Durumu</th>
+                                <th> İşlemler</th>
 
 
-                                </tr>
+                            </tr>
                             </thead>
                             <tbody>
                             {% if licenses.all %}
-                                    {% for license in licenses %}
-                                        <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ license.sportsClub }}</td>
-                                            <td>{{ license.startDate }}  </td>
-                                            <td>{{ license.expireDate }}  </td>
-                                            <td>{{ license.branch }}  </td>
-                                            <td>{{ license.licenseNo }}  </td>
-                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
-                                                    class="fa fa-file-image-o fa-2x " style="color: red"
-                                                    aria-hidden="true"></i></a></td>
-                                            <td>{{ license.status }}  </td>
-                                            {% if license.status != 'Onaylandı' %}
-                                                <td>
-                                                    <div class="btn-group">
+                                {% for license in licenses %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ license.athlete_set.name }}</td>
+                                        <td>{{ license.sportsClub }}</td>
+                                        <td>{{ license.startDate }}  </td>
+                                        <td>{{ license.expireDate }}  </td>
+                                        <td>{{ license.branch }}  </td>
+                                        <td>{{ license.licenseNo }}  </td>
+                                        <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
+                                                class="fa fa-file-image-o fa-2x " style="color: red"
+                                                aria-hidden="true"></i></a></td>
+                                        <td>{{ license.status }}  </td>
+                                        {% if license.status != 'Onaylandı' %}
+                                            <td>
+                                                <div class="btn-group">
 
 
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                        <a href="{% url "wushu:sporcu-lisans-listesi-onayla" license_pk=license.pk %}"
+                                                           type="button" class="btn btn-success"><i
+                                                                class="fa fa-edit"></i>Onayla
+                                                        </a>
+                                                        <a href="{% url "wushu:sporcu-lisans-listesi-reddet" license_pk=license.pk %}"
+                                                           type="button" class="btn btn-danger"><i
+                                                                class="fa fa-trash"></i>Reddet
+                                                        </a>
+                                                    {% endif %}
 
-                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                            <a href="{% url "wushu:sporcu-lisans-listesi-onayla" license_pk=license.pk  %}"
-                                                               type="button" class="btn btn-success"><i
-                                                                    class="fa fa-edit"></i>Onayla
-                                                            </a>
-                                                            <a href="{% url "wushu:sporcu-lisans-listesi-reddet" license_pk=license.pk  %}"
-                                                               type="button" class="btn btn-danger"><i
-                                                                    class="fa fa-trash"></i>Reddet
-                                                            </a>
-                                                        {% endif %}
 
+                                                </div>
+                                            </td>
+                                        {% endif %}
 
-                                                    </div>
-                                                </td>
-                                            {% endif %}
+                                    </tr>
 
-                                        </tr>
-
-                                    {% endfor %}
-                                {% endif %}
+                                {% endfor %}
+                            {% endif %}
 
 
                             </tbody>

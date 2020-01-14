@@ -39,6 +39,15 @@ class EnumFields(enum.Enum):
         (JEETKUNEDO, 'JEET KUNE DO KULELKAVIDO'),
     )
 
+    SANDA = 'SANDA'
+    TAOLU = 'TAOLU'
+
+    SUBBRANCH = (
+        (SANDA, 'SANDA'),
+        (TAOLU, 'TAOLU'),
+    )
+
+
     VISA = 'VISA'
     GRADE = 'GRADE'
     BELT = 'BELT'

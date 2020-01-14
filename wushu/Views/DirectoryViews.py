@@ -84,7 +84,8 @@ def add_directory_member(request):
 
         else:
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+            for x in user_form.errors.as_data():
+                messages.warning(request, user_form.errors[x][0])
 
     return render(request, 'yonetim/kurul-uyesi-ekle.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form, 'member_form':member_form})

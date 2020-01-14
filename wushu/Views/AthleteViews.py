@@ -81,8 +81,9 @@ def return_add_athlete(request):
             return redirect('wushu:update-athletes', pk=athlete.pk)
 
         else:
+            for x in user_form.errors.as_data():
+                messages.warning(request, user_form.errors[x][0])
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/sporcu-ekle.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form

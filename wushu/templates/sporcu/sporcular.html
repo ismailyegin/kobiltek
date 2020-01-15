@@ -227,11 +227,18 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
                                             <td>{{ athlete.person.birthDate }} </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                            {% if  athlete.licenses.last.status == 'Onaylandı' %}
                                                 <td>{{ athlete.licenses.last.sportsClub }}</td>
+                                                <td>{{ athlete.licenses.last.branch }}</td>
+                                            {% else %}
+                                                <td>-</td>
+                                                <td>-</td>
                                             {% endif %}
-                                            <td>{{ athlete.licenses.last.branch }}</td>
-                                            <td>{{ athlete.belts.last.definition }}</td>
+                                            {% if  athlete.belts.last.status == 'Onaylandı' %}
+                                                <td>{{ athlete.belts.last.definition }}</td>
+                                            {% else %}
+                                                <td>-</td>
+                                            {% endif %}
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "wushu:update-athletes" athlete.pk %}"

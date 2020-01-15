@@ -281,28 +281,7 @@ def sporcu_kusak_ekle(request, pk):
                   {'belt_form': belt_form})
 
 
-@login_required
-def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
-    perm = general_methods.control_access(request)
 
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-    belt = Level.objects.get(pk=belt_pk)
-    belt_form = BeltForm(request.POST, request.FILES or None, instance=belt, initial={'definition': belt.definition})
-    if request.method == 'POST':
-        if belt_form.is_valid():
-            belt_form.save()
-
-            messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
-            return redirect('wushu:update-athletes', pk=athlete_pk)
-
-        else:
-
-            messages.warning(request, 'Alanları Kontrol Ediniz')
-
-    return render(request, 'sporcu/sporcu-kusak-duzenle.html',
-                  {'belt_form': belt_form})
 
 
 @login_required
@@ -468,6 +447,31 @@ def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
     messages.success(request, 'Kuşak Reddedilmiştir')
     return redirect('wushu:update-athletes', pk=athlete_pk)
 
+@login_required
+def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt = Level.objects.get(pk=belt_pk)
+    athlete=Athlete.objects.get(pk=athlete_pk)
+    belt_form = BeltForm(request.POST or None, request.FILES or None, instance=belt, initial={'definition': belt.definition})
+    belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
+                                                                          branch=athlete.licenses.last().branch)
+    if request.method == 'POST':
+        if belt_form.is_valid():
+            belt_form.save()
+
+            messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
+            return redirect('wushu:update-athletes', pk=athlete_pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/sporcu-kusak-duzenle.html',
+                  {'belt_form': belt_form})
 
 @login_required
 def sporcu_lisans_duzenle(request, license_pk, athlete_pk):

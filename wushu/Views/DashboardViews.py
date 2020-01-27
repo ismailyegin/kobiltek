@@ -8,16 +8,6 @@ from wushu.services import general_methods
 
 
 @login_required
-def return_admin_dashboard(request):
-    perm = general_methods.control_access(request)
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-    return render(request, 'anasayfa/admin.html')
-
-
-@login_required
 def return_athlete_dashboard(request):
     perm = general_methods.control_access(request)
 
@@ -88,3 +78,25 @@ def return_club_user_dashboard(request):
     return render(request, 'anasayfa/kulup-uyesi.html',
                   {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
                    'total_athlete': total_athlete})
+
+
+@login_required
+def return_admin_dashboard(request):
+    perm = general_methods.control_access(request)
+    # x = general_methods.import_csv()
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    total_club = SportsClub.objects.all().count()
+    total_athlete = License.objects.all().count()
+    total_club_user = SportClubUser.objects.all().count()
+    total_coachs = Coach.objects.all().count()
+    return render(request, 'anasayfa/admin.html',
+                  {'total_club_user': total_club_user, 'total_club': total_club,
+                   'total_athlete': total_athlete, 'total_coachs':total_coachs})

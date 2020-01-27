@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from wushu.models import SportClubUser, SportsClub, Coach, Level, License
+from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete
 from wushu.services import general_methods
 
 
@@ -94,7 +94,7 @@ def return_admin_dashboard(request):
         return redirect('accounts:login')
 
     total_club = SportsClub.objects.all().count()
-    total_athlete = License.objects.all().count()
+    total_athlete = Athlete.objects.all().count()
     total_club_user = SportClubUser.objects.all().count()
     total_coachs = Coach.objects.all().count()
     return render(request, 'anasayfa/admin.html',

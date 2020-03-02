@@ -35,15 +35,37 @@ def return_add_athlete(request):
         return redirect('accounts:login')
     user_form = UserForm()
     person_form = PersonForm()
+
     communication_form = CommunicationForm()
+
+    # lisans ekleme baslangıç
+    # klüp üyesi sadece kendi klüplerini görebiliyor
+    user = request.user
+    license_form = LicenseForm(request.POST, request.FILES or None)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.all()
+
+
+
+    # lisan ekleme son alani bu alanlar sadece form bileselerinin sisteme gidebilmesi icin post ile gelen veride gene ayni şekilde  karşılama ve kaydetme islemi yapilacak
 
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
+        license_form = LicenseForm(request.POST, request.FILES or None)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+
+        if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
@@ -65,7 +87,10 @@ def return_add_athlete(request):
                 user=user, person=person, communication=communication,
             )
 
+            # lisans kaydedildi  kakydetmeden id degeri alamayacagi icin önce kaydedip sonra ekleme islemi yaptık
+            license = license_form.save()
             athlete.save()
+            athlete.licenses.add(license)
 
             # subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
             # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
@@ -78,7 +103,7 @@ def return_add_athlete(request):
 
             messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('wushu:update-athletes', pk=athlete.pk)
+            return redirect('wushu:sporcular')
 
         else:
             for x in user_form.errors.as_data():
@@ -86,7 +111,7 @@ def return_add_athlete(request):
 
 
     return render(request, 'sporcu/sporcu-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form
+                  {'user_form': user_form, 'person_form': person_form, 'license_form':license_form, 'communication_form': communication_form
 
                    })
 

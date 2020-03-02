@@ -133,7 +133,8 @@
                         <h3 class="box-title">Lisans Listesi</h3>
                     </div>
                     <div class="box-body">
-                        <table id="licenses" class="table table-bordered table-hover">
+                       <table id="licenses" class="table">
+
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -146,25 +147,27 @@
                                 <th> Lisans Foto.</th>
                                 <th> Onay Durumu</th>
                                 <th> İşlemler</th>
+
                             </tr>
                             </thead>
-                            <tbody>
-                                {% if licenses.all %}
-                                {% for license in licenses %}
+                           <tbody>
+                           {% if licenses.all %}
+                                 {% for license in licenses %}
                                     <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ license.athlete_set.first }}</td>
+                                <td>{{ forloop.counter }} </td>
+                                <td>{{ license.athlete_set.first }}</td>
                                         <td>{{ license.sportsClub }}</td>
                                         <td>{{ license.startDate }}  </td>
                                         <td>{{ license.expireDate }}  </td>
                                         <td>{{ license.branch }}  </td>
                                         <td>{{ license.licenseNo }}  </td>
-                                        <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
+                                <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
                                                 class="fa fa-file-image-o fa-2x " style="color: red"
                                                 aria-hidden="true"></i></a></td>
-                                        <td>{{ license.status }}  </td>
-                                        {% if license.status != 'Onaylandı' %}
+                                <td>{{ license.status }}  </td>
+
                                             <td>
+                                                {% if license.status != 'Onaylandı' %}
                                                 <div class="btn-group">
 
 
@@ -181,15 +184,28 @@
 
 
                                                 </div>
+                                            {% endif %}
                                             </td>
-                                        {% endif %}
 
-                                    </tr>
 
-                                {% endfor %}
-                            {% endif %}
-                            </tbody>
-                        </table>
+                            </tr>
+
+                                 {% endfor %}
+                           {% endif %}
+
+
+
+
+
+
+
+
+
+                           </tbody>
+
+
+
+                       </table>
                     </div>
                 </div>
             </div>

@@ -43,10 +43,6 @@ urlpatterns = [
     # lisanslarin hepsini reddetme
     url(r'sporcu/sporcuLisansListesi/hepsiniReddet/$', AthleteViews.sporcu_lisans_listesi_hepsireddet,
         name='sporcu-lisans-hepsini-reddet'),
-
-
-
-
     url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_reddet, name='sporcu-lisans-listesi-reddet'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),

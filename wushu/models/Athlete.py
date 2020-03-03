@@ -24,3 +24,13 @@ class Athlete(models.Model):
 
     class Meta:
         default_permissions = ()
+    def to_dict_json(self):
+        return{
+            'pk':self.pk,
+            'person':'fatih',
+            'communication':self.communication,
+
+
+
+
+        }

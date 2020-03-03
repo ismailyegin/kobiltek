@@ -385,41 +385,6 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
     return redirect('wushu:update-athletes', pk=athlete_pk)
 
 
-# bütün lisanslari onayla
-
-@login_required
-def sporcu_lisans_listesi_hepsionay(request):
-
-    licenses = License.objects.filter(status='Beklemede')
-    for license in licenses:
-
-        license.status = License.APPROVED
-        license.save()
-    return redirect('wushu:lisans-listesi')
-# lisanslarin hepsini reddet
-@login_required
-def sporcu_lisans_listesi_hepsireddet(request):
-    print("fatih berktug")
-
-    licenses = License.objects.filter(status='Beklemede')
-    for license in licenses:
-        license.status = License.DENIED
-        license.save()
-    return redirect('wushu:lisans-listesi')
-
-# bütün lisanslari beklemeye al
-# @login_required
-# def sporcu_bekle(request):
-#
-#     licenses = License.objects.all()
-#     for license in licenses:
-#         license.status = License.WAITED
-#         license.save()
-#     return redirect('wushu:lisans-listesi')
-#
-
-
-
 @login_required
 def sporcu_lisans_reddet(request, license_pk, athlete_pk):
     perm = general_methods.control_access(request)
@@ -635,10 +600,6 @@ def sporcu_lisans_listesi(request):
 
     return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses})
 
-
-@login_required
-def deneme(request):
-    return render(request, 'sporcu/deneme.html')
 
 @login_required
 def updateAthleteProfile(request, pk):

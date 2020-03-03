@@ -27,9 +27,9 @@ def help(request):
         icerik= request.POST['icerik']
         if konu and icerik:
             try:
-                konu = "["+user.email + "] - "+konu
+                konu = "["+user.email +  "] - "+konu
                 send_mail(konu, icerik, 'no-reply@twf.gov.tr', ['fatih@kobiltek.com'])
-                messages.success(request, 'Yardım ve Destek talebi basari ile gönderilmistir')
+                messages.success(request, 'Yardım ve Destek talebi basari ile gönderilmistir.')
             except BadHeaderError:
                 print('Invalid header found.')
                 messages.warning(request, 'Alanları Kontrol Ediniz Bir Şeyler Ters Gitti')

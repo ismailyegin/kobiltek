@@ -639,7 +639,7 @@ def updateAthleteProfile(request, pk):
 
         else:
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+            messages.warning(request, 'Alanları Kontrol Ediniz ')
 
     return render(request, 'sporcu/sporcu-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,

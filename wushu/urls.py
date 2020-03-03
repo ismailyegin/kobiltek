@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews
+    CompetitionViews, AdminViews,HelpViews
 
 app_name = 'wushu'
 
@@ -15,6 +15,11 @@ urlpatterns = [
     url(r'anasayfa/federasyon/$', DashboardViews.return_directory_dashboard, name='federasyon'),
     url(r'anasayfa/kulup-uyesi/$', DashboardViews.return_club_user_dashboard, name='kulup-uyesi'),
 
+
+
+    # pagenation test
+    url(r'sporcu/deneme/$', AthleteViews.deneme, name='deneme'),
+
     # Sporcular
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
@@ -26,12 +31,22 @@ urlpatterns = [
         name='sporcu-lisans-duzenle'),
     url(r'sporcu/sporcuLisansDuzenle/onayla/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
+
     url(r'sporcu/sporcuLisansDuzenle/reddet/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_reddet, name='sporcu-lisans-reddet'),
     url(r'sporcu/sporcuLisansDuzenle/lisanssil/(?P<pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_lisans_sil,
         name='sporcu-lisans-sil'),
     url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
+    # lisans listesinin hepsini onaylama
+    url(r'sporcu/sporcuLisansListesi/hepsinionayla/$',AthleteViews.sporcu_lisans_listesi_hepsionay, name='sporcu-lisans-hepsini-onayla'),
+    # lisanslarin hepsini reddetme
+    url(r'sporcu/sporcuLisansListesi/hepsiniReddet/$', AthleteViews.sporcu_lisans_listesi_hepsireddet,
+        name='sporcu-lisans-hepsini-reddet'),
+
+
+
+
     url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_reddet, name='sporcu-lisans-listesi-reddet'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
@@ -165,5 +180,8 @@ urlpatterns = [
         name='musabaka-sporcu-sec'),
     url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
         name='musabaka-sporcu-kaldir'),
+#     Yardım ve destek
+
+    url(r'yardim$', HelpViews.help, name='help'),
 
 ]

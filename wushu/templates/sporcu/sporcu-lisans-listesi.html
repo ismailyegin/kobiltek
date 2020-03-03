@@ -15,7 +15,7 @@
                     <h4 class="modal-title">İşlem Başarılı</h4>
                 </div>
                 <div class="modal-body successModal">
-                    ...
+
                 </div>
                 <div class="modal-footer">
 
@@ -37,7 +37,7 @@
                     <h4 class="modal-title">Uyarı</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
+                    <p>Hepsini degiştirmek istediginizden  emin misiniz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
@@ -103,35 +103,35 @@
 
 
 
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-
-
-            <div class="modal-content" style="height:fit-content">
-
-                <div class="modal-header" style="background-color:#3c8dbc ">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body bodys">
-                    ...
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <section class="content">
 
         <div class="row">
             <div class="col-lg-12">
+
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Lisans Listesi</h3>
                     </div>
+
+
+                      <div class="box-header with-border">
+                            <div class="btn-group">
+
+
+                                <a class="btn btn-success"
+                                   data-toggle="modal" onclick=onayClub()><i
+                                        class="fa fa-edit"></i>Hepsini Onayla</a>
+                                <a class="btn btn-danger"
+                                   data-toggle="modal" onclick=reddetClub()><i
+                                        class="fa fa-trash-o"></i>Hepsini reddet</a>
+
+
+                            </div>
+                        </div>
+
+
+
                     <div class="box-body">
                        <table id="licenses" class="table">
 
@@ -183,6 +183,7 @@
                                                     {% endif %}
 
 
+
                                                 </div>
                                             {% endif %}
                                             </td>
@@ -228,8 +229,86 @@
 
         })
     </script>
+{# hepsini onayla #}
+<script> function onayClub() {
+
+           console.log("ben buraya geldim")
+            var html = ''
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-lisans-hepsini-onayla"%}".replace(),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Lisanslarin hepsi onaylandi.';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:lisans-listesi" %}");
+
+                                });
+
+                            }).modal('show');
 
 
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+    </script>
+{# hepsini reddet #}
+<script> function reddetClub() {
+
+
+            var html = ''
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-lisans-hepsini-reddet"%}".replace(),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Lisanslarin hepsi reddedildi.';
+                        debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:lisans-listesi" %}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+    </script>
 
 
 

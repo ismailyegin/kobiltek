@@ -649,7 +649,7 @@ def updateAthleteProfile(request, pk):
 @login_required
 def sporcu_lisans_listesi_hepsionay(request):
 
-    licenses = License.objects.filter(status='Beklemede ')
+    licenses = License.objects.filter(status='Beklemede   ')
     for license in licenses:
 
         license.status = License.APPROVED

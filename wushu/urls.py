@@ -16,10 +16,6 @@ urlpatterns = [
     url(r'anasayfa/kulup-uyesi/$', DashboardViews.return_club_user_dashboard, name='kulup-uyesi'),
 
 
-
-    # pagenation test
-    url(r'sporcu/deneme/$', AthleteViews.deneme, name='deneme'),
-
     # Sporcular
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
@@ -43,10 +39,6 @@ urlpatterns = [
     # lisanslarin hepsini reddetme
     url(r'sporcu/sporcuLisansListesi/hepsiniReddet/$', AthleteViews.sporcu_lisans_listesi_hepsireddet,
         name='sporcu-lisans-hepsini-reddet'),
-
-
-
-
     url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_reddet, name='sporcu-lisans-listesi-reddet'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),

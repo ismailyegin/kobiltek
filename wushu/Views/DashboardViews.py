@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete
+from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete,Person
 from wushu.services import general_methods
 
 
@@ -92,6 +92,8 @@ def return_admin_dashboard(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    # son eklenen 5 sporcuyu ekledik
+    last_athlete=Athlete.objects.order_by('-creationDate')[:5]
 
     total_club = SportsClub.objects.all().count()
     total_athlete = Athlete.objects.all().count()
@@ -99,4 +101,4 @@ def return_admin_dashboard(request):
     total_coachs = Coach.objects.all().count()
     return render(request, 'anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
-                   'total_athlete': total_athlete, 'total_coachs':total_coachs})
+                   'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete})

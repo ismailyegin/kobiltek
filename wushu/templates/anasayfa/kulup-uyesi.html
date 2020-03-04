@@ -76,71 +76,71 @@
  <section class="content ">
         <div class="row">
 
-            <div class="col-lg-6">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Onay Bekleyen Kuşaklar</h3>
-                    </div>
-                    <div class="box-body">
-                     <table id="belt" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Ad</th>
-                                {% if user.groups.all.0 == 'Yonetim' or user.groups.all.0 == 'Admin' %}
-                                    <th>Kulüp</th>
-                                {% endif %}
-
-                                <th> İşlemler</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if belts.all %}
-                                {% for belt in belts %}
-                                    <tr>
-
-                                        <td>{{ forloop.counter }} </td>
-
-                                        <td>
-
-                                            <a target="_blank"> {{ belt.athlete_set.first }}</a>
-
-                                        </td>
-
-                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                            <td>{{ belt.athlete_set.first.licenses.last.sportsClub }}</td>
-                                        {% endif %}
-
-
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="#"
-                                                   type="button" class="btn btn-success"><i
-                                                        class="fa fa-check"></i>
-                                                </a>
-                                                <a class="btn btn-danger"
-                                                   data-toggle="modal"><i
-                                                        class="fa fa-times"></i></a>
-
-                                            </div>
-                                        </td>
-
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-
-            </div>
+{#            <div class="col-lg-6">#}
+{#                <div class="box box-primary">#}
+{#                    <div class="box-header with-border">#}
+{#                        <h3 class="box-title">Onay Bekleyen Kuşaklar</h3>#}
+{#                    </div>#}
+{#                    <div class="box-body">#}
+{#                     <table id="belt" class="table table-bordered table-hover">#}
+{#                            <thead>#}
+{#                            <tr>#}
+{#                                <th>#</th>#}
+{#                                <th> Ad</th>#}
+{#                                {% if user.groups.all.0 == 'Yonetim' or user.groups.all.0 == 'Admin' %}#}
+{#                                    <th>Kulüp</th>#}
+{#                                {% endif %}#}
+{##}
+{#                                <th> İşlemler</th>#}
+{##}
+{##}
+{#                            </tr>#}
+{#                            </thead>#}
+{#                            <tbody>#}
+{#                            {% if belts.all %}#}
+{#                                {% for belt in belts %}#}
+{#                                    <tr>#}
+{##}
+{#                                        <td>{{ forloop.counter }} </td>#}
+{##}
+{#                                        <td>#}
+{##}
+{#                                            <a target="_blank"> {{ belt.athlete_set.first }}</a>#}
+{##}
+{#                                        </td>#}
+{##}
+{#                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+{#                                            <td>{{ belt.athlete_set.first.licenses.last.sportsClub }}</td>#}
+{#                                        {% endif %}#}
+{##}
+{##}
+{#                                        <td>#}
+{#                                            <div class="btn-group">#}
+{#                                                <a href="#"#}
+{#                                                   type="button" class="btn btn-success"><i#}
+{#                                                        class="fa fa-check"></i>#}
+{#                                                </a>#}
+{#                                                <a class="btn btn-danger"#}
+{#                                                   data-toggle="modal"><i#}
+{#                                                        class="fa fa-times"></i></a>#}
+{##}
+{#                                            </div>#}
+{#                                        </td>#}
+{##}
+{##}
+{#                                    </tr>#}
+{##}
+{#                                {% endfor %}#}
+{#                            {% endif %}#}
+{##}
+{##}
+{#                            </tbody>#}
+{#                        </table>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{##}
+{#            </div>#}
         </div>
 
     </section>

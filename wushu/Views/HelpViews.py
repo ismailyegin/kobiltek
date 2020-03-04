@@ -15,11 +15,7 @@ from django.core.mail import BadHeaderError, send_mail
 
 
 def help(request):
-    perm = general_methods.control_access(request)
 
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
 
     if request.method == 'POST':
         user = request.user

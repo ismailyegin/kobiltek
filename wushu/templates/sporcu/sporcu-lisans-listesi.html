@@ -1,58 +1,6 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-
-
-
-
-    <!-- success modal -->
-    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">İşlem Başarılı</h4>
-                </div>
-                <div class="modal-body successModal">
-                    ...
-                </div>
-                <div class="modal-footer">
-
-                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
-    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
-         aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Uyarı</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
-                            data-dismiss="modal">Evet
-                    </button>
-                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
-
-
     {% if messages %}
         {% for message in messages %}
 
@@ -80,7 +28,7 @@
 
                 <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
 
 
                     <ul class="messages">
@@ -98,30 +46,54 @@
 
     {% endif %}
 
-
-
-
-
-
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-
-
-            <div class="modal-content" style="height:fit-content">
-
-                <div class="modal-header" style="background-color:#3c8dbc ">
-
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
                 </div>
-                <div class="modal-body bodys">
+                <div class="modal-body successModal">
                     ...
                 </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
             </div>
+            <!-- /.modal-content -->
         </div>
+        <!-- /.modal-dialog -->
     </div>
+    <div class="modal modal-success fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Beklememde olan bütün kayıtlar degistirilsin mi? </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+
+
 
 
     <section class="content">
@@ -132,8 +104,18 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Lisans Listesi</h3>
                     </div>
+                    <a onclick="onay()" type="button" class="btn btn-success">
+                        <i class="fa fa-edit"></i>
+                        Hepsini Onayla
+                    </a>
+                    <a onclick="reddet()" type="button" class="btn btn-danger">
+                        <i class="fa fa-trash"></i>
+                        Hepsini Reddet
+                    </a>
+                    <br>
+
                     <div class="box-body">
-                       <table id="licenses" class="table">
+                        <table id="licenses" class="table">
 
                             <thead>
                             <tr>
@@ -150,24 +132,24 @@
 
                             </tr>
                             </thead>
-                           <tbody>
-                           {% if licenses.all %}
-                                 {% for license in licenses %}
+                            <tbody>
+                            {% if licenses.all %}
+                                {% for license in licenses %}
                                     <tr>
-                                <td>{{ forloop.counter }} </td>
-                                <td>{{ license.athlete_set.first }}</td>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ license.athlete_set.first }}</td>
                                         <td>{{ license.sportsClub }}</td>
                                         <td>{{ license.startDate }}  </td>
                                         <td>{{ license.expireDate }}  </td>
                                         <td>{{ license.branch }}  </td>
                                         <td>{{ license.licenseNo }}  </td>
-                                <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
+                                        <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
                                                 class="fa fa-file-image-o fa-2x " style="color: red"
                                                 aria-hidden="true"></i></a></td>
-                                <td>{{ license.status }}  </td>
+                                        <td>{{ license.status }}  </td>
 
-                                            <td>
-                                                {% if license.status != 'Onaylandı' %}
+                                        <td>
+                                            {% if license.status != 'Onaylandı' %}
                                                 <div class="btn-group">
 
 
@@ -185,27 +167,19 @@
 
                                                 </div>
                                             {% endif %}
-                                            </td>
+                                        </td>
 
 
-                            </tr>
+                                    </tr>
 
-                                 {% endfor %}
-                           {% endif %}
-
-
+                                {% endfor %}
+                            {% endif %}
 
 
+                            </tbody>
 
 
-
-
-
-                           </tbody>
-
-
-
-                       </table>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -216,6 +190,8 @@
 
 
     <script>
+
+
         $(function () {
             $('#licenses').DataTable({
                 'paging': true,
@@ -226,14 +202,93 @@
                 'autoWidth': true
             })
 
-        })
+        });
+
+
     </script>
+    <script>
+
+        function onay() {
+           var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-lisans-hepsini-onayla"%}".replace(),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Lisansların hepsi başarı ile onaylandı.';
+                            debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:lisans-listesi"%}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+        }
 
 
 
+    </script>
+    <script>
 
 
+        function reddet() {
 
+            console.log("reddet çalisti");
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+                    $.ajax({
+                        url: "{% url "wushu:sporcu-lisans-hepsini-reddet"%}".replace(),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Lisanslarin hepsi başarı ile reddedildi.';
+                            debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+                                    window.location.replace("{% url "wushu:lisans-listesi"%}");
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+    </script>
 
 
 {% endblock %}

@@ -644,21 +644,22 @@ def updateAthleteProfile(request, pk):
     return render(request, 'sporcu/sporcu-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'password_form': password_form})
-# bütün lisanslari onayla
+
+
+
+# lisanslarda beklemede olanlarin hepsini  onayla
 
 @login_required
 def sporcu_lisans_listesi_hepsionay(request):
-
-    licenses = License.objects.filter(status='Beklemede   ')
+    licenses = License.objects.filter(status='Beklemede')
     for license in licenses:
 
         license.status = License.APPROVED
         license.save()
     return redirect('wushu:lisans-listesi')
-# lisanslarin hepsini reddet
+# lisanslarda beklemede olanlarin hepsini reddet
 @login_required
 def sporcu_lisans_listesi_hepsireddet(request):
-
 
     licenses = License.objects.filter(status='Beklemede')
     for license in licenses:
@@ -667,14 +668,14 @@ def sporcu_lisans_listesi_hepsireddet(request):
     return redirect('wushu:lisans-listesi')
 
 # bütün lisanslari beklemeye al
-# @login_required
-# def sporcu_bekle(request):
-#
-#     licenses = License.objects.all()
-#     for license in licenses:
-#         license.status = License.WAITED
-#         license.save()
-#     return redirect('wushu:lisans-listesi')
-#
+@login_required
+def sporcu_bekle(request):
+
+    licenses = License.objects.all()
+    for license in licenses:
+        license.status = License.WAITED
+        license.save()
+    return redirect('wushu:lisans-listesi')
+
 
 

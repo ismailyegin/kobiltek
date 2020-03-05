@@ -90,12 +90,6 @@
         <!-- /.modal-dialog -->
     </div>
 
-
-
-
-
-
-
     <section class="content">
 
         <div class="row">
@@ -104,15 +98,16 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Lisans Listesi</h3>
                     </div>
-                    <a onclick="onay()" type="button" class="btn btn-success">
-                        <i class="fa fa-edit"></i>
-                        Hepsini Onayla
-                    </a>
-                    <a onclick="reddet()" type="button" class="btn btn-danger">
-                        <i class="fa fa-trash"></i>
-                        Hepsini Reddet
-                    </a>
-                    <br>
+                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                        <a onclick="onay()" type="button" class="btn btn-success">
+                            <i class="fa fa-edit"></i>
+                            Hepsini Onayla
+                        </a>
+                        <a onclick="reddet()" type="button" class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
+                            Hepsini Reddet
+                        </a>
+                    {% endif %}
 
                     <div class="box-body">
                         <table id="licenses" class="table">
@@ -206,90 +201,90 @@
 
 
     </script>
-    <script>
+    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+        <script>
 
-        function onay() {
-           var html = '';
-            $("#modal-danger").on("shown.bs.modal", function (e) {
-                $("#btn-conf").click(function () {
-                    $.ajax({
-                        url: "{% url "wushu:sporcu-lisans-hepsini-onayla"%}".replace(),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
+            function onay() {
+                var html = '';
+                $("#modal-danger").on("shown.bs.modal", function (e) {
+                    $("#btn-conf").click(function () {
+                        $.ajax({
+                            url: "{% url "wushu:sporcu-lisans-hepsini-onayla"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
 
-                            html = 'Lisansların hepsi başarı ile onaylandı.';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                                html = 'Lisansların hepsi başarı ile onaylandı.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "wushu:lisans-listesi"%}");
+                                        window.location.replace("{% url "wushu:lisans-listesi"%}");
 
-                                });
+                                    });
 
-                            }).modal('show');
+                                }).modal('show');
 
 
-                            console.log(result.status)
-                        }
+                                console.log(result.status)
+                            }
+                        });
                     });
+                }).modal('show');
+                $('#btn-close').click(function () {
+                    $('#modal-danger').modal('hide');
                 });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
-        }
+            }
 
 
-
-    </script>
-    <script>
-
-
-        function reddet() {
-
-            console.log("reddet çalisti");
-            var html = '';
-            $("#modal-danger").on("shown.bs.modal", function (e) {
-                $("#btn-conf").click(function () {
-                    $.ajax({
-                        url: "{% url "wushu:sporcu-lisans-hepsini-reddet"%}".replace(),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
-
-                            html = 'Lisanslarin hepsi başarı ile reddedildi.';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "wushu:lisans-listesi"%}");
-
-                                });
-
-                            }).modal('show');
+        </script>
+        <script>
 
 
-                            console.log(result.status)
-                        }
+            function reddet() {
+
+                console.log("reddet çalisti");
+                var html = '';
+                $("#modal-danger").on("shown.bs.modal", function (e) {
+                    $("#btn-conf").click(function () {
+                        $.ajax({
+                            url: "{% url "wushu:sporcu-lisans-hepsini-reddet"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = 'Lisanslarin hepsi başarı ile reddedildi.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "wushu:lisans-listesi"%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
                     });
+                }).modal('show');
+                $('#btn-close').click(function () {
+                    $('#modal-danger').modal('hide');
                 });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
 
-        }
-    </script>
+            }
+        </script>
 
-
+    {% endif %}
 {% endblock %}
 

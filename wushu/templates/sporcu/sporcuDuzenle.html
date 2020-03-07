@@ -333,91 +333,100 @@
                     </div>
                 </div>
             </div>
+            {#  sayi alinip ona göre karsılastirma yapilacak #}
+            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                {% if athlete.licenses.count > 0 and athlete.licenses.first.status == 'Onaylandı' %}
 
-            {#            {% if athlete.licenses.count > 0 and athlete.licenses.last.status == 'Onaylandı' %}#}
-            {#                <div class="row">#}
-            {#                    <div class="col-lg-12">#}
-            {#                        <div class="box box-primary">#}
-            {#                            <div class="box-header with-border">#}
-            {#                                <h3 class="box-title">Kuşak Bilgileri</h3>#}
-            {#                            </div>#}
-            {#                            <div class="box-body">#}
-            {#                                <div class="box-header with-border">#}
-            {#                                    <div class="btn-group">#}
-            {##}
-            {#                                        <a href="{% url "wushu:sporcu-kusak-ekle"  athlete.pk %}"#}
-            {#                                           type="button" class="btn btn-success"><i#}
-            {#                                                class="fa fa-edit"></i> Denklik/İlk Kuşak Ekle#}
-            {#                                        </a>#}
-            {##}
-            {#                                    </div>#}
-            {#                                </div>#}
-            {#                                <table id="belt" class="table table-bordered table-hover">#}
-            {#                                    <thead>#}
-            {#                                    <tr>#}
-            {#                                        <th>#</th>#}
-            {#                                        <th> Hak Kazanma Tarihi</th>#}
-            {#                                        <th> Branş</th>#}
-            {#                                        <th> Tanımı</th>#}
-            {#                                        <th> Dekont</th>#}
-            {#                                        <th> Onay Durumu</th>#}
-            {##}
-            {##}
-            {#                                    </tr>#}
-            {#                                    </thead>#}
-            {#                                    <tbody>#}
-            {#                                    {% if belts_form.all %}#}
-            {#                                        {% for belt in belts_form %}#}
-            {#                                            <tr>#}
-            {#                                                <td>{{ forloop.counter }} </td>#}
-            {#                                                <td>{{ belt.startDate }}  </td>#}
-            {#                                                <td>{{ belt.branch }}  </td>#}
-            {#                                                <td>{{ belt.definition }}  </td>#}
-            {#                                                <td><a href="/media/{{ belt.dekont }}" target="_blank"> <i#}
-            {#                                                        class="fa fa-file-image-o fa-2x " style="color: red"#}
-            {#                                                        aria-hidden="true"></i></a></td>#}
-            {#                                                <td>{{ belt.status }}  </td>#}
-            {#                                                {% if belt.status != 'Onaylandı' %}#}
-            {#                                                    <td>#}
-            {#                                                        <div class="btn-group">#}
-            {#                                                            <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"#}
-            {#                                                               type="button" class="btn btn-warning"><i#}
-            {#                                                                    class="fa fa-edit"></i>Güncelle#}
-            {#                                                            </a>#}
-            {#                                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-            {#                                                                <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=belt.pk athlete_pk=athlete.pk %}"#}
-            {#                                                                   type="button" class="btn btn-success"><i#}
-            {#                                                                        class="fa fa-edit"></i>Onayla#}
-            {#                                                                </a>#}
-            {#                                                                <a href="{% url "wushu:sporcu-kusak-reddet" belt_pk=belt.pk athlete_pk=athlete.pk %}"#}
-            {#                                                                   type="button" class="btn btn-danger"><i#}
-            {#                                                                        class="fa fa-trash"></i>Reddet#}
-            {#                                                                </a>#}
-            {##}
-            {#                                                            {% endif %}#}
-            {#                                                            <a onclick="deleteKusak({{ belt.id }}, {{ athlete.pk }})"#}
-            {#                                                               type="button" class="btn btn-danger"><i#}
-            {#                                                                    class="fa fa-edit"></i>Sil#}
-            {#                                                            </a>#}
-            {##}
-            {#                                                        </div>#}
-            {#                                                    </td>#}
-            {#                                                {% endif %}#}
-            {##}
-            {#                                            </tr>#}
-            {##}
-            {#                                        {% endfor %}#}
-            {#                                    {% endif %}#}
-            {##}
-            {##}
-            {#                                    </tbody>#}
-            {#                                </table>#}
-            {##}
-            {#                            </div>#}
-            {#                        </div>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#            {% endif %}#}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Kuşak Bilgileri</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="box-header with-border">
+                                        <div class="btn-group">
+
+                                            <a href="{% url "wushu:sporcu-kusak-ekle"  athlete.pk %}"
+                                               type="button" class="btn btn-success"><i
+                                                    class="fa fa-edit"></i> Denklik/İlk Kuşak Ekle
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <table id="belt" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th> Hak Kazanma Tarihi</th>
+                                            <th> Branş</th>
+                                            <th> Tanımı</th>
+                                            <th> şehir</th>
+                                            <th> Form</th>
+                                            <th> Dekont</th>
+                                            <th> Onay Durumu</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if belts_form.all %}
+                                            {% for belt in belts_form %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }} </td>
+                                                    <td>{{ belt.startDate }}  </td>
+                                                    <td>{{ belt.branch }}  </td>
+                                                    <td>{{ belt.definition }}  </td>
+                                                    <td>{{ belt.city }}  </td>
+                                                    <td><a href="/media/{{ belt.form }}" target="_blank"> <i
+                                                            class="fa fa-file-image-o fa-2x " style="color: red"
+                                                            aria-hidden="true"></i></a></td>
+
+                                                    <td><a href="/media/{{ belt.dekont }}" target="_blank"> <i
+                                                            class="fa fa-file-image-o fa-2x " style="color: red"
+                                                            aria-hidden="true"></i></a></td>
+                                                    <td>{{ belt.status }}  </td>
+                                                    {% if belt.status != 'Onaylandı' %}
+                                                        <td>
+                                                            <div class="btn-group">
+                                                                <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                                   type="button" class="btn btn-warning"><i
+                                                                        class="fa fa-edit"></i>Güncelle
+                                                                </a>
+                                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                                    <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                                       type="button" class="btn btn-success"><i
+                                                                            class="fa fa-edit"></i>Onayla
+                                                                    </a>
+                                                                    <a href="{% url "wushu:sporcu-kusak-reddet" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                                       type="button" class="btn btn-danger"><i
+                                                                            class="fa fa-trash"></i>Reddet
+                                                                    </a>
+
+                                                                {% endif %}
+                                                                <a onclick="deleteKusak({{ belt.id }}, {{ athlete.pk }})"
+                                                                   type="button" class="btn btn-danger"><i
+                                                                        class="fa fa-edit"></i>Sil
+                                                                </a>
+
+                                                            </div>
+                                                        </td>
+                                                    {% endif %}
+
+                                                </tr>
+
+                                            {% endfor %}
+                                        {% endif %}
+
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
 
         </form>
 
@@ -467,7 +476,7 @@
                         success: function (result) {
 
                             html = 'Kuşak Başarıyla Silindi.';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {
@@ -507,7 +516,7 @@
                         success: function (result) {
 
                             html = 'Lisans Başarıyla Silindi.';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

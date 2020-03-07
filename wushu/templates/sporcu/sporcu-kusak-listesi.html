@@ -37,7 +37,7 @@
                     <h4 class="modal-title">Uyarı</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
+                    <p>Beklemede olanlari degiştirmek istediginizden  emin misiniz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
@@ -136,6 +136,19 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Kuşak Listesi</h3>
                     </div>
+                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                        <a onclick="onay()" type="button" class="btn btn-success">
+                            <i class="fa fa-edit"></i>
+                            Hepsini Onayla
+                        </a>
+                        <a onclick="reddet()" type="button" class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
+                            Hepsini Reddet
+                        </a>
+                         <a href="{% url "wushu:sporcu-kusak-bekle"%}"
+                                                      type="button" class="btn btn-danger"><i
+                                                            class="fa fa-trash"></i>bekle</a>
+                    {% endif %}
                     <div class="box-body">
 
                         <table id="belt" class="table table-bordered table-hover">
@@ -151,6 +164,7 @@
                                 <th> Tanımı</th>
                                 <th> Onay Durumu</th>
                                 <th> Dekont</th>
+                                <th> Form</th>
                                 <th> İşlemler</th>
 
 
@@ -177,6 +191,7 @@
                                         <td>{{ belt.definition }}  </td>
                                         <td>{{ belt.status }}  </td>
                                         <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
+                                        <td><a target="_blank" href="/media/{{ belt.form }}">Form</a></td>
                                         <td>
                                             <div class="btn-group">
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
@@ -185,8 +200,9 @@
                                                             class="fa fa-edit"></i>Onayla
                                                     </a>
 
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal" onclick=deleteClub({{ license.pk }})><i
+
+                                                    <a href="{% url "wushu:sporcu-kusak-listesi-reddet" belt_pk=belt.pk %}"
+                                                      type="button" class="btn btn-danger"><i
                                                             class="fa fa-trash"></i>Reddet</a>
                                                 {% endif %}
                                             </div>
@@ -223,7 +239,6 @@
         })
     </script>
 
-
     <script>
         $(function () {
             $('#belt').DataTable({
@@ -238,7 +253,91 @@
         })
     </script>
 
+    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+        <script>
 
+            function onay() {
+                var html = '';
+                $("#modal-danger").on("shown.bs.modal", function (e) {
+                    $("#btn-conf").click(function () {
+                        $.ajax({
+                            url: "{% url "wushu:sporcu-kusak-listesi-hepsinionayla"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = 'Kuşaklar başari ile onaylandı.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "wushu:kusak-listesi"%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+                    });
+                }).modal('show');
+                $('#btn-close').click(function () {
+                    $('#modal-danger').modal('hide');
+                });
+            }
+
+
+        </script>
+        <script>
+
+
+            function reddet() {
+
+                console.log("reddet çalisti");
+                var html = '';
+                $("#modal-danger").on("shown.bs.modal", function (e) {
+                    $("#btn-conf").click(function () {
+                        $.ajax({
+                            url: "{% url "wushu:sporcu-kusak-hepsinireddet"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = 'Kuşaklar basari ile reddedildi.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "wushu:kusak-listesi"%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+                    });
+                }).modal('show');
+                $('#btn-close').click(function () {
+                    $('#modal-danger').modal('hide');
+                });
+
+            }
+        </script>
+
+    {% endif %}
 
 
 

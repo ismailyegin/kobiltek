@@ -274,6 +274,7 @@ def categoryItemUpdate(request, pk):
 def sporcu_kusak_ekle(request, pk):
     perm = general_methods.control_access(request)
 
+
     if not perm:
         logout(request)
         return redirect('accounts:login')
@@ -283,11 +284,20 @@ def sporcu_kusak_ekle(request, pk):
                                                                           branch=athlete.licenses.last().branch)
 
     if request.method == 'POST':
+
         belt_form = BeltForm(request.POST, request.FILES or None)
+
+
+
         if belt_form.is_valid():
+
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
                          dekont=belt_form.cleaned_data['dekont'],
-                         definition=belt_form.cleaned_data['definition'])
+                         definition=belt_form.cleaned_data['definition'],
+                         form=belt_form.cleaned_data['form'],
+                         city=belt_form.cleaned_data['city'],)
+
+
             belt.levelType = EnumFields.LEVELTYPE.BELT
             belt.branch = athlete.licenses.last().branch
             belt.status = Level.WAITED
@@ -303,7 +313,7 @@ def sporcu_kusak_ekle(request, pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/sporcu-kusak-ekle.html',
-                  {'belt_form': belt_form})
+                  {'belt_form': belt_form,})
 
 
 
@@ -372,6 +382,7 @@ def sporcu_lisans_ekle(request, pk):
 
 @login_required
 def sporcu_lisans_onayla(request, license_pk, athlete_pk):
+
     perm = general_methods.control_access(request)
 
     if not perm:
@@ -439,8 +450,35 @@ def sporcu_kusak_listesi_onayla(request, belt_pk):
     belt.save()
     messages.success(request, 'Kuşak Onaylanmıştır')
     return redirect('wushu:kusak-listesi')
+@login_required
+def sporcu_kusak_listesi_reddet(request, belt_pk):
+    perm = general_methods.control_access(request)
 
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt = Level.objects.get(pk=belt_pk)
+    belt.status = Level.DENIED
+    belt.save()
+    messages.success(request, 'Kuşak reddedilmistir')
+    return redirect('wushu:kusak-listesi')
 
+# bütün kuşaklari onayla
+@login_required
+def sporcu_kusak_listesi_hepsinionayla(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    belt = Level.objects.filter(status='Beklemede')
+    for bt in belt:
+
+        bt.status = Level.APPROVED
+        bt.save()
+    messages.success(request, 'Kuşaklar basari  Onaylanmıştır')
+    return redirect('wushu:kusak-listesi')
 
 
 @login_required
@@ -459,8 +497,9 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
 
 
 @login_required
-def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
+def sporcu_kusak_reddet(request, belt_pk,athlete_pk):
     perm = general_methods.control_access(request)
+
 
     if not perm:
         logout(request)
@@ -471,6 +510,27 @@ def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
 
     messages.success(request, 'Kuşak Reddedilmiştir')
     return redirect('wushu:update-athletes', pk=athlete_pk)
+
+
+
+# bütün kuşaklari beklemeye aldik
+@login_required
+def sporcu_kusak_bekle(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt = Level.objects.all()
+    for bt in belt:
+        bt.status = Level.WAITED
+        bt.save()
+
+    messages.success(request, 'Kuşaklar beklemeye alindi ')
+    return redirect('wushu:kusak-listesi')
+
+
+
 
 @login_required
 def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
@@ -653,7 +713,6 @@ def updateAthleteProfile(request, pk):
 def sporcu_lisans_listesi_hepsionay(request):
     licenses = License.objects.filter(status='Beklemede')
     for license in licenses:
-
         license.status = License.APPROVED
         license.save()
     return redirect('wushu:lisans-listesi')
@@ -679,3 +738,19 @@ def sporcu_bekle(request):
 
 
 
+# kuşaklarin beklemede olanlarini reddet
+@login_required
+def sporcu_kusak_hepsinireddet(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt = Level.objects.filter(status='Beklemede')
+    for bt in belt:
+        bt.status = Level.DENIED
+        bt.save()
+
+
+    messages.success(request, 'Kuşaklar başari  Reddedilmiştir')
+    return redirect('wushu:kusak-listesi')

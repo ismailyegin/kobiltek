@@ -1,7 +1,7 @@
 import enum
 
 from django.db import models
-
+from wushu.models.City import City
 from wushu.models.EnumFields import EnumFields
 from wushu.models.CategoryItem import CategoryItem
 
@@ -29,7 +29,10 @@ class Level(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
-    dekont = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dekont ')
+    dekont = models.FileField(upload_to='dekont/', null=False, blank=True, verbose_name='Dekont ')
+    # son eklemeler
+    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
+    form=models.FileField(upload_to='form/', null=False, blank=True, verbose_name='Form ')
 
     def __str__(self):
         return '%s ' % self.branch

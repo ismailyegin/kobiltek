@@ -37,16 +37,11 @@ urlpatterns = [
     # lisans listesinin hepsini onaylama
     url(r'sporcu/sporcuLisansListesi/hepsinionayla/$',AthleteViews.sporcu_lisans_listesi_hepsionay, name='sporcu-lisans-hepsini-onayla'),
     # lisanslarin hepsini reddetme
-    url(r'sporcu/sporcuLisansListesi/hepsiniReddet/$', AthleteViews.sporcu_lisans_listesi_hepsireddet,
-        name='sporcu-lisans-hepsini-reddet'),
-
-
+    url(r'sporcu/sporcuLisansListesi/hepsiniReddet/$',AthleteViews.sporcu_lisans_listesi_hepsireddet,name='sporcu-lisans-hepsini-reddet'),
 
     # hepsini beklemeye al
     url(r'sporcu/sporcuLisansListesi/hepsinibekle/$', AthleteViews.sporcu_bekle,
         name='sporcu-lisans-hepsini-bekle'),
-
-
 
 
     url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
@@ -58,12 +53,34 @@ urlpatterns = [
         name='categoryItem-duzenle'),
     url(r'sporcu/sporcuKusakDuzenle/onayla/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_kusak_onayla, name='sporcu-kusak-onayla'),
-    url(r'sporcu/sporcuKusakDuzenle/reddet/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
+    url(r'sporcu/sporcuKusakReddet/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_kusak_reddet, name='sporcu-kusak-reddet'),
     url(r'sporcu/sporcuKusakDuzenle/kusaksil/(?P<pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_sil,
         name='sporcu-kusak-sil'),
+
+
+
+
+    # kuşaklarin hepsini beklemeye al
+    url(r'sporcu/sporcuKusakbekle',
+        AthleteViews.sporcu_kusak_bekle, name='sporcu-kusak-bekle'),
+    # kuşak listesinin hepsini onayla
+    url(r'sporcu/sporcuKusakListesi/hepsinionayla/$',
+        AthleteViews.sporcu_kusak_listesi_hepsinionayla, name='sporcu-kusak-listesi-hepsinionayla'),
+
+    #kuşak hepsini reddet
+    url(r'sporcu/sporcuKusakDuzenle/reddet/$',
+        AthleteViews.sporcu_kusak_hepsinireddet, name='sporcu-kusak-hepsinireddet'),
+
+    # kusak listesi onay
     url(r'sporcu/sporcuKusakListesi/onayla/(?P<belt_pk>\d+)$',
         AthleteViews.sporcu_kusak_listesi_onayla, name='sporcu-kusak-listesi-onayla'),
+    # kuşak listesi reddet
+    url(r'sporcu/sporcuKusakListesi/reddet/(?P<belt_pk>\d+)$',
+        AthleteViews.sporcu_kusak_listesi_reddet, name='sporcu-kusak-listesi-reddet'),
+
+
+
 
     url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,
         name='update-athletes'),

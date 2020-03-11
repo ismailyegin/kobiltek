@@ -25,6 +25,9 @@ from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 from wushu.services import general_methods
 
+# page
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 
 @login_required
 def return_add_athlete(request):
@@ -42,9 +45,15 @@ def return_add_athlete(request):
     # klüp üyesi sadece kendi klüplerini görebiliyor
     user = request.user
     license_form = LicenseForm(request.POST, request.FILES or None)
+
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
         clubs = SportsClub.objects.filter(clubUser=sc_user)
+
+
+
+
+
         clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
@@ -114,7 +123,6 @@ def return_add_athlete(request):
                   {'user_form': user_form, 'person_form': person_form, 'license_form':license_form, 'communication_form': communication_form
 
                    })
-
 
 @login_required
 def return_athletes(request):
@@ -280,8 +288,19 @@ def sporcu_kusak_ekle(request, pk):
         return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
     belt_form = BeltForm(request.POST, request.FILES or None)
-    belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
-                                                                          branch=athlete.licenses.last().branch)
+    belt_form.fields['definition'].queryset=None
+    for item in athlete.licenses.filter(status="Onaylandı"):
+        veri=CategoryItem.objects.filter(forWhichClazz='BELT',branch=item.branch)
+        if belt_form.fields['definition'].queryset==None:
+            belt_form.fields['definition'].queryset=CategoryItem.objects.filter(forWhichClazz='BELT',branch=item.branch)
+        else:
+            belt_form.fields['definition'].queryset|=CategoryItem.objects.filter(forWhichClazz='BELT',branch=item.branch)
+
+
+    # branch = athlete.licenses.last().branch
+    # last olayı düzelecek
+    # belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',athlete.licenses.last().branch)
+
 
     if request.method == 'POST':
 
@@ -299,7 +318,9 @@ def sporcu_kusak_ekle(request, pk):
 
 
             belt.levelType = EnumFields.LEVELTYPE.BELT
-            belt.branch = athlete.licenses.last().branch
+            # last deger kaldirildi yerine alt satiır eklendi
+            belt.branch = belt.definition.branch
+
             belt.status = Level.WAITED
             belt.save()
             athlete.belts.add(belt)
@@ -321,11 +342,6 @@ def sporcu_kusak_ekle(request, pk):
 
 @login_required
 def sporcu_kusak_sil(request, pk, athlete_pk):
-    perm = general_methods.control_access(request)
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Level.objects.get(pk=pk)
@@ -541,11 +557,17 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
         return redirect('accounts:login')
     belt = Level.objects.get(pk=belt_pk)
     athlete=Athlete.objects.get(pk=athlete_pk)
-    belt_form = BeltForm(request.POST or None, request.FILES or None, instance=belt, initial={'definition': belt.definition})
-    belt_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='BELT',
-                                                                          branch=athlete.licenses.last().branch)
+    belt_form = BeltForm(request.POST or None, request.FILES or None, instance=belt ,initial={'definition': belt.definition})
+  # calismaalani
+    belt_form.fields['definition'].queryset=None
+    for item in athlete.licenses.filter(status="Onaylandı"):
+        if belt_form.fields['definition'].queryset==None:
+            belt_form.fields['definition'].queryset=CategoryItem.objects.filter(forWhichClazz='BELT',branch=item.branch)
+        else:
+            belt_form.fields['definition'].queryset|=CategoryItem.objects.filter(forWhichClazz='BELT',branch=item.branch)
     if request.method == 'POST':
         if belt_form.is_valid():
+            belt.branch = belt.definition.branch
             belt_form.save()
 
             messages.success(request, 'Kuşak Onaya Gönderilmiştir.')

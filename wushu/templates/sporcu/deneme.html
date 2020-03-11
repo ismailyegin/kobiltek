@@ -1,0 +1,124 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+    <div class="row">
+
+        <section class="col-lg-12 ">
+
+
+            <div class="box-body">
+
+
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Sporcular</h3>
+                    </div>
+                    <div class="box-header with-border">
+                        <div class="btn-group">
+                            <a href="{% url "wushu:sporcu-ekle" %}"
+                               type="button" class="btn btn-success"><i
+                                    class="fa fa-edit"></i> Yeni Sporcu Ekle
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table id="page" class="table table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ad Soyad</th>
+                                <th>Dogum Tarihi</th>
+                                <th>Klup</th>
+                                <th>Branş</th>
+                                <th>Kuşak</th>
+                                <th>İşlemler</th>
+                            </tr>
+                            <tbody></tbody>
+                            </thead>
+
+                        </table>
+
+
+                    </div>
+                </div>
+                <!-- /.box -->
+
+
+            </div>
+        </section>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        $(function () {
+
+
+            $('#page').DataTable({
+                {#menü isleminin yapilmasini istediklerimiz ver ekranda görünmelerini istediklerimiz#}
+
+                lengthMenu: [[10, 25, 50, 75, -1], ["10 tane", "25 tane", "50 tane", "75 tane", "Hepsini Getir"]],
+
+                {#türkçe dil destegi verilmistir#}
+                language: {
+
+                    url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Turkish.json"
+
+                },
+
+
+
+
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+
+                "serverSide": true,
+                "processing": true,
+                'ajax': {
+
+
+                    "url": '{% url "wushu:sporculardeneme"%}',
+                    "methot": 'POST',
+
+
+                },
+
+                'columns': [
+                    {#{"targets": -1},#}
+                    {'data':'say'},
+                    {'data': 'name'},
+                    {'data': 'user'},
+                    {'data': 'klup'},
+                    {'data': 'brans'},
+                    {'data': 'kusak'},
+
+                    {
+                        "data": null,
+                        "bSortable": false,
+                        "mRender": function (data) {
+                            console.log(data);
+
+
+                            return '<div class="btn-group"><a type="button" class="btn btn-warning" href="/wushu/sporcu/sporcuDuzenle/' + data.pk + '"><i class="fa fa-edit"></i>' + 'İncele' + '</a></div>';
+                        }
+                    }
+
+
+                ],
+
+
+
+            });
+
+            {#alert("Kobiltek ile  güzel günlere ");#}
+
+
+        });
+
+
+    </script>
+{% endblock %}

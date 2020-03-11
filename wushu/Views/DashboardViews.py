@@ -30,10 +30,11 @@ def return_referee_dashboard(request):
 @login_required
 def return_coach_dashboard(request):
     perm = general_methods.control_access(request)
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
+    #
+    # if not perm:
+    #     logout(request)
+    #
+    #     return redirect('accounts:login')
     return render(request, 'anasayfa/antrenor.html')
 
 
@@ -43,6 +44,7 @@ def return_directory_dashboard(request):
 
     if not perm:
         logout(request)
+        print('ben dısari attım ')
         return redirect('accounts:login')
     return render(request, 'anasayfa/federasyon.html')
 

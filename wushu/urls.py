@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews,HelpViews
+    CompetitionViews, AdminViews,HelpViews,PageViews
 
 app_name = 'wushu'
 
@@ -19,6 +19,18 @@ urlpatterns = [
     # Sporcular
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
+
+
+
+    # pagenation deneme
+    url(r'deneme/$', PageViews.deneme, name='deneme'),
+    url(r'sporcularajax/$', PageViews.return_athletesdeneme, name='sporculardeneme'),
+
+
+
+
+
+
     url(r'sporcu/sporcuKusakEkle/(?P<pk>\d+)$', AthleteViews.sporcu_kusak_ekle, name='sporcu-kusak-ekle'),
     url(r'sporcu/sporcuKusakDuzenle/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_duzenle,
         name='sporcu-kusak-duzenle'),

@@ -32,7 +32,7 @@ class Level(models.Model):
     dekont = models.FileField(upload_to='dekont/', null=False, blank=True, verbose_name='Dekont ')
     # son eklemeler
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
-    form=models.FileField(upload_to='form/', null=False, blank=True, verbose_name='Form ')
+    form=models.FileField(upload_to='form/', null=False, blank=False, verbose_name='Form ')
 
     def __str__(self):
         return '%s ' % self.branch
@@ -40,3 +40,4 @@ class Level(models.Model):
 
     class Meta:
         default_permissions = ()
+

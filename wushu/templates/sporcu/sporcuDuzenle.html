@@ -292,33 +292,46 @@
                                                     class="fa fa-file-image-o fa-2x " style="color: red"
                                                     aria-hidden="true"></i></a></td>
                                             <td>{{ license.status }}  </td>
-                                            {% if license.status != 'Onaylandı' %}
+
                                                 <td>
                                                     <div class="btn-group">
 
-                                                        <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
-                                                           type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i>Güncelle
-                                                        </a>
+
 
                                                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                             <a href="{% url "wushu:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-edit"></i>Onayla
                                                             </a>
+
+
+
+
                                                             <a href="{% url "wushu:sporcu-lisans-reddet" license_pk=license.pk athlete_pk=athlete.pk %}"
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-trash"></i>Reddet
                                                             </a>
-                                                        {% endif %}
+                                                            {% endif %}
+                                                     {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
+
+
+
                                                         <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
                                                            type="button" class="btn btn-danger"><i
                                                                 class="fa fa-edit"></i>Sil
                                                         </a>
 
+
+                                                          <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Güncelle
+                                                        </a>
+                                                     {% endif %}
+
+
                                                     </div>
                                                 </td>
-                                            {% endif %}
+
 
                                         </tr>
 
@@ -335,6 +348,9 @@
             </div>
             {#  sayi alinip ona göre karsılastirma yapilacak #}
             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+
+
                 {% if athlete.licenses.count > 0 and athlete.licenses.first.status == 'Onaylandı' %}
 
                     <div class="row">
@@ -377,21 +393,18 @@
                                                     <td>{{ belt.branch }}  </td>
                                                     <td>{{ belt.definition }}  </td>
                                                     <td>{{ belt.city }}  </td>
-                                                    <td><a href="/media/{{ belt.form }}" target="_blank"> <i
+                                                    <td><a href="/media/{{ belt.form }}"  > <i
                                                             class="fa fa-file-image-o fa-2x " style="color: red"
                                                             aria-hidden="true"></i></a></td>
 
-                                                    <td><a href="/media/{{ belt.dekont }}" target="_blank"> <i
+                                                    <td><a href="/media/{{ belt.dekont }}" target="_blank" > <i
                                                             class="fa fa-file-image-o fa-2x " style="color: red"
                                                             aria-hidden="true"></i></a></td>
                                                     <td>{{ belt.status }}  </td>
-                                                    {% if belt.status != 'Onaylandı' %}
+                                                    {% if belt.status != 'Onaylandı' or user.groups.all.0.name == 'Admin'  %}
                                                         <td>
                                                             <div class="btn-group">
-                                                                <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
-                                                                   type="button" class="btn btn-warning"><i
-                                                                        class="fa fa-edit"></i>Güncelle
-                                                                </a>
+
                                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                                     <a href="{% url "wushu:sporcu-kusak-onayla" belt_pk=belt.pk athlete_pk=athlete.pk %}"
                                                                        type="button" class="btn btn-success"><i
@@ -401,12 +414,22 @@
                                                                        type="button" class="btn btn-danger"><i
                                                                             class="fa fa-trash"></i>Reddet
                                                                     </a>
+                                                                     {% endif %}
 
-                                                                {% endif %}
+
+
+                                                                       <a href="{% url "wushu:sporcu-kusak-duzenle" belt_pk=belt.pk athlete_pk=athlete.pk %}"
+                                                                   type="button" class="btn btn-warning"><i
+                                                                        class="fa fa-edit"></i>Güncelle
+                                                                </a>
+
+
                                                                 <a onclick="deleteKusak({{ belt.id }}, {{ athlete.pk }})"
                                                                    type="button" class="btn btn-danger"><i
                                                                         class="fa fa-edit"></i>Sil
                                                                 </a>
+
+
 
                                                             </div>
                                                         </td>

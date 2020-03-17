@@ -311,8 +311,7 @@
                                                                type="button" class="btn btn-success"><i
                                                                     class="fa fa-trash"></i>Reddet
                                                             </a>
-                                                            {% endif %}
-                                                     {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
+
 
 
 
@@ -320,6 +319,9 @@
                                                            type="button" class="btn btn-danger"><i
                                                                 class="fa fa-edit"></i>Sil
                                                         </a>
+
+                                                                       {% endif %}
+                                                     {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
 
 
                                                           <a href="{% url "wushu:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
@@ -522,6 +524,10 @@
 
         }
     </script>
+
+
+
+
     <script>
         function deleteLisans(id, club_id) {
 
@@ -539,26 +545,26 @@
                         success: function (result) {
 
                             html = 'Lisans Başarıyla Silindi.';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                             debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "wushu:update-athletes" athlete.pk %}");
+                                        window.location.replace("{% url "wushu:kusak-listesi"%}");
 
-                                });
+                                    });
 
-                            }).modal('show');
+                                }).modal('show');
 
 
-                            console.log(result.status)
-                        }
+
+                            }
+                        });
                     });
+                }).modal('show');
+                $('#btn-close').click(function () {
+                    $('#modal-danger').modal('hide');
                 });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
 
         }
     </script>

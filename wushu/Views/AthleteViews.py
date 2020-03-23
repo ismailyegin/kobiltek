@@ -50,10 +50,6 @@ def return_add_athlete(request):
         sc_user = SportClubUser.objects.get(user=user)
         clubs = SportsClub.objects.filter(clubUser=sc_user)
 
-
-
-
-
         clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
@@ -182,6 +178,10 @@ def updateathletes(request, pk):
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    print(athlete.licenses.all().filter(status='Onaylandı').count())
+    say=0
+    say=athlete.licenses.all().filter(status='Onaylandı').count()
+
 
     if request.method == 'POST':
 
@@ -195,6 +195,7 @@ def updateathletes(request, pk):
             person_form.save()
             communication_form.save()
 
+
             messages.success(request, 'Sporcu Başarıyla Güncellenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
 
@@ -205,7 +206,7 @@ def updateathletes(request, pk):
     return render(request, 'sporcu/sporcuDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                   'athlete': athlete})
+                   'athlete': athlete,'say':say})
 
 
 @login_required
@@ -488,7 +489,7 @@ def sporcu_kusak_listesi_hepsinionayla(request):
         logout(request)
         return redirect('accounts:login')
 
-    belt = Level.objects.filter(status='Beklemede')
+    belt = Level.objects.filter(status='Beklemede',levelType=EnumFields.LEVELTYPE.BELT)
     for bt in belt:
 
         bt.status = Level.APPROVED
@@ -618,8 +619,8 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
 @login_required
 def sporcu_lisans_sil(request, pk, athlete_pk):
-    perm = general_methods.control_access(request)
-
+    print('gelecek sensin ')
+    perm = general_methods.control_access_klup(request)
     if not perm:
         logout(request)
         return redirect('accounts:login')
@@ -629,6 +630,7 @@ def sporcu_lisans_sil(request, pk, athlete_pk):
             athlete = Athlete.objects.get(pk=athlete_pk)
             athlete.licenses.remove(obj)
             obj.delete()
+            print('basari ile silindi ')
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Level.DoesNotExist:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
@@ -655,7 +657,7 @@ def sporcu_kusak_listesi(request):
             clubsPk.append(club.pk)
         belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        belts = Level.objects.all().distinct()
+        belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
 
     return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})
 
@@ -768,7 +770,7 @@ def sporcu_kusak_hepsinireddet(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    belt = Level.objects.filter(status='Beklemede')
+    belt = Level.objects.filter(status='Beklemede',levelType=EnumFields.LEVELTYPE.BELT)
     for bt in belt:
         bt.status = Level.DENIED
         bt.save()

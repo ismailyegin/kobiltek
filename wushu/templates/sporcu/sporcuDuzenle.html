@@ -349,11 +349,11 @@
                 </div>
             </div>
             {#  sayi alinip ona göre karsılastirma yapilacak #}
-            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+{#            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
 
 
 
-                {% if athlete.licenses.count > 0 and athlete.licenses.first.status == 'Onaylandı' %}
+                {% if athlete.licenses.count > 0  and say > 0 %}
 
                     <div class="row">
                         <div class="col-lg-12">
@@ -451,7 +451,7 @@
                         </div>
                     </div>
                 {% endif %}
-            {% endif %}
+{#            {% endif %}#}
 
         </form>
 

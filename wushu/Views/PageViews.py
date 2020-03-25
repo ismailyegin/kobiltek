@@ -24,9 +24,20 @@ from wushu.models import Athlete, CategoryItem, Person, Communication, License, 
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 from wushu.services import general_methods
-
-# page
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.serializers import serialize
+from django.core import serializers
+
+
+
+from django.core.paginator import Paginator
+from django.shortcuts import render
+
+import  json
+
+
+
+
 
 
 def deneme(request):
@@ -64,13 +75,8 @@ def return_athletesdeneme(request):
         start = 0
         length = 10
 
-    # object_list = MyModel.objects.all()
 
-    # Test verisi elde edebilemek icin sisteme kayıt saglandi
 
-    # for x in range(150):
-    #     b = MyModel(name='İsmail Yegin', user='Admin.', value='Kobiltek')
-    #     b.save()
 
     if search:
         modeldata = Athlete.objects.filter(
@@ -83,7 +89,7 @@ def return_athletesdeneme(request):
         # page=1
 
     else:
-        modeldata = Athlete.objects.all()
+        modeldata = Athlete.objects.all()[start:start+length]
 
         total = Athlete.objects.count()
 
@@ -92,13 +98,16 @@ def return_athletesdeneme(request):
 
     # /Sayfalama  islemleri ile gerekli bir sekil de istenilen sayfanın gönderilmesi gerçeklesitirildi.
 
+
+
+    say = start+1
     start = start + length
     page = start / length
 
     beka = []
-    say = 1
 
     for item in modeldata:
+
 
 
         data = {
@@ -113,22 +122,36 @@ def return_athletesdeneme(request):
         }
         beka.append(data)
         say += 1
+    # print('hata geliyorum demez')
+
+    # print(json.dumps(beka))
+
 
     # veri = [item.to_dict_json(say)  for item in modeldata ]
+    # veri=serializers.serialize('json',modeldata)
+    # print('veri=',veri)
 
-    paginator = Paginator(beka, length)
+    # paginator = Paginator(beka, length)
     # print("paginator=", paginator)
-    veri = paginator.page(page).object_list
-    # print("veri=", veri)
+    # veri = paginator.page(page).object_list
+    # # veri=modeldata.
+    #
+    # print('veri2=',veri)
+    # print('veri3)',serializers.serialize('json',modeldata))
+
+
+
+    print('draw=',draw)
+    print('recordsTotal=',total)
+
 
     # Veri istenildigi gibi paketlendi ve gönderildi
     response = {
 
-        'data': veri,
+        'data': beka,
         'draw': draw,
         'recordsTotal': total,
         'recordsFiltered': total,
-        'start': start
 
     }
     # print("response degeri =", response)

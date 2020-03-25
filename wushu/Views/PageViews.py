@@ -56,7 +56,7 @@ def return_athletesdeneme(request):
         datatables = request.POST
         # print("post islemi gerceklesti")
 
-    print(datatables)
+
     # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
     try:
         draw = int(datatables.get('draw'))
@@ -78,23 +78,23 @@ def return_athletesdeneme(request):
 
 
 
-    if search:
-        modeldata = Athlete.objects.filter(
-            Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
-                user__email__icontains=search))
-        total = modeldata.count();
-        print("gelen deger=", total)
-        # length=1000
-        # llll=0
-        # page=1
 
-    else:
-        modeldata = Athlete.objects.all()[start:start+length]
-
-        total = Athlete.objects.count()
 
     if length == -1:
-        print("deger bekledigimiz gibi geldi")
+        modeldata=Athlete.objects.all()
+        total=Athlete.objects.count()
+
+    else:
+        if search:
+            modeldata = Athlete.objects.filter(
+                Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
+                    user__email__icontains=search))
+            total = modeldata.count();
+
+        else:
+            modeldata = Athlete.objects.all()[start:start + length]
+
+            total = Athlete.objects.count()
 
     # /Sayfalama  islemleri ile gerekli bir sekil de istenilen sayfanın gönderilmesi gerçeklesitirildi.
 
@@ -105,19 +105,27 @@ def return_athletesdeneme(request):
     page = start / length
 
     beka = []
-
     for item in modeldata:
+        brans = '-'
+        klup = '-'
+        kusak='-'
+        if item.licenses.count()>0:
+            if item.licenses.last().sportsClub.name is not None :
+                klup = item.licenses.last().sportsClub.name
 
-
-
+            if item.licenses.last().branch is not None:
+                brans = item.licenses.last().branch
+        if item.belts.count()>0:
+            kusak = item.belts.last()
+            kusak=kusak.definition.name
         data = {
             'say': say,
             'pk': item.pk,
             'name': item.user.first_name + item.user.last_name,
             'user': item.person.birthDate,
-            'klup': '-',
-            'brans': '-',
-            'kusak': '-',
+            'klup': klup,
+            'brans':brans,
+            'kusak':kusak,
 
         }
         beka.append(data)
@@ -139,12 +147,8 @@ def return_athletesdeneme(request):
     # print('veri2=',veri)
     # print('veri3)',serializers.serialize('json',modeldata))
 
-
-
-    print('draw=',draw)
-    print('recordsTotal=',total)
-
-
+    #
+    # print(total)
     # Veri istenildigi gibi paketlendi ve gönderildi
     response = {
 
@@ -154,7 +158,7 @@ def return_athletesdeneme(request):
         'recordsFiltered': total,
 
     }
-    # print("response degeri =", response)
+
     return JsonResponse(response)
 
 

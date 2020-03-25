@@ -60,8 +60,6 @@
             $('#page').DataTable({
                 {#menü isleminin yapilmasini istediklerimiz ver ekranda görünmelerini istediklerimiz#}
 
-                lengthMenu: [[10, 25, 50, 75, -1], ["10 tane", "25 tane", "50 tane", "75 tane", "Hepsini Getir"]],
-
                 {#türkçe dil destegi verilmistir#}
                 language: {
 
@@ -70,14 +68,15 @@
                 },
 
 
-
-
                 'ordering': true,
                 'info': true,
                 'autoWidth': true,
 
+
                 "serverSide": true,
                 "processing": true,
+
+
                 'ajax': {
 
 
@@ -87,9 +86,10 @@
 
                 },
 
+
                 'columns': [
                     {#{"targets": -1},#}
-                    {'data':'say'},
+                    {'data': 'say'},
                     {'data': 'name'},
                     {'data': 'user'},
                     {'data': 'klup'},
@@ -100,7 +100,7 @@
                         "data": null,
                         "bSortable": false,
                         "mRender": function (data) {
-                            console.log(data);
+                            {#console.log(data);#}
 
 
                             return '<div class="btn-group"><a type="button" class="btn btn-warning" href="/wushu/sporcu/sporcuDuzenle/' + data.pk + '"><i class="fa fa-edit"></i>' + 'İncele' + '</a></div>';
@@ -109,7 +109,72 @@
 
 
                 ],
+                dom: 'Bfrtip',
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    ['10 tane', '25 tane ', '50 tane ', 'Hepsini Getir']
+                ],
+                buttons: [
+                    {##}
+                    {##}
+                    {#'copy',#}
+                    {#'csv',#}
+                    'pageLength',
 
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+
+                    {
+                        extend: 'print',
+                        title: 'Sporcular',
+                        text: '<i class="fa fa-files-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        },
+                        titleAttr: 'Yazdır'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        },
+                        titleAttr: 'Pfd Kaydet'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Sporcular',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        messageTop: 'Sporcular Listesi Kobiltek Bilisim  Burasi baslık alani olarak kullanilabilecek',
+                        {#footer: true,#}
+                        exportOptions: {
+                            {#     yer degisimi de yapilabilir.#}
+                            columns: [0, 2, 1, 3, 4, 5]
+
+                        },
+                        titleAttr: 'Excel Kaydet'
+                    },
+                    {
+                        text: '<i class="fa fa-sellsy"></i>',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Sporcular.json'
+                            );
+                        }
+                    }
+
+
+                ],
 
 
             });

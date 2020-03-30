@@ -128,10 +128,10 @@ urlpatterns = [
         name='hakem-profil-guncelle'),
 
     # Kulüpler
-    url(r'kulup/basvuru-listesi/$', ClubViews.return_preRegistration, name='basvuru-listesi'),
-    url(r'kulup/basvuru/onayla/(?P<pk>\d+)$', ClubViews.approve_preRegistration, name='basvuru-onayla'),
-    url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', ClubViews.rejected_preRegistration, name='basvuru-reddet'),
-    url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', ClubViews.update_preRegistration,name='update-basvuru'),
+    # url(r'kulup/basvuru-listesi/$', ClubViews.return_preRegistration, name='basvuru-listesi'),
+    # url(r'kulup/basvuru/onayla/(?P<pk>\d+)$', ClubViews.approve_preRegistration, name='basvuru-onayla'),
+    # url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', ClubViews.rejected_preRegistration, name='basvuru-reddet'),
+    # url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', ClubViews.update_preRegistration,name='update-basvuru'),
 
 
 

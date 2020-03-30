@@ -188,8 +188,18 @@
                                         <td>{{ belt.branch }}  </td>
                                         <td>{{ belt.definition }}  </td>
                                         <td>{{ belt.status }}  </td>
-                                        <td><a target="_blank" href="/media/{{ belt.dekont }}">Dekont</a></td>
-                                        <td><a target="_blank" href="/media/{{ belt.form }}">Form</a></td>
+
+
+                                      <td><a target="_blank" href="/media/{{ belt.dekont }}"><img src="/media/{{ belt.dekont }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
+                                      <td><a target="_blank" href="/media/{{ belt.form }}"><img src="/media/{{ belt.form }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
+
+
+
+
+
+
+
+
                                         <td>
                                             <div class="btn-group">
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}

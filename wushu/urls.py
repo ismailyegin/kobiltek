@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
-from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews,HelpViews,PageViews
+from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews,CompetitionViews, AdminViews,HelpViews,PageViews
 
 app_name = 'wushu'
 
@@ -22,8 +21,9 @@ urlpatterns = [
 
 
 
+
     # pagenation deneme
-    url(r'deneme/$', PageViews.deneme, name='deneme'),
+    url(r'page/$', PageViews.deneme, name='deneme'),
     url(r'sporcularajax/$', PageViews.return_athletesdeneme, name='sporculardeneme'),
 
 
@@ -31,14 +31,22 @@ urlpatterns = [
 
 
 
+
+
     url(r'sporcu/sporcuKusakEkle/(?P<pk>\d+)$', AthleteViews.sporcu_kusak_ekle, name='sporcu-kusak-ekle'),
-    url(r'sporcu/sporcuKusakDuzenle/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_duzenle,
-        name='sporcu-kusak-duzenle'),
+    url(r'sporcu/sporcuKusakDuzenle/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_duzenle,name='sporcu-kusak-duzenle'),
     url(r'sporcu/sporcuLisansEkle/(?P<pk>\d+)$', AthleteViews.sporcu_lisans_ekle, name='sporcu-lisans-ekle'),
     url(r'sporcu/sporcuLisansDuzenle/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_lisans_duzenle,
         name='sporcu-lisans-duzenle'),
+    url(r'sporcu/sporcuLisansDuzenleMobil/(?P<count>\d+)$', AthleteViews.sporcu_lisans_duzenle_mobil,
+        name='sporcu-lisans-duzenle-mobil'),
+    # ilk degeri verebilmek icin yönlendirme amaci ile kullanildi.
+    url(r'sporcu/sporcuLisansDuzenleMobil/$', AthleteViews.sporcu_lisans_duzenle_mobil_ilet,
+        name='sporcu-lisans-duzenle-mobil-ilet'),
+
     url(r'sporcu/sporcuLisansDuzenle/onayla/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
+
 
     url(r'sporcu/sporcuLisansDuzenle/reddet/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_reddet, name='sporcu-lisans-reddet'),
@@ -46,6 +54,8 @@ urlpatterns = [
         name='sporcu-lisans-sil'),
     url(r'sporcu/sporcuLisansListesi/onayla/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
+    url(r'sporcu/sporcuLisansListesi/onaylaMobil/(?P<license_pk>\d+)/(?P<count>\d+)$',
+        AthleteViews.sporcu_lisans_listesi_onayla_mobil, name='sporcu-lisans-listesi-onayla-mobil'),
     # lisans listesinin hepsini onaylama
     url(r'sporcu/sporcuLisansListesi/hepsinionayla/$',AthleteViews.sporcu_lisans_listesi_hepsionay, name='sporcu-lisans-hepsini-onayla'),
     # lisanslarin hepsini reddetme
@@ -58,6 +68,8 @@ urlpatterns = [
 
     url(r'sporcu/sporcuLisansListesi/reddet/(?P<license_pk>\d+)$',
         AthleteViews.sporcu_lisans_listesi_reddet, name='sporcu-lisans-listesi-reddet'),
+    url(r'sporcu/sporcuLisansListesiMobil/reddet/(?P<license_pk>\d+)/(?P<count>\d+)$',
+        AthleteViews.sporcu_lisans_listesi_reddet_mobil, name='sporcu-lisans-listesi-reddet-mobil'),
     url(r'sporcu/kusak/$', AthleteViews.return_belt, name='kusak'),
     url(r'sporcu/kusak/sil/(?P<pk>\d+)$', AthleteViews.categoryItemDelete,
         name='categoryItem-delete'),
@@ -94,8 +106,7 @@ urlpatterns = [
 
 
 
-    url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,
-        name='update-athletes'),
+    url(r'sporcu/sporcuDuzenle/(?P<pk>\d+)$', AthleteViews.updateathletes,name='update-athletes'),
     url(r'sporcu/sporcu-kusak-listesi/$', AthleteViews.sporcu_kusak_listesi, name='kusak-listesi'),
     url(r'sporcu/sporcu-lisans-listesi/$', AthleteViews.sporcu_lisans_listesi, name='lisans-listesi'),
     url(r'sporcu/sporcu-profil-guncelle/$', AthleteViews.updateAthleteProfile,
@@ -117,6 +128,15 @@ urlpatterns = [
         name='hakem-profil-guncelle'),
 
     # Kulüpler
+    url(r'kulup/basvuru-listesi/$', ClubViews.return_preRegistration, name='basvuru-listesi'),
+    url(r'kulup/basvuru/onayla/(?P<pk>\d+)$', ClubViews.approve_preRegistration, name='basvuru-onayla'),
+    url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', ClubViews.rejected_preRegistration, name='basvuru-reddet'),
+    url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', ClubViews.update_preRegistration,name='update-basvuru'),
+
+
+
+
+
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
     url(r'kulup/kulupler/$', ClubViews.return_clubs, name='kulupler'),
     url(r'kulup/kulup-uyesi-ekle/$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
@@ -140,16 +160,35 @@ urlpatterns = [
     url(r'kulup/kulupDuzenle/(?P<pk>\d+)$', ClubViews.clubUpdate,
         name='update-club'),
     url(r'kulup/kusak-sinavlari/$', ClubViews.return_belt_exams, name='kusak-sinavlari'),
-    url(r'kulup/kusak-sinavi-sporcu-sec/$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
-    url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-sporcu-sec/(?P<pk>\d+)$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
+
+
+    url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-antroner-sec/(?P<pk>\d+)$', ClubViews.choose_coach, name='kusak-sinavi-antroner-sec'),
+
+
+    url(r'kulup/kusak-sinavi-antroner-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_coach_remove, name='kulup-sinavi-antroner-sil'),
+    url(r'kulup/kusak-sinavi-sporcu-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_athlete_remove, name='kulup-sinavi-sporcu-sil'),
+
+
+
+
+
+
+
+
+    # url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
     url(r'kulup/kusak-sinavi-duzenle/$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
     url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
     url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
     url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
+    url(r'kulup/kusak-sinavlari/reddet/(?P<pk>\d+)$', ClubViews.denied_belt_exam, name='kusak-sinavi-reddet'),
     url(r'kulup/kulup-uyesi-profil-guncelle/$', ClubViews.updateClubPersonsProfile,
         name='kulup-uyesi-profil-guncelle'),
 
     url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
+        name='choose-sport-club-user'),
+    url(r'kulup/kusak-listesi-antroner-sil/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
 
     # Antrenörler
@@ -168,7 +207,44 @@ urlpatterns = [
         name='choose-coach'),
     url(r'antrenor/antrenor-profil-guncelle/$', CoachViews.updateCoachProfile,
         name='antrenor-profil-guncelle'),
-    url(r'antrenor/antrenorkademeekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
+    url(r'antrenor/antrenor-kademe-ekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
+        # vize ekle
+    url(r'antrenor/antrenor-vize-ekle/(?P<pk>\d+)$', CoachViews.antrenor_vısa_ekle, name='antrenor-vize-ekle'),
+
+
+
+        # Kademe onay reddet sil güncelle liste
+    url(r'antrenor/vize-Liste-Reddet/(?P<grade_pk>\d+)$', CoachViews.vize_reddet_liste,
+        name='vize-list-reddet'),
+    url(r'antrenor/vize-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.vize_onayla_liste,
+        name='vize-list-onay'),
+    url(r'antrenor/Vize-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_delete,
+        name='vize-sil'),
+    url(r'antrenor/Vize-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.vize_reddet, name='vize-reddet'),
+    url(r'antrenor/Vize-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.visa_onay, name='vize-onayla'),
+    url(r'antrenor/Kademe-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_onay, name='kademe-onayla'),
+    url(r'antrenor/Kademe-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_reddet, name='kademe-reddet'),
+    url(r'antrenor/Kademe-Duzenle/güncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_update,name='kademe-güncelle'),
+    url(r'antrenor/Vize-Duzenle/guncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_update,
+        name='vize-güncelle'),
+    url(r'antrenor/Kademe-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_delete,
+        name='Kademe-sil'),
+    url(r'antrenor/Kademe-listesi/', CoachViews.kademe_list,name='kademe-listesi'),
+    url(r'antrenor/Vize-listesi/', CoachViews.vize_list, name='vize-listesi'),
+    url(r'antrenor/kademe-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.kademe_onayla,
+        name='kademe-list-onay'),
+    url(r'antrenor/kademe-Liste-reddet/(?P<grade_pk>\d+)$', CoachViews.kademe_reddet_liste,
+        name='kademe-list-reddet'),
+    url(r'antrenor/kademe-Liste-reddet-hepsi$', CoachViews.kademe_reddet_hepsi,
+        name='kademe-list-reddet-hepsi'),
+    url(r'antrenor/kademe-Liste-onay-hepsi$', CoachViews.kademe_onay_hepsi,
+        name='kademe-list-onay-hepsi'),
+    url(r'antrenor/kademe-Liste-bekle-hepsi$', CoachViews.kademe_bekle_hepsi,name='kademe-list-bekle-hepsi'),
+
+
+
+
+
 
     # Yönetim Kurulu
     url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),
@@ -207,7 +283,7 @@ urlpatterns = [
     url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
     url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),
     url(r'musabaka/musabakalar/musabaka-sil(?P<pk>\d+)$', CompetitionViews.musabaka_sil, name='musabaka-sil'),
-    url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
+    url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
         name='musabaka-sporcu-sec'),
     url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
         name='musabaka-sporcu-kaldir'),

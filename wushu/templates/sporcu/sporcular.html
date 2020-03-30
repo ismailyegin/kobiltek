@@ -142,30 +142,48 @@
                             <h3 class="box-title">Sporcu Filtrele</h3>
                         </div>
                         <form method="post" role="form">
+
                             <div class="box-body">
                                 {% csrf_token %}
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.last_name.label }}</label>
                                         {{ user_form.last_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.email.label }}</label>
                                         {{ user_form.email }}
                                     </div>
                                 </div>
 
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ Sportclup.sportsClub.label }}</label>
+                                        {{ Sportclup.sportsClub }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{Sportclup.branch.label }}</label>
+                                        {{ Sportclup.branch }}
+                                    </div>
+                                </div>
+
+
+
+
 
                             </div>
+
                             <!-- /.box-body -->
 
                             <div class="box-footer">
@@ -228,7 +246,9 @@
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
                                             <td>{{ athlete.person.birthDate }} </td>
                                             {% if  athlete.licenses.last.status == 'Onaylandı' %}
+                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ athlete.licenses.last.sportsClub }}</td>
+                                                  {% endif %}
                                                 <td>{{ athlete.licenses.last.branch }}</td>
                                             {% else %}
                                                 <td>-</td>
@@ -245,6 +265,19 @@
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>İncele
                                                     </a>
+
+
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+
+                                                        <a href="{% url "wushu:sporcu-lisans-ekle" athlete.pk %}"
+                                                           type="button" class="btn btn-secondary btn-success">Lisans
+                                                            Ekle
+                                                        </a>
+                                                        <a href="{% url "wushu:sporcu-kusak-ekle" athlete.pk %}"
+                                                           type="button" class="btn btn-success">Kusak Ekle
+                                                        </a>
+                                                    {% endif %}
 
 
                                                 </div>
@@ -276,15 +309,95 @@
     <script>
         $(function () {
             $('#sporcular').DataTable({
+
+
+
+                dom: 'Bfrtip',
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    ['10 tane', '25 tane ', '50 tane ', 'Hepsini Getir']
+                ],
+                language: {
+
+                    url: "cdn.datatables.net/plug-ins/1.10.20/i18n/Turkish.json"
+
+                },
+
+
+                dom: 'Bfrtip',
+                buttons: [
+                    {##}
+                    {##}
+                    {#'copy',#}
+                    {#'csv',#}
+                    'pageLength',
+
+
+                    {
+                        extend: 'colvis',
+                        text:'<i class="fa fa-file-pdf-o"></i>',
+                         titleAttr: 'Ekle Çıkar'
+
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title:'Sporcular',
+                        text:'<i class="fa fa-files-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        },
+                         titleAttr: 'Yazdır'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text:'<i class="fa fa-file-pdf-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        },
+                         titleAttr: 'Pfd Kaydet'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Sporcular',
+                        text:'<i class="fa fa-file-excel-o"></i>',
+                        messageTop: 'Sporcular Listesi Kobiltek Bilisim  Burasi baslık alani olarak kullanilabilecek',
+                        {#footer: true,#}
+                        exportOptions: {
+                            {#     yer degisimi de yapilabilir.#}
+                            columns: [0, 2, 1, 3, 4, 5]
+
+                        },
+                        titleAttr: 'Excel Kaydet'
+                    },
+                     {
+                text:'<i class="fa fa-sellsy"></i>',
+                action: function ( e, dt, button, config ) {
+                    var data = dt.buttons.exportData();
+
+                    $.fn.dataTable.fileSave(
+                        new Blob( [ JSON.stringify( data ) ] ),
+                        'Sporcular.json'
+                    );
+                }
+            }
+
+
+                ],
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
                 'ordering': true,
                 'info': true,
-                'autoWidth': true
-            })
+                'autoWidth': true,
 
-        })
+            });
+
+
+        });
     </script>
 
 

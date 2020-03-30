@@ -1,4 +1,9 @@
+from builtins import print, set, property, int
 from datetime import timedelta, datetime
+from operator import attrgetter
+from os import name
+
+from django.db.models.functions import Lower
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -20,6 +25,7 @@ from wushu.Forms.LicenseForm import LicenseForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
+from wushu.Forms.SearchClupForm import SearchClupForm
 from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
@@ -27,7 +33,7 @@ from wushu.services import general_methods
 
 # page
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
+# from wushu.models.simplecategory import simlecategory
 
 @login_required
 def return_add_athlete(request):
@@ -57,8 +63,6 @@ def return_add_athlete(request):
 
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         license_form.fields['sportsClub'].queryset = SportsClub.objects.all()
-
-
 
     # lisan ekleme son alani bu alanlar sadece form bileselerinin sisteme gidebilmesi icin post ile gelen veride gene ayni şekilde  karşılama ve kaydetme islemi yapilacak
 
@@ -129,6 +133,8 @@ def return_athletes(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    user_form = UserSearchForm()
+    # arama açıldıgı zaman burasi sillinecek
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
         clubsPk = []
@@ -138,29 +144,72 @@ def return_athletes(request):
         athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         athletes = Athlete.objects.all()
-    user_form = UserSearchForm()
+    #     silinecek son
+    print(athletes)
+
+
 
     if request.method == 'POST':
+        athletes = Athlete.objects.none()
         user_form = UserSearchForm(request.POST)
+        brans=request.POST.get('branch')
+        sportsclup=request.POST.get('sportsClub')
+
+
+
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
-            else:
+            if  not (firstName or lastName or email or brans or sportsclup):
+
+                if user.groups.filter(name='KulupUye'):
+                    sc_user = SportClubUser.objects.get(user=user)
+                    clubsPk = []
+                    clubs = SportsClub.objects.filter(clubUser=sc_user)
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+                    athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    athletes = Athlete.objects.all()
+            elif firstName or lastName or email or sportsclup or brans:
                 query = Q()
-                if lastName:
-                    query &= Q(user__last_name__icontains=lastName)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(name=request.POST.get('sportsClub'))
+                for club in clubs:
+                    clubsPk.append(club.pk)
+
                 if firstName:
                     query &= Q(user__first_name__icontains=firstName)
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
                 if email:
                     query &= Q(user__email__icontains=email)
-                athletes = Athlete.objects.filter(query)
+                if sportsclup:
+                    query &=Q(licenses__sportsClub__in=clubsPk)
+                if brans:
+                    query &= Q(licenses__branch=brans)
 
-    return render(request, 'sporcu/sporcular.html', {'athletes': athletes, 'user_form': user_form})
-
-
+                if user.groups.filter(name='KulupUye'):
+                    sc_user = SportClubUser.objects.get(user=user)
+                    clubsPk = []
+                    clubs = SportsClub.objects.filter(clubUser=sc_user)
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+                    athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).filter(query).distinct()
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    athletes = Athlete.objects.filter(query).distinct()
+    sportclup = SearchClupForm(request.POST, request.FILES or None)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+    return render(request, 'sporcu/sporcular.html', {'athletes': athletes, 'user_form': user_form,'Sportclup': sportclup})
 @login_required
 def updateathletes(request, pk):
     perm = general_methods.control_access(request)
@@ -178,7 +227,6 @@ def updateathletes(request, pk):
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
-    print(athlete.licenses.all().filter(status='Onaylandı').count())
     say=0
     say=athlete.licenses.all().filter(status='Onaylandı').count()
 
@@ -440,21 +488,73 @@ def sporcu_lisans_listesi_onayla(request, license_pk):
     license.save()
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:lisans-listesi')
-
 @login_required
-def sporcu_lisans_listesi_reddet(request, license_pk):
+def sporcu_lisans_listesi_onayla_mobil(request, license_pk,count):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
-    license.status = License.DENIED
+    license.status = License.APPROVED
+    license.reddetwhy=None;
     license.save()
-    messages.success(request, 'Lisans Reddedilmiştir')
+    messages.success(request, 'Lisans Onaylanmıştır')
+    return redirect('wushu:sporcu-lisans-duzenle-mobil',count)
+@login_required
+
+def sporcu_lisans_listesi_reddet(request, license_pk):
+    perm = general_methods.control_access(request)
+
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    if request.method == 'POST':
+
+        license = License.objects.get(pk=license_pk)
+        license.status = License.DENIED
+        license.reddetwhy=request.POST.get('text')
+        license.save()
+        messages.success(request, 'Lisans Reddedilmiştir')
+    else:
+
+        license = License.objects.get(pk=license_pk)
+        license.status = License.DENIED
+        license.save()
+        messages.success(request, 'Lisans Reddedilmiştir')
+
+
+
     return redirect('wushu:lisans-listesi')
 
+@login_required
 
+def sporcu_lisans_listesi_reddet_mobil(request, license_pk,count):
+
+    perm = general_methods.control_access(request)
+
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    if request.method == 'POST':
+
+        license = License.objects.get(pk=license_pk)
+        license.status = License.DENIED
+        license.reddetwhy=request.POST.get('text')
+        license.save()
+        messages.success(request, 'Lisans Reddedilmiştir')
+    else:
+
+        license = License.objects.get(pk=license_pk)
+        license.status = License.DENIED
+        license.save()
+        messages.success(request, 'Lisans Reddedilmiştir')
+
+    return redirect('wushu:sporcu-lisans-duzenle-mobil',count)
 @login_required
 def sporcu_kusak_listesi_onayla(request, belt_pk):
     perm = general_methods.control_access(request)
@@ -617,9 +717,46 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
                   {'license_form': license_form, 'license': license})
 
 
+
+
+@login_required
+def sporcu_lisans_duzenle_mobil_ilet(request):
+
+    cout='1'
+    print('Ben buralardan geçtim' )
+    return redirect('wushu:sporcu-lisans-duzenle-mobil',count=cout)
+
+@login_required
+def sporcu_lisans_duzenle_mobil(request, count):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    if int(count)==0 and count is None:
+
+        count=1
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+
+
+
+    if user.groups.filter(name__in=['Yonetim', 'Admin']):
+
+        if int(count)>0 and int(count)<License.objects.count():
+            licenses = License.objects.all().order_by('-pk')[int(count)]
+        else:
+            licenses = License.objects.all().order_by('-pk')[1]
+            count=1
+        ileri = int(count) + 1
+        geri = int(count) - 1
+
+
+    return render(request, 'sporcu/sporcu-lisans-mobil-onay.html',
+                  {'ileri':ileri ,'geri':geri,'say':count,'license': licenses})
+
 @login_required
 def sporcu_lisans_sil(request, pk, athlete_pk):
-    print('gelecek sensin ')
     perm = general_methods.control_access_klup(request)
     if not perm:
         logout(request)
@@ -630,7 +767,6 @@ def sporcu_lisans_sil(request, pk, athlete_pk):
             athlete = Athlete.objects.get(pk=athlete_pk)
             athlete.licenses.remove(obj)
             obj.delete()
-            print('basari ile silindi ')
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Level.DoesNotExist:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
@@ -703,6 +839,7 @@ def updateAthleteProfile(request, pk):
     password_form = SetPasswordForm(request.user, request.POST)
 
     if request.method == 'POST':
+
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 

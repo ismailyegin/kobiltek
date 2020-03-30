@@ -34,18 +34,20 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 
 import  json
-
-
-
-
-
-
 def deneme(request):
+    perm = general_methods.control_access_klup(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     return render(request, 'sporcu/deneme.html')
 
 
 @login_required
 def return_athletesdeneme(request):
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+
     # print("ajax istenilen yere geldi")
 
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
@@ -75,14 +77,20 @@ def return_athletesdeneme(request):
         start = 0
         length = 10
 
-
-
-
-
-
     if length == -1:
-        modeldata=Athlete.objects.all()
-        total=Athlete.objects.count()
+        if user.groups.filter(name='KulupUye'):
+            sc_user = SportClubUser.objects.get(user=user)
+            clubsPk = []
+            clubs = SportsClub.objects.filter(clubUser=sc_user)
+            for club in clubs:
+                clubsPk.append(club.pk)
+            modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+            total = modeldata.count()
+
+        elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+            modeldata = Athlete.objects.all()
+            total = Athlete.objects.count()
+
 
     else:
         if search:
@@ -92,9 +100,21 @@ def return_athletesdeneme(request):
             total = modeldata.count();
 
         else:
-            modeldata = Athlete.objects.all()[start:start + length]
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()[start:start + length]
+                total=modeldata.count()
 
-            total = Athlete.objects.count()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                modeldata = Athlete.objects.all()[start:start + length]
+                total=Athlete.objects.count()
+
+
+
 
     # /Sayfalama  islemleri ile gerekli bir sekil de istenilen sayfanın gönderilmesi gerçeklesitirildi.
 
@@ -158,7 +178,6 @@ def return_athletesdeneme(request):
         'recordsFiltered': total,
 
     }
-
     return JsonResponse(response)
 
 

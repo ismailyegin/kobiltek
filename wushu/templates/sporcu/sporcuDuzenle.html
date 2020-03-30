@@ -288,9 +288,7 @@
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
-                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <i
-                                                    class="fa fa-file-image-o fa-2x " style="color: red"
-                                                    aria-hidden="true"></i></a></td>
+                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <img src="/media/{{  license.lisansPhoto }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
                                             <td>{{ license.status }}  </td>
 
                                                 <td>
@@ -395,13 +393,10 @@
                                                     <td>{{ belt.branch }}  </td>
                                                     <td>{{ belt.definition }}  </td>
                                                     <td>{{ belt.city }}  </td>
-                                                    <td><a href="/media/{{ belt.form }}"  > <i
-                                                            class="fa fa-file-image-o fa-2x " style="color: red"
-                                                            aria-hidden="true"></i></a></td>
 
-                                                    <td><a href="/media/{{ belt.dekont }}" target="_blank" > <i
-                                                            class="fa fa-file-image-o fa-2x " style="color: red"
-                                                            aria-hidden="true"></i></a></td>
+                                                   <td><a href="/media/{{ belt.form }}" target="_blank"> <img src="/media/{{  belt.form }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
+
+                                                    <td><a href="/media/{{ belt.dekont }}" target="_blank"> <img src="/media/{{  belt.dekont }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
                                                     <td>{{ belt.status }}  </td>
                                                     {% if belt.status != 'Onaylandı' or user.groups.all.0.name == 'Admin'  %}
                                                         <td>
@@ -550,7 +545,7 @@
                                 $('#modal-success').on("shown.bs.modal", function (e) {
                                     $(".btn-ok").click(function () {
 
-                                        window.location.replace("{% url "wushu:kusak-listesi"%}");
+                                        window.location.replace("{% url "wushu:update-athletes" athlete.pk%}");
 
                                     });
 

@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.db import models
 
 from wushu.models.EnumFields import EnumFields
@@ -9,7 +11,7 @@ class CategoryItem(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    branch = models.CharField(max_length=128, choices=EnumFields.BRANCH.value)
+    branch = models.CharField(max_length=128, choices=EnumFields.BRANCH.value,null=True,blank=True,verbose_name='Seçiniz')
     isFirst = models.BooleanField()
 
     def __str__(self):

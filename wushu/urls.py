@@ -161,7 +161,7 @@ urlpatterns = [
         name='update-club'),
     # url(r'kulup/kusak-sinavlari/$', ClubViews.return_belt_exams, name='kusak-sinavlari'),
     # url(r'kulup/kusak-sinavi-sporcu-sec/(?P<pk>\d+)$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
-    # 
+    #
     #
     # url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
     # url(r'kulup/kusak-sinavi-antroner-sec/(?P<pk>\d+)$', ClubViews.choose_coach, name='kusak-sinavi-antroner-sec'),
@@ -207,40 +207,40 @@ urlpatterns = [
         name='choose-coach'),
     url(r'antrenor/antrenor-profil-guncelle/$', CoachViews.updateCoachProfile,
         name='antrenor-profil-guncelle'),
-    url(r'antrenor/antrenor-kademe-ekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
-        # vize ekle
-    url(r'antrenor/antrenor-vize-ekle/(?P<pk>\d+)$', CoachViews.antrenor_vısa_ekle, name='antrenor-vize-ekle'),
+    # url(r'antrenor/antrenor-kademe-ekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
+    #     # vize ekle
+    # url(r'antrenor/antrenor-vize-ekle/(?P<pk>\d+)$', CoachViews.antrenor_vısa_ekle, name='antrenor-vize-ekle'),
 
 
 
         # Kademe onay reddet sil güncelle liste
-    url(r'antrenor/vize-Liste-Reddet/(?P<grade_pk>\d+)$', CoachViews.vize_reddet_liste,
-        name='vize-list-reddet'),
-    url(r'antrenor/vize-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.vize_onayla_liste,
-        name='vize-list-onay'),
-    url(r'antrenor/Vize-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_delete,
-        name='vize-sil'),
-    url(r'antrenor/Vize-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.vize_reddet, name='vize-reddet'),
-    url(r'antrenor/Vize-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.visa_onay, name='vize-onayla'),
-    url(r'antrenor/Kademe-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_onay, name='kademe-onayla'),
-    url(r'antrenor/Kademe-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_reddet, name='kademe-reddet'),
-    url(r'antrenor/Kademe-Duzenle/güncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_update,name='kademe-güncelle'),
-    url(r'antrenor/Vize-Duzenle/guncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_update,
-        name='vize-güncelle'),
-    url(r'antrenor/Kademe-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_delete,
-        name='Kademe-sil'),
-    url(r'antrenor/Kademe-listesi/', CoachViews.kademe_list,name='kademe-listesi'),
-    url(r'antrenor/Vize-listesi/', CoachViews.vize_list, name='vize-listesi'),
-    url(r'antrenor/kademe-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.kademe_onayla,
-        name='kademe-list-onay'),
-    url(r'antrenor/kademe-Liste-reddet/(?P<grade_pk>\d+)$', CoachViews.kademe_reddet_liste,
-        name='kademe-list-reddet'),
-    url(r'antrenor/kademe-Liste-reddet-hepsi$', CoachViews.kademe_reddet_hepsi,
-        name='kademe-list-reddet-hepsi'),
-    url(r'antrenor/kademe-Liste-onay-hepsi$', CoachViews.kademe_onay_hepsi,
-        name='kademe-list-onay-hepsi'),
-    url(r'antrenor/kademe-Liste-bekle-hepsi$', CoachViews.kademe_bekle_hepsi,name='kademe-list-bekle-hepsi'),
-
+    # url(r'antrenor/vize-Liste-Reddet/(?P<grade_pk>\d+)$', CoachViews.vize_reddet_liste,
+    #     name='vize-list-reddet'),
+    # url(r'antrenor/vize-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.vize_onayla_liste,
+    #     name='vize-list-onay'),
+    # url(r'antrenor/Vize-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_delete,
+    #     name='vize-sil'),
+    # url(r'antrenor/Vize-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.vize_reddet, name='vize-reddet'),
+    # url(r'antrenor/Vize-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.visa_onay, name='vize-onayla'),
+    # url(r'antrenor/Kademe-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_onay, name='kademe-onayla'),
+    # url(r'antrenor/Kademe-Reddet/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$',CoachViews.kademe_reddet, name='kademe-reddet'),
+    # url(r'antrenor/Kademe-Duzenle/güncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_update,name='kademe-güncelle'),
+    # url(r'antrenor/Vize-Duzenle/guncelle/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.vize_update,
+    #     name='vize-güncelle'),
+    # url(r'antrenor/Kademe-Duzenle/sil/(?P<grade_pk>\d+)/(?P<coach_pk>\d+)$', CoachViews.kademe_delete,
+    #     name='Kademe-sil'),
+    # url(r'antrenor/Kademe-listesi/', CoachViews.kademe_list,name='kademe-listesi'),
+    # url(r'antrenor/Vize-listesi/', CoachViews.vize_list, name='vize-listesi'),
+    # url(r'antrenor/kademe-Liste-Onayla/(?P<grade_pk>\d+)$', CoachViews.kademe_onayla,
+    #     name='kademe-list-onay'),
+    # url(r'antrenor/kademe-Liste-reddet/(?P<grade_pk>\d+)$', CoachViews.kademe_reddet_liste,
+    #     name='kademe-list-reddet'),
+    # url(r'antrenor/kademe-Liste-reddet-hepsi$', CoachViews.kademe_reddet_hepsi,
+    #     name='kademe-list-reddet-hepsi'),
+    # url(r'antrenor/kademe-Liste-onay-hepsi$', CoachViews.kademe_onay_hepsi,
+    #     name='kademe-list-onay-hepsi'),
+    # url(r'antrenor/kademe-Liste-bekle-hepsi$', CoachViews.kademe_bekle_hepsi,name='kademe-list-bekle-hepsi'),
+    #
 
 
 

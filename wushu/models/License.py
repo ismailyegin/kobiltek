@@ -30,6 +30,8 @@ class License(models.Model):
     startDate = models.DateField(blank=False, null=False)
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     lisansPhoto = models.FileField(upload_to='lisans/', null=False, blank=False, verbose_name='Lisans')
+    reddetwhy=models.CharField(blank=True, null=True, max_length=255)
+
 
     def __str__(self):
         return '%s ' % self.sportsClub.name

@@ -173,13 +173,10 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label> {{Sportclup.branch.label }}</label>
+                                        <label> {{ Sportclup.branch.label }}</label>
                                         {{ Sportclup.branch }}
                                     </div>
                                 </div>
-
-
-
 
 
                             </div>
@@ -245,20 +242,30 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
                                             <td>{{ athlete.person.birthDate }} </td>
-                                            {% if  athlete.licenses.last.status == 'Onaylandı' %}
-                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <td>{{ athlete.licenses.last.sportsClub }}</td>
-                                                  {% endif %}
+
+                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                    <td>{{ athlete.licenses.last.sportsClub }}</td>
+                                                {% else %}
+                                                    <td>-</td>
+                                                {% endif %}
+
+
+
+                                             {% if  athlete.licenses.last.status == 'Onaylandı' %}
                                                 <td>{{ athlete.licenses.last.branch }}</td>
                                             {% else %}
                                                 <td>-</td>
 
                                             {% endif %}
+
                                             {% if  athlete.belts.last.status == 'Onaylandı' %}
                                                 <td>{{ athlete.belts.last.definition }}</td>
                                             {% else %}
                                                 <td>-</td>
                                             {% endif %}
+
+
+
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "wushu:update-athletes" athlete.pk %}"
@@ -267,14 +274,11 @@
                                                     </a>
 
 
-
-
-
-                                                        <a href="{% url "wushu:sporcu-lisans-ekle" athlete.pk %}"
-                                                           type="button" class="btn btn-secondary btn-success">Lisans
-                                                            Ekle
-                                                        </a>
-                                                           {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                    <a href="{% url "wushu:sporcu-lisans-ekle" athlete.pk %}"
+                                                       type="button" class="btn btn-secondary btn-success">Lisans
+                                                        Ekle
+                                                    </a>
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                         <a href="{% url "wushu:sporcu-kusak-ekle" athlete.pk %}"
                                                            type="button" class="btn btn-success">Kusak Ekle
                                                         </a>
@@ -312,20 +316,12 @@
             $('#sporcular').DataTable({
 
 
-
                 dom: 'Bfrtip',
                 lengthMenu: [
                     [10, 25, 50, -1],
                     ['10 tane', '25 tane ', '50 tane ', 'Hepsini Getir']
                 ],
-                language: {
 
-                    url: "cdn.datatables.net/plug-ins/1.10.20/i18n/Turkish.json"
-
-                },
-
-
-                dom: 'Bfrtip',
                 buttons: [
                     {##}
                     {##}
@@ -336,36 +332,35 @@
 
                     {
                         extend: 'colvis',
-                        text:'<i class="fa fa-file-pdf-o"></i>',
-                         titleAttr: 'Ekle Çıkar'
-
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'Ekle Çıkar'
 
 
                     },
                     {
                         extend: 'print',
-                        title:'Sporcular',
-                        text:'<i class="fa fa-files-o"></i>',
+                        title: 'Sporcular',
+                        text: '<i class="fa fa-files-o"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
                         },
-                         titleAttr: 'Yazdır'
+                        titleAttr: 'Yazdır'
                     },
                     {
                         extend: 'pdfHtml5',
                         download: 'open',
-                        text:'<i class="fa fa-file-pdf-o"></i>',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
                         },
-                         titleAttr: 'Pfd Kaydet'
+                        titleAttr: 'Pfd Kaydet'
                     },
 
                     {
                         extend: 'excelHtml5',
                         title: 'Sporcular',
-                        text:'<i class="fa fa-file-excel-o"></i>',
-                        messageTop: 'Sporcular Listesi Kobiltek Bilisim  Burasi baslık alani olarak kullanilabilecek',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        messageTop: 'Twf Bilgi Sistemi ',
                         {#footer: true,#}
                         exportOptions: {
                             {#     yer degisimi de yapilabilir.#}
@@ -374,17 +369,17 @@
                         },
                         titleAttr: 'Excel Kaydet'
                     },
-                     {
-                text:'<i class="fa fa-sellsy"></i>',
-                action: function ( e, dt, button, config ) {
-                    var data = dt.buttons.exportData();
+                    {
+                        text: '<i class="fa fa-sellsy"></i>',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
 
-                    $.fn.dataTable.fileSave(
-                        new Blob( [ JSON.stringify( data ) ] ),
-                        'Sporcular.json'
-                    );
-                }
-            }
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Sporcular.json'
+                            );
+                        }
+                    }
 
 
                 ],
@@ -400,5 +395,12 @@
 
         });
     </script>
+
+
+
+
+
+
+
 {% endblock %}
 

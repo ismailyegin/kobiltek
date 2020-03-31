@@ -47,6 +47,33 @@
         <!-- /.modal-dialog -->
     </div>
 
+    <div class="modal modal-warning fade in deneme22" tabindex="-1" role="dialog" id="reddetwhy"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Lütfen reddetme nedenini giriniz?</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="reddetwhytext" id="reddetwhytext" class="form-control" required>
+
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-gonder"
+                            data-dismiss="modal">Gönder
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-closereddet">Geri Dön</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     {% if messages %}
         {% for message in messages %}
 
@@ -312,10 +339,10 @@
 
 
 
-                                                        <a href="{% url "wushu:sporcu-lisans-reddet" license_pk=license.pk athlete_pk=athlete.pk %}"
-                                                           type="button" class="btn btn-success"><i
+                                                        <button type="button" class="btn btn-danger"
+                                                                onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})"><i
                                                                 class="fa fa-trash"></i>Reddet
-                                                        </a>
+                                                        </button>
 
 
 
@@ -500,7 +527,9 @@
                         url: "{% url "wushu:sporcu-kusak-sil" pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),
                         type: "POST",
                         data: {
+
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
+
                             isActive: 'False'
                         },
                         success: function (result) {
@@ -572,6 +601,53 @@
 
         }
     </script>
+       <script>
+
+            function reddetwhy(id,athlete) {
+                $("#reddetwhy").on("shown.bs.modal", function (e) {
+
+                    $("#btn-gonder").click(function () {
+                        $.ajax({
+
+                             url: "{% url "wushu:sporcu-lisans-reddet" license_pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, athlete.toString()),
+
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                 reddetwhy:$('#reddetwhytext').val(),
+                                isActive: 'False',
+
+
+                            },
+                            success: function (result) {
+
+                                html = 'Lisans reddedildi .';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{%  url "wushu:update-athletes" athlete.pk %}");
+
+                                    });
+
+                                }).modal('show');
+                            }
+                        });
+                    });
+
+
+                }).modal('show');
+                $('#btn-closereddet').click(function () {
+                    $('#modal-warning').modal('hide');
+                    $('.modal').modal('hide');
+
+                });
+
+            }
+
+
+        </script>
 
 
 {% endblock %}

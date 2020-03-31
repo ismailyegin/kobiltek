@@ -245,8 +245,7 @@
 
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                     <td>{{ athlete.licenses.last.sportsClub }}</td>
-                                                {% else %}
-                                                    <td>-</td>
+
                                                 {% endif %}
 
 

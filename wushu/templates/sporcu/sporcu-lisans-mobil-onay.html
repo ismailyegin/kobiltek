@@ -48,105 +48,114 @@
 
     {% endif %}
 
-        <div class="row">
+    <div class="row">
 
 
+        <div class="col-lg-1 col-sm-2 col-xs-2"  style="height: 600px;" onclick="location.href='{% url "wushu:sporcu-lisans-duzenle-mobil" count=geri %}'"><br><br><br><br><br><br><br>
 
-                <div class="col-lg-1" >
 
+            <a href="{% url "wushu:sporcu-lisans-duzenle-mobil" count=geri %}" type="button"
+               class="btn btn-default btn-lg center-block">Geri</a>
+        </div>
 
-                     <a href="{% url "wushu:sporcu-lisans-duzenle-mobil" count=geri %}"    type="button" class="btn btn-default">Geri</a>
-                </div>
+        <div class="col-lg-10 col-sm-8 col-xs-8">
 
-            <div class="col-lg-10" >
+            <div class="row">
 
-                <div class="row">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Bilgiler</h3>
+                        </div>
+                        <div class="box-body">
 
-                    <div class="col-lg-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Bilgiler</h3>
+                            <div class="col-lg-12 text-center">
+                                <td>
+                                    <img src="/media/{{ license.lisansPhoto }}" class="user-image" alt="None"
+                                         style=" width:80%;height: 80%;">
+                                </td>
                             </div>
-                            <div class="box-body">
 
-                                <div class="col-lg-12 text-center">
-                                    <td>
-                                        <img src="/media/{{ license.lisansPhoto }}" class="user-image" alt="None"
-                                             style=" width:80%;height: 80%;">
-                                    </td>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label> İsim </label>
+                                    {{ license.athlete_set.first }}
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label> Baslangıc Tarihi </label>
+                                    {{ license.startDate }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Bitiş Tarihi</label>
+                                    {{ license.expireDate }}
                                 </div>
 
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> İsim </label>
-                                        {{ license.athlete_set.first }}
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label> Baslangıc Tarihi </label>
-                                        {{ license.expireDate }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Bitiş Tarihi</label>
-                                        {{ license.creationDate }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label>Branş</label>
-                                        {{ license.branch }}
-                                    </div>
-
+                                <div class="form-group">
+                                    <label>Branş</label>
+                                    {{ license.branch }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Lisans Photo</label>
+                                    <a href="/media/{{ license.lisansPhoto }}" target="_blank">{{ license.lisansPhoto }}
+                                    </a>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> Lisans Numarasi </label>
-                                       <h4> {{ license.licenseNo }}</h4>
-                                    </div>
+                            </div>
 
-
-                                    <div class="form-group">
-                                        <label>Verildigi il </label>
-                                        {{ license.cityHeadShip }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Kulubü:</label>
-                                        {{ license.sportsClub }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Onay Durumu :</label>
-                                        {{ license.status }}-{{ license.reddetwhy }}
-                                    </div>
-
-
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label> Lisans Numarasi </label>
+                                    <h4> {{ license.licenseNo }}</h4>
                                 </div>
+
+
+                                <div class="form-group">
+                                    <label>Verildigi il </label>
+                                    {{ license.cityHeadShip }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Kulubü:</label>
+                                    {{ license.sportsClub }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Onay Durumu :</label>
+                                    {{ license.status }}-{{ license.reddetwhy }}
+                                </div>
+
+
+                            </div>
+                            <div class="col-lg-12">
                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <div class="col-lg-6"><br>
 
-
-                                        <a href="{% url "wushu:sporcu-lisans-listesi-onayla-mobil" license_pk=license.pk  count=say%}"
-                                           type="button" class="btn btn-success pull-right  "><i
-                                                class="fa fa-edit"></i>Onayla
-                                        </a>
-
-
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <form action="{% url "wushu:sporcu-lisans-listesi-reddet-mobil" license_pk=license.pk  count=say%}"
+                                    <div class="col-lg-10">
+                                        <form action="{% url "wushu:sporcu-lisans-listesi-reddet-mobil" license_pk=license.pk  count=say %}"
                                               method="post">
                                             {% csrf_token %}
-                                            <div class="input-group margin " >
-                                                <input type="text" name="text" class="form-control">
+                                            <div class="input-group margin ">
+                                                <input type="text" name="text" class="form-control"><br>
                                                 <span class="input-group-btn">
                                                   <button type="submit" class="btn btn-danger">reddet!</button>
                                                       </span>
                                             </div>
                                         </form>
 
+
+                                    </div>
+                                    <div class="col-lg-2">
+
+                                        <div class="input-group margin text-left"><br>
+                                            <span class="input-group-btn">
+                                        <a href="{% url "wushu:sporcu-lisans-listesi-onayla-mobil" license_pk=license.pk  count=say %}"
+                                           type="button" class="btn btn-success pull-left  "><i
+                                                class="fa fa-edit"></i>Onayla
+                                        </a>
+                                            </span>
+                                        </div>
 
                                     </div>
                                 {% endif %}
@@ -156,20 +165,23 @@
 
                         </div>
 
-                    </div>
-                </div>
 
+                    </div>
+
+                </div>
             </div>
 
-
-                <div class="col-lg-1">
-                      <a href="{% url "wushu:sporcu-lisans-duzenle-mobil" count=ileri %}"  type="button" class="btn btn-default"> ileri
-                      </a>
-                </div>
-
-
-
         </div>
+
+
+        <div class="col-lg-1 col-sm-2 col-xs-2" style=" height: 600px;"  onclick="location.href='{% url "wushu:sporcu-lisans-duzenle-mobil" count=ileri %}'" ><br><br><br><br><br><br><br>
+            <a href="{% url "wushu:sporcu-lisans-duzenle-mobil" count=ileri %}" type="button"
+               class="btn btn-default btn-lg pull-left center-block"> ileri
+            </a>
+        </div>
+
+
+    </div>
 
 
 

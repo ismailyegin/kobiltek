@@ -252,7 +252,7 @@
                                                 <td>{{ athlete.licenses.last.branch }}</td>
                                             {% else %}
                                                 <td>-</td>
-                                                <td>-</td>
+
                                             {% endif %}
                                             {% if  athlete.belts.last.status == 'Onaylandı' %}
                                                 <td>{{ athlete.belts.last.definition }}</td>
@@ -267,13 +267,14 @@
                                                     </a>
 
 
-                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
 
 
                                                         <a href="{% url "wushu:sporcu-lisans-ekle" athlete.pk %}"
                                                            type="button" class="btn btn-secondary btn-success">Lisans
                                                             Ekle
                                                         </a>
+                                                           {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                         <a href="{% url "wushu:sporcu-kusak-ekle" athlete.pk %}"
                                                            type="button" class="btn btn-success">Kusak Ekle
                                                         </a>
@@ -399,12 +400,5 @@
 
         });
     </script>
-
-
-
-
-
-
-
 {% endblock %}
 

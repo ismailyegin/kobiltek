@@ -497,7 +497,7 @@ def sporcu_lisans_listesi_onayla_mobil(request, license_pk,count):
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
     license.status = License.APPROVED
-    license.reddetwhy=None;
+    license.reddetwhy='';
     license.save()
     messages.success(request, 'Lisans Onaylanmıştır')
     return redirect('wushu:sporcu-lisans-duzenle-mobil',count)
@@ -689,6 +689,8 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
+
+
     license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,
                                initial={'sportsClub': license.sportsClub})
     user = request.user
@@ -706,6 +708,10 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
     if request.method == 'POST':
         if license_form.is_valid():
             license_form.save()
+            print('ben istenilen yere geldim.')
+            if license.status !='Onaylandı':
+                license.status =License.WAITED
+                license.save()
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
 
@@ -722,8 +728,7 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 @login_required
 def sporcu_lisans_duzenle_mobil_ilet(request):
 
-    cout='1'
-    print('Ben buralardan geçtim' )
+    cout='0'
     return redirect('wushu:sporcu-lisans-duzenle-mobil',count=cout)
 
 @login_required
@@ -732,24 +737,21 @@ def sporcu_lisans_duzenle_mobil(request, count):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
-    if int(count)==0 and count is None:
-
-        count=1
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-
-
-
     if user.groups.filter(name__in=['Yonetim', 'Admin']):
-
-        if int(count)>0 and int(count)<License.objects.count():
-            licenses = License.objects.all().order_by('-pk')[int(count)]
-        else:
-            licenses = License.objects.all().order_by('-pk')[1]
-            count=1
         ileri = int(count) + 1
         geri = int(count) - 1
+
+        if int(count)>=0 and int(count)<License.objects.count():
+            licenses = License.objects.all().order_by('-pk')[int(count)]
+            if int(count)==0:
+                geri=0;
+        else:
+            licenses = License.objects.all().order_by('-pk')[0]
+            messages.success(request,'Degerler bitti ')
+            count='0'
+
 
 
     return render(request, 'sporcu/sporcu-lisans-mobil-onay.html',
@@ -814,7 +816,7 @@ def sporcu_lisans_listesi(request):
         clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
-        licenses = License.objects.filter(athlete__licenses__sportsClub__in=clubsPk)
+        licenses = License.objects.filter(athlete__licenses__sportsClub__in=clubsPk).distinct()
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         licenses = License.objects.all().distinct()
 
@@ -873,6 +875,7 @@ def updateAthleteProfile(request, pk):
 @login_required
 def sporcu_lisans_listesi_hepsionay(request):
     licenses = License.objects.filter(status='Beklemede')
+
     for license in licenses:
         license.status = License.APPROVED
         license.save()

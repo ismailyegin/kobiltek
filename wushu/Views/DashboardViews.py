@@ -107,9 +107,7 @@ def return_admin_dashboard(request):
     total_athlete = Athlete.objects.all().count()
     total_athlete_gender_man=Athlete.objects.filter(person__gender='Erkek').count()
     total_athlete_gender_woman= Athlete.objects.filter(person__gender='Kadın').count()
-    # lisans sayisini alıyorum ama ceration date degeri server de olmadigi icin çalismadi
-    # total_athlate_last_month=Athlete.objects.exclude(creationDate__month=datetime.now().month).count()
-    total_athlate_last_month = Athlete.objects.exclude(licenses__creationDate__month=datetime.now().month).count()
+    total_athlate_last_month=Athlete.objects.exclude(user__date_joined__month=datetime.now().month).count()
     total_club_user = SportClubUser.objects.all().count()
     total_coachs = Coach.objects.all().count()
     total_brans_aikido=Athlete.objects.filter(licenses__branch='AIKIDO').count()

@@ -78,7 +78,12 @@ def return_club_user_dashboard(request):
 
     total_club_user = club.clubUser.count()
     total_coach = Coach.objects.filter(sportsclub=club).count()
-    total_athlete = License.objects.filter(sportsClub_id=club).count()
+    sc_user = SportClubUser.objects.get(user=user)
+    clubsPk = []
+    clubs = SportsClub.objects.filter(clubUser=sc_user)
+    for club in clubs:
+        clubsPk.append(club.pk)
+    total_athlete = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct().count()
     return render(request, 'anasayfa/kulup-uyesi.html',
                   {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
                    'total_athlete': total_athlete})
@@ -98,13 +103,11 @@ def return_admin_dashboard(request):
         return redirect('accounts:login')
     # son eklenen 5 sporcuyu ekledik
     last_athlete=Athlete.objects.order_by('-creationDate')[:5]
-
     total_club = SportsClub.objects.all().count()
-
     total_athlete = Athlete.objects.all().count()
     total_athlete_gender_man=Athlete.objects.filter(person__gender='Erkek').count()
     total_athlete_gender_woman= Athlete.objects.filter(person__gender='Kadın').count()
-    total_athlate_last_month=Athlete.objects.exclude(creationDate__month=date.today().month).count()
+    total_athlate_last_month=Athlete.objects.exclude(creationDate__month=datetime.now().month).count()
     total_club_user = SportClubUser.objects.all().count()
     total_coachs = Coach.objects.all().count()
     total_brans_aikido=Athlete.objects.filter(licenses__branch='AIKIDO').count()

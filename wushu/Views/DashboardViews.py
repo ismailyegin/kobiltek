@@ -7,6 +7,9 @@ from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athle
 from wushu.services import general_methods
 
 
+from datetime import date,datetime
+
+
 @login_required
 def return_athlete_dashboard(request):
     perm = general_methods.control_access(request)
@@ -44,7 +47,6 @@ def return_directory_dashboard(request):
 
     if not perm:
         logout(request)
-        print('ben dısari attım ')
         return redirect('accounts:login')
     return render(request, 'anasayfa/federasyon.html')
 
@@ -98,9 +100,25 @@ def return_admin_dashboard(request):
     last_athlete=Athlete.objects.order_by('-creationDate')[:5]
 
     total_club = SportsClub.objects.all().count()
+
     total_athlete = Athlete.objects.all().count()
+    total_athlete_gender_man=Athlete.objects.filter(person__gender='Erkek').count()
+    total_athlete_gender_woman= Athlete.objects.filter(person__gender='Kadın').count()
+    total_athlate_last_month=Athlete.objects.exclude(creationDate__month=date.today().month).count()
     total_club_user = SportClubUser.objects.all().count()
     total_coachs = Coach.objects.all().count()
+    total_brans_aikido=Athlete.objects.filter(licenses__branch='AIKIDO').count()
+    total_brans_wushu=Athlete.objects.filter(licenses__branch='WUSHU').count()
+    total_brans_wing_chun=Athlete.objects.filter(licenses__branch='WING CHUN').count()
+    total_brans_kyokushin_ashihara=Athlete.objects.filter(licenses__branch='KYOKUSHIN ASHIHARA').count()
+    total_brans_jeet_kune_do_kulelkavi=Athlete.objects.filter(licenses__branch='JEET KUNE DO KULELKAVIDO').count()
+
+
+
     return render(request, 'anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
-                   'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete})
+                   'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete,'total_athlete_gender_man':total_athlete_gender_man,
+                   'total_athlete_gender_woman':total_athlete_gender_woman,'total_athlate_last_month':total_athlate_last_month,
+                   'total_brans_wushu':total_brans_wushu,'total_brans_aikido':total_brans_aikido,'total_brans_wing_chun':total_brans_wing_chun,
+                   'total_brans_kyokushin_ashihara':total_brans_kyokushin_ashihara,'total_brans_jeet_kune_do_kulelkavi':total_brans_jeet_kune_do_kulelkavi
+                   })

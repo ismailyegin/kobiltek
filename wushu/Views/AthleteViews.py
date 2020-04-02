@@ -134,23 +134,21 @@ def return_athletes(request):
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     user_form = UserSearchForm()
-    # arama açıldıgı zaman burasi sillinecek
-    if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        clubsPk = []
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        for club in clubs:
-            clubsPk.append(club.pk)
-        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        athletes = Athlete.objects.all()
-    #     silinecek son
+    # # arama açıldıgı zaman burasi sillinecek
+    # if user.groups.filter(name='KulupUye'):
+    #     sc_user = SportClubUser.objects.get(user=user)
+    #     clubsPk = []
+    #     clubs = SportsClub.objects.filter(clubUser=sc_user)
+    #     for club in clubs:
+    #         clubsPk.append(club.pk)
+    #     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+    # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+    #     athletes = Athlete.objects.all()
+    # #     silinecek son
 
-
-
-
+    athletes = Athlete.objects.none()
     if request.method == 'POST':
-        athletes = Athlete.objects.none()
+
         user_form = UserSearchForm(request.POST)
         brans=request.POST.get('branch')
         sportsclup=request.POST.get('sportsClub')
@@ -813,22 +811,25 @@ def sporcu_lisans_listesi(request):
     user_form=UserForm(request.POST, request.FILES or None)
     sportclup = SearchClupForm(request.POST, request.FILES or None)
     # ilk açılıs alani
-    if user.groups.filter(name='KulupUye'):
-        clubuser = SportClubUser.objects.get(user=user)
-        clubs = SportsClub.objects.filter(clubUser=clubuser)
-        clubsPk = []
-        for club in clubs:
-            clubsPk.append(club.pk)
-        licenses = License.objects.filter(athlete__licenses__sportsClub__in=clubsPk).distinct()
-        sc_user = SportClubUser.objects.get(user=user)
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        clubsPk = []
-        for club in clubs:
-            clubsPk.append(club.pk)
-        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        licenses = License.objects.all().distinct()
-        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+    # if user.groups.filter(name='KulupUye'):
+    #     clubuser = SportClubUser.objects.get(user=user)
+    #     clubs = SportsClub.objects.filter(clubUser=clubuser)
+    #     clubsPk = []
+    #     for club in clubs:
+    #         clubsPk.append(club.pk)
+    #     licenses = License.objects.filter(athlete__licenses__sportsClub__in=clubsPk).distinct()
+    #     sc_user = SportClubUser.objects.get(user=user)
+    #     clubs = SportsClub.objects.filter(clubUser=sc_user)
+    #     clubsPk = []
+    #     for club in clubs:
+    #         clubsPk.append(club.pk)
+    #     sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+    # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+    #     licenses = License.objects.all().distinct()
+    #     sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+
+    # ilk açılıs son
+    licenses= not License.objects.none()
     if request.method == 'POST':
             brans = request.POST.get('branch')
             sportsclup = request.POST.get('sportsClub')

@@ -809,7 +809,7 @@ def sporcu_lisans_listesi(request):
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     user_form=UserForm(request.POST, request.FILES or None)
-    sportclup = SearchClupForm(request.POST, request.FILES or None)
+
     # ilk açılıs alani
     # if user.groups.filter(name='KulupUye'):
     #     clubuser = SportClubUser.objects.get(user=user)
@@ -837,6 +837,7 @@ def sporcu_lisans_listesi(request):
             lastName=request.POST.get('last_name')
             email=request.POST.get('email')
             status = request.POST.get('status')
+
             if firstName or lastName or email or sportsclup or brans or status:
                 query = Q()
                 if firstName:
@@ -853,6 +854,7 @@ def sporcu_lisans_listesi(request):
                     query &= Q(status=status)
 
                 if user.groups.filter(name='KulupUye'):
+
                     sc_user = SportClubUser.objects.get(user=user)
                     clubsPk = []
                     clubs = SportsClub.objects.filter(clubUser=sc_user)
@@ -861,8 +863,28 @@ def sporcu_lisans_listesi(request):
                     licenses = License.objects.filter(sportsClub_id__in=clubsPk).filter(query).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     licenses = License.objects.filter(query).distinct()
+            else:
+                if user.groups.filter(name='KulupUye'):
 
+                    sc_user = SportClubUser.objects.get(user=user)
+                    clubsPk = []
+                    clubs = SportsClub.objects.filter(clubUser=sc_user)
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+                    licenses = License.objects.filter(sportsClub_id__in=clubsPk).distinct()
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    licenses = License.objects.all().distinct()
 
+    sportclup = SearchClupForm(request.POST, request.FILES or None)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
     return render(request, 'sporcu/sporcu-lisans-listesi.html', {'licenses': licenses,'user_form':user_form,'Sportclup':sportclup})
 
 

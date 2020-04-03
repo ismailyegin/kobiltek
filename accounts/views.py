@@ -6,6 +6,9 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, render_to_response
 from accounts.forms import LoginForm, PermForm
+
+from wushu.Forms.PreRegidtrationForm import PreRegistrationForm
+
 from django.contrib import auth, messages
 
 from wushu import urls
@@ -88,10 +91,38 @@ def forgot(request):
 
     return render(request, 'registration/forgot-password.html')
 
+def pre_registration(request):
+    PreRegistrationform = PreRegistrationForm()
+
+    if request.method == 'POST':
+        PreRegistrationform=PreRegistrationForm(request.POST or None, request.FILES or None)
+
+        if PreRegistrationform.is_valid():
+            if User.objects.filter(email=PreRegistrationform.cleaned_data['email']).exists():
+                messages.warning(request, 'Klup üyesi  mail adresi farklı bir kullanici tarafından kullanilmaktadır.')
+                messages.warning(request, 'Lütfen farklı bir mail adresi giriniz.')
+                return render(request, 'registration/cluppre-registration.html',
+                              {'preRegistrationform': PreRegistrationform})
+            else:
+                PreRegistrationform.save()
+                messages.success(request,
+                                 "Başarili bir şekilde kayıt başvurunuz alındı Sistem onayından sonra girdiginiz mail adresinize gelen mail ile sisteme giris yapabilirsiniz.")
+
+
+            # bildirim ve geçis sayfasi yap
+            return redirect('accounts:login')
+
+        else:
+            messages.warning(request, "Alanlari kontrol ediniz")
+
+
+    return render(request, 'registration/cluppre-registration.html', {'preRegistrationform': PreRegistrationform})
+
 
 def pagelogout(request):
     logout(request)
     return redirect('accounts:login')
+
 
 
 def groups(request):

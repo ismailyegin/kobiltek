@@ -785,18 +785,63 @@ def sporcu_kusak_listesi(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    belts = not License.objects.none()
+    if request.method == 'POST':
+        brans = request.POST.get('branch')
+        sportsclup = request.POST.get('sportsClub')
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        email = request.POST.get('email')
+        status = request.POST.get('status')
+        if firstName or lastName or email or sportsclup or brans or status:
+            query = Q()
+            if firstName:
+                query &= Q(athlete__user__first_name__icontains=firstName)
+            if lastName:
+                query &= Q(athlete__user__last_name__icontains=lastName)
+            if email:
+                query &= Q(athlete__user__email__icontains=email)
+            if sportsclup:
+                try:
+                    query &= Q(athlete__licenses__sportsClub=SportsClub.objects.get(name=sportsclup).pk)
+                except:
+                    if user.groups.filter(name__in=['Yonetim', 'Admin']):
+                        messages.warning(request,'Bu kulube bir başkan atamasi gerçeklesmemiştir. Bütün degerler gösterilecek')
+            if brans:
+                query &= Q(branch__icontains=brans)
+            if status:
+                query &= Q(status=status)
+            if user.groups.filter(name='KulupUye'):
+                clubuser = SportClubUser.objects.get(user=user)
+                clubs = SportsClub.objects.filter(clubUser=clubuser)
+                clubsPk = []
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                belts = Level.objects.filter(query).filter(athlete__licenses__sportsClub__in=clubsPk).filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                belts = Level.objects.filter(query).filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
+        else:
+            if user.groups.filter(name='KulupUye'):
+                clubuser = SportClubUser.objects.get(user=user)
+                clubs = SportsClub.objects.filter(clubUser=clubuser)
+                clubsPk = []
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk).distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
 
+    sportclup = SearchClupForm(request.POST, request.FILES or None)
     if user.groups.filter(name='KulupUye'):
-        clubuser = SportClubUser.objects.get(user=user)
-        clubs = SportsClub.objects.filter(clubUser=clubuser)
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
         clubsPk = []
         for club in clubs:
             clubsPk.append(club.pk)
-        belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk)
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
-
-    return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts})
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+    return render(request, 'sporcu/sporcu-kusak-listesi.html', {'belts': belts,'Sportclup':sportclup})
 
 
 @login_required

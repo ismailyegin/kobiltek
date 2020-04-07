@@ -24,6 +24,10 @@ class PreRegistration(models.Model):
         (MALE, 'Erkek'),
         (FEMALE, 'Kadın'),
     )
+    IsFormal=(
+        (True, 'Spor Kulubü'),
+        (False, 'Diger(Özel Salon-Dojo-Sportif Dernek)'),
+    )
 
     BLOODTYPE = (
         (AB1, 'AB Rh+'),
@@ -77,7 +81,7 @@ class PreRegistration(models.Model):
 
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
-    isFormal = models.BooleanField(default=False)
+    isFormal = models.BooleanField(default=True,choices=IsFormal)
 
     clubpostalCode = models.CharField(max_length=120, null=True, blank=True)
     clubphoneNumber = models.CharField(max_length=120, null=True, blank=True)
@@ -96,7 +100,7 @@ class PreRegistration(models.Model):
 
     # gerekli evraklar
     dekont = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dekont ')
-    petition= models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dilekçe ')
+    petition= models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dilekçe ')
     # Sportclup user
     role = models.ForeignKey(ClubRole, on_delete=models.CASCADE, verbose_name='Üye Rolü')
 

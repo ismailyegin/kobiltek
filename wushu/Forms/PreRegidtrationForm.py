@@ -6,6 +6,7 @@ from wushu.models.PreRegistration import PreRegistration
 
 
 class PreRegistrationForm(ModelForm):
+
     class Meta:
         model = PreRegistration
 
@@ -13,9 +14,11 @@ class PreRegistrationForm(ModelForm):
             'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName','fatherName', 'first_name', 'last_name', 'email', 'is_active','phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city', 'country', 'name', 'shortName', 'foundingDate', 'logo', 'clubMail', 'isFormal',
             'clubphoneNumber', 'clubaddress', 'clubpostalCode', 'clubphoneNumber2', 'clubcity', 'clubcountry','dekont','petition','role')
         labels = {'tc': 'T.C.', 'gender': 'Cinsiyet', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email','phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke','name': 'Adı','shortName': 'Kısa Adı','foundingDate': 'Kuruluş Tarihi','clubMail': 'Email','isFormal' : 'Resmi mi?','role': 'Kulüp Rolü','clubphoneNumber':'Cep Telefonu','clubphoneNumber2':'Sabit Telefon', }
+                  'city': 'İl', 'country': 'Ülke','name': 'Adı','shortName': 'Kısa Adı','foundingDate': 'Kuruluş Tarihi','clubMail': 'Email','isFormal' : 'Kulüp Türü','role': 'Kulüp Rolü','clubphoneNumber':'Cep Telefonu','clubphoneNumber2':'Sabit Telefon', }
 
         widgets = {
+            'isFormal':forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                        'style': 'width: 100%; ', 'required': 'required'}),
             'role': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%; ', 'required': 'required'}),
 

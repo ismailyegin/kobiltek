@@ -646,6 +646,8 @@ def choose_athlete(request, pk):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    athletes=Athlete.objects.none()
+
     # sinav = BeltExam.objects.get(pk=pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
@@ -679,13 +681,13 @@ def choose_athlete(request, pk):
         # print(athletes)
 
 
-    if request.method == 'POST':
-
-        athletes1 = request.POST.getlist('selected_options')
-        if athletes1:
-            for x in athletes1:
-                # sinav.athletes.add(x)
-        return redirect('wushu:kusak-sinavi-incele', pk=pk)
+    # if request.method == 'POST':
+    #
+    #     athletes1 = request.POST.getlist('selected_options')
+    #     if athletes1:
+    #         for x in athletes1:
+    #             # sinav.athletes.add(x)
+    #     return redirect('wushu:kusak-sinavi-incele', pk=pk)
     return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
 
 
@@ -709,7 +711,7 @@ def choose_coach(request, pk):
     #         if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
     #             athletes|=Coach.objects.filter(pk=fd.pk).distinct()
 
-    if request.method == 'POST':
+    # if request.method == 'POST':
         # athletes1 = request.POST.getlist('selected_options')
         # if athletes1:
         #     for x in athletes1:

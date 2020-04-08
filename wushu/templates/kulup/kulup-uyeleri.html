@@ -158,6 +158,12 @@
                                         {{ user_form.email }}
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> {{ Sportclup.sportsClub.label }}</label>
+                                        {{ Sportclup.sportsClub }}
+                                    </div>
+                                </div>
 
 
                             </div>
@@ -192,16 +198,16 @@
                         </div>
 
                         <div class="box-body">
-                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
-                         <div class="box-header with-border">
-                                <div class="btn-group">
-                                    <a href="{% url "wushu:kulup-uyesi-ekle" %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Kulüp Üyesi Ekle
-                                    </a>
+                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                <div class="box-header with-border">
+                                    <div class="btn-group">
+                                        <a href="{% url "wushu:kulup-uyesi-ekle" %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Kulüp Üyesi Ekle
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endif %}
+                            {% endif %}
                             <table id="sporcular" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
@@ -210,8 +216,8 @@
                                     <th>Rolü</th>
                                     <th>Cep Tel</th>
                                     <th>E-Mail</th>
-                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
-                                    <th>İşlemler</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>İşlemler</th>
                                     {% endif %}
                                 </tr>
                                 </thead>
@@ -224,7 +230,7 @@
                                             <td>{{ athlete.role.name }} </td>
                                             <td>{{ athlete.communication.phoneNumber }} </td>
                                             <td>{{ athlete.user.email }} </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin'  %}
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>
                                                     <div class="btn-group">
                                                         <a href="{% url "wushu:kulup-uyesi-guncelle" athlete.pk %}"

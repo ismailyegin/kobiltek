@@ -1,3 +1,5 @@
+from itertools import product
+
 from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
@@ -20,12 +22,19 @@ from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.SportClubUserForm import SportClubUserForm
 from wushu.Forms.UserForm import UserForm
+from wushu.Forms.SearchClupForm import SearchClupForm
+from wushu.Forms.PreRegidtrationForm import PreRegistrationForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level
+from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
 from wushu.models.ClubRole import ClubRole
 from wushu.models.EnumFields import EnumFields
+from wushu.models.PreRegistration import PreRegistration
 from wushu.services import general_methods
+from datetime import date,datetime
+import datetime
 
+
+from django.contrib.auth.models import Group, Permission, User
 
 @login_required
 def return_add_club(request):
@@ -212,29 +221,32 @@ def return_club_person(request):
 
     user_form = UserSearchForm()
     user = request.user
-    club_user_array = []
-    if user.groups.filter(name='KulupUye'):
-
-        clubuser = SportClubUser.objects.get(user=user)
-        clubs = SportsClub.objects.filter(clubUser=clubuser)
-        clubsPk = []
-        for club in clubs:
-            clubsPk.append(club.pk)
-
-        club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk)
-
-
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        club_user_array = SportClubUser.objects.all()
-
+    club_user_array=SportClubUser.objects.none()
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
+        sportsclup = request.POST.get('sportsClub')
+
+
+
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            if not (firstName or lastName or email or sportsclup):
+                club_user_array = []
+                if user.groups.filter(name='KulupUye'):
+
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser)
+                    clubsPk = []
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+
+                    club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk).distinct()
+
+
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    club_user_array = SportClubUser.objects.all()
             else:
                 query = Q()
                 if lastName:
@@ -243,8 +255,35 @@ def return_club_person(request):
                     query &= Q(user__first_name__icontains=firstName)
                 if email:
                     query &= Q(user__email__icontains=email)
+                if sportsclup:
+                    query &=Q(sportsclub__name__icontains=sportsclup)
+                club_user_array = []
+                if user.groups.filter(name='KulupUye'):
 
-    return render(request, 'kulup/kulup-uyeleri.html', {'athletes': club_user_array, 'user_form': user_form})
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser)
+                    clubsPk = []
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+
+                    club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk).filter(query).distinct()
+
+
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    club_user_array = SportClubUser.objects.filter(query).distinct()
+
+    sportclup = SearchClupForm(request.POST, request.FILES or None)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+
+    return render(request, 'kulup/kulup-uyeleri.html', {'athletes': club_user_array, 'user_form': user_form,'Sportclup':sportclup})
 
 
 @login_required
@@ -503,6 +542,7 @@ def choose_sport_club_user(request, pk):
         if athletes1:
             students = [int(x) for x in athletes1]
             instances = SportClubUser.objects.filter(id__in=students)
+
             club = SportsClub.objects.get(pk=pk)
             for club_user in instances:
                 club.clubUser.add(club_user)
@@ -549,6 +589,7 @@ def detail_belt_exam(request, pk):
         return redirect('accounts:login')
     exam = BeltExam.objects.get(pk=pk)
 
+
     return render(request, 'kulup/kusak-sinavi-incele.html', {'exam': exam})
 
 
@@ -560,18 +601,22 @@ def approve_belt_exam(request, pk):
         logout(request)
         return redirect('accounts:login')
     exam = BeltExam.objects.get(pk=pk)
-    athletes = exam.athletes.all();
-    for athlete in athletes:
-        level = Level()
-        level.startDate = exam.examDate
-        level.levelType = EnumFields.LEVELTYPE.BELT
-        lastLevel = athlete.belts.last()
-        lastDefinition = lastLevel.definition
-        level.definition = lastDefinition.parent
-        level.status = Level.APPROVED
-        level.save()
-        athlete.belts.add(level)
-        athlete.save()
+    # her onaya geldiginde kuşaklari bir üst seviyeye göndermesini engelledik.
+    if exam.status!=BeltExam.APPROVED:
+        athletes = exam.athletes.all()
+        for athlete in athletes:
+            level = Level()
+            level.startDate = exam.examDate
+            level.levelType = EnumFields.LEVELTYPE.BELT
+            lastLevel = athlete.belts.last()
+            lastDefinition = lastLevel.definition
+            level.definition = lastDefinition.parent
+            level.status = Level.APPROVED
+            level.save()
+            athlete.belts.add(level)
+            athlete.save()
+
+
 
     exam.status = BeltExam.APPROVED
     exam.save()
@@ -579,8 +624,21 @@ def approve_belt_exam(request, pk):
     return redirect('wushu:kusak-sinavi-incele', pk=pk)
 
 
+# def denied_belt_exam(request, pk):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#     exam = BeltExam.objects.get(pk=pk)
+#     exam.status = exam.DENIED
+#     exam.save()
+#     return redirect('wushu:kusak-sinavi-incele', pk=pk)
+
+
+# sporcu seç
 @login_required
-def choose_athlete(request):
+def choose_athlete(request, pk):
     perm = general_methods.control_access(request)
 
     if not perm:
@@ -588,6 +646,7 @@ def choose_athlete(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    # sinav = BeltExam.objects.get(pk=pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
         clubsPk = []
@@ -595,22 +654,76 @@ def choose_athlete(request):
         for club in clubs:
             clubsPk.append(club.pk)
         athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        athletes = Athlete.objects.all()
-    str = ''
+        exam_athlete=[]
+        # for item in sinav.athletes.all():
+        #     exam_athlete.append(item.user.pk)
+        #     filtere branch eklenmeli
+        # filter(belts__branch=sinav.branch).filter(licenses__branch__in=sinav.branch) eklenmeliki sistemde neler olacagını görelim.
+
+
+        # sadece lisansı ve kusagı olan diye baktık
+        # print('ben seni sevmedim ki ')
+        # .exclude(belts__definition__parent_id=None)  => ile üst kusak var mı diye kontrol ettik.
+        # athletes = Athlete.objects.exclude(beltexam__athletes__user__in=exam_athlete)
+        # print(athletes)
+        # athletes = Athlete.objects.exclude(belts=None)
+        # print(athletes)
+        # athletes=Athlete.objects.exclude(belts__definition__parent_id=None)
+        # print(athletes)
+
+        # lisasın ve kusasgin(levelin) bransi kontol edilmeli
+
+        # athletes=Athlete.objects.filter(licenses__status='Onaylandı').filter(belts__status='Onaylandı').exclude(beltexam__athletes__user__in=exam_athlete).exclude(belts=None).exclude(licenses=None).exclude(belts__definition__parent_id=None)
+        # print(athletes)
+
+
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
             for x in athletes1:
-                str = str + x + '-'
-        return redirect(reverse("wushu:kusak-sinavi-ekle", kwargs={'athlete1': str}))
-    return render(request, 'kulup/kusak-sinavi-sporcu-sec.html', {'athletes': athletes})
+                # sinav.athletes.add(x)
+        return redirect('wushu:kusak-sinavi-incele', pk=pk)
+    return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
 
 
 @login_required
-def add_belt_exam(request, athlete1):
+def choose_coach(request, pk):
     perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    # sinav = BeltExam.objects.get(pk=pk)
+    athletes = Coach.objects.none()
+    # .filter(grades__branch=sinav.branch) eklenmeli
+    # coa=[]
+    # for item in sinav.coachs.all():
+    #     coa.append(item.user.pk)
+    # coach = Coach.objects.exclude(beltexam__coachs__user_id__in=coa).filter(visa__status='Onaylandı').filter(grades__status='Onaylandı').exclude(grades=None).exclude(visa=None).exclude(grades__definition__name='1.Kademe').exclude(grades__definition=None).distinct()
+    # for fd in coach:
+    #     for visa in fd.visa.all():
+    #         if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
+    #             athletes|=Coach.objects.filter(pk=fd.pk).distinct()
+
+    if request.method == 'POST':
+        # athletes1 = request.POST.getlist('selected_options')
+        # if athletes1:
+        #     for x in athletes1:
+        #         if  not sinav.coachs.all().filter(beltexam__coachs__user_id=x):
+        #             sinav.coachs.add(x)
+        #             sinav.save()
+        # return redirect('wushu:kusak-sinavi-incele', pk=pk)
+    return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
+
+
+@login_required
+def add_belt_exam(request):
+    perm = general_methods.control_access(request),
+    print('kusak sinavi ekle')
 
     if not perm:
         logout(request)
@@ -624,30 +737,62 @@ def add_belt_exam(request, athlete1):
         for club in clubs:
             clubsPk.append(club.pk)
         exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
-        exam_form.fields['coach'].queryset = Coach.objects.filter(sportsclub__in=clubsPk)
+
 
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
-        exam_form.fields['coach'].queryset = Coach.objects.all()
-    x = athlete1.split('-')
 
-    # Remove the element at index 2 in list
-    value = x.pop(len(x) - 1)
-
-    instances = Athlete.objects.filter(id__in=x)
     if request.method == 'POST':
         exam_form = BeltExamForm(request.POST, request.FILES or None)
         if exam_form.is_valid():
             exam = exam_form.save()
-
-            for athlete in instances:
-                exam.athletes.add(athlete)
-
             messages.success(request, 'Sınav başarıyla oluşturuldu')
             return redirect('wushu:kusak-sinavlari')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
-    return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form, 'athletes': instances})
+    return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form})
+
+
+#
+# @login_required
+# def add_belt_exam(request):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#     exam_form = BeltExamForm(request.POST, request.FILES or None)
+#     user = request.user
+#     if user.groups.filter(name='KulupUye'):
+#         sc_user = SportClubUser.objects.get(user=user)
+#         clubs = SportsClub.objects.filter(clubUser=sc_user)
+#         clubsPk = []
+#         for club in clubs:
+#             clubsPk.append(club.pk)
+#         exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+#         # exam_form.fields['coach'].queryset = Coach.objects.filter(sportsclub__in=clubsPk)
+#
+#     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+#         exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
+#         # exam_form.fields['coach'].queryset = Coach.objects.all()
+#
+#     print('olmadi ama ')
+#     if request.method == 'POST':
+#         exam_form = BeltExamForm(request.POST, request.FILES or None)
+#         if exam_form.is_valid():
+#             exam = exam_form.save()
+#
+#
+#             for athlete in instances:
+#                 exam.athletes.add(athlete)
+#
+#             messages.success(request, 'Sınav başarıyla oluşturuldu')
+#             return redirect('wushu:kusak-sinavlari')
+#         else:
+#             messages.warning(request, 'Alanları Kontrol Ediniz')
+#     return render(request, 'kulup/kusak-sinavi-ekle.html', {'exam_form': exam_form})
+#
+#
 
 
 @login_required
@@ -759,4 +904,50 @@ def updateClubPersonsProfile(request):
 
     return render(request, 'kulup/kulup-uyesi-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'password_form': password_form,'club_form':club_form})
+                   'person_form': person_form, 'password_form': password_form, 'club_form': club_form})
+
+#
+# @login_required
+# def Exam_list_antroner_delete(request, pk):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#     if request.method == 'POST' and request.is_ajax():
+#         try:
+#             obj = SportsClub.objects.get(pk=pk)
+#             obj.delete()
+#             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+#         except SportsClub.DoesNotExist:
+#             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+# listeden antroner sil
+
+# @login_required
+# def choose_coach_remove(request, pk, exam_pk):
+#     perm = general_methods.control_access_klup(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#
+#     # sinav = BeltExam.objects.get(pk=exam_pk)
+#     # sinav.coachs.remove(Coach.objects.get(pk=pk))
+#
+#     return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)
+
+
+# @login_required
+# def choose_athlete_remove(request, pk, exam_pk):
+#     perm = general_methods.control_access_klup(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#
+#     sinav = BeltExam.objects.get(pk=exam_pk)
+#     sinav.athletes.remove(Athlete.objects.get(pk=pk))
+#
+#     return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)

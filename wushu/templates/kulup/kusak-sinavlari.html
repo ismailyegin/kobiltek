@@ -163,6 +163,7 @@
                                         <th>Kulübü</th>
                                     {% endif %}
                                     <th>Sınav Tarihi</th>
+                                    <th>Branş </th>
                                     <th>Antrenör  Sayısı</th>
                                     <th>Sporcu Sayısı</th>
                                     <th>Onay Durumu</th>
@@ -177,6 +178,7 @@
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ exam.sportClub }}</td>
                                             {% endif %}
+                                           <td>{{ exam.branch }}</td>
                                             <td>{{ exam.examDate }}</td>
                                             <td>{{ exam.coachs.count}}</td>
                                             <td>{{ exam.athletes.count }}</td>

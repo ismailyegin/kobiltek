@@ -224,7 +224,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th> Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
+
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Kulüp</th>
                                     {% endif %}
@@ -241,14 +241,14 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                            <td>{{ athlete.person.birthDate }} </td>
 
-                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                    <td>{{ athlete.licenses.last.sportsClub }}</td>
 
-                                                {% endif %}
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <td>{{ athlete.licenses.last.sportsClub }}</td>
 
-                                             {% if  athlete.licenses.last.status == 'Onaylandı' %}
+                                            {% endif %}
+
+                                            {% if  athlete.licenses.last.status == 'Onaylandı' %}
                                                 <td>{{ athlete.licenses.last.branch }}</td>
                                             {% else %}
                                                 <td>-</td>
@@ -314,9 +314,19 @@
 
 
                 dom: 'Bfrtip',
+
+                language: {
+                    buttons: {
+                        pageLength: {
+                            _: " %d  Tane Seçili",
+                            '-1': "Hepsi Seçili"
+                        }
+                    }
+                },
+
                 lengthMenu: [
-                    [10, 25, 50, -1],
-                    ['10 tane', '25 tane ', '50 tane ', 'Hepsini Getir']
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
                 ],
 
                 buttons: [
@@ -324,12 +334,15 @@
                     {##}
                     {#'copy',#}
                     {#'csv',#}
-                    'pageLength',
+
+                    {
+                        extend: "pageLength",
+                    },
 
 
                     {
                         extend: 'colvis',
-                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        text: '<i class=" fa  fa-th-list"></i>',
                         titleAttr: 'Ekle Çıkar'
 
 
@@ -337,7 +350,7 @@
                     {
                         extend: 'print',
                         title: 'Sporcular',
-                        text: '<i class="fa fa-files-o"></i>',
+                        text: '<i class="fa  fa-print"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
                         },
@@ -367,7 +380,7 @@
                         titleAttr: 'Excel Kaydet'
                     },
                     {
-                        text: '<i class="fa fa-sellsy"></i>',
+                        text: '<i class="fa fa-file-text-o"></i>',
                         action: function (e, dt, button, config) {
                             var data = dt.buttons.exportData();
 
@@ -386,7 +399,8 @@
                 'ordering': true,
                 'info': true,
                 'autoWidth': true,
-                'responsive':true
+                'responsive': true,
+
 
             });
 

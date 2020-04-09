@@ -220,7 +220,6 @@
         $(function () {
             $('#kulupler').DataTable({
 
-
                 dom: 'Bfrtip',
 
                 language: {
@@ -250,15 +249,15 @@
 
                     {
                         extend: 'colvis',
-                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        text: '<i class=" fa  fa-th-list"></i>',
                         titleAttr: 'Ekle Çıkar'
 
 
                     },
                     {
                         extend: 'print',
-                        title: 'Sporcular',
-                        text: '<i class="fa fa-files-o"></i>',
+                        title: 'Twf Bilgi Sistemi',
+                        text: '<i class="fa  fa-print"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
                         },
@@ -276,7 +275,7 @@
 
                     {
                         extend: 'excelHtml5',
-                        title: 'Sporcular',
+                        title: 'Twf Bilgi Sistemi',
                         text: '<i class="fa fa-file-excel-o"></i>',
                         messageTop: 'Twf Bilgi Sistemi ',
                         {#footer: true,#}
@@ -288,7 +287,7 @@
                         titleAttr: 'Excel Kaydet'
                     },
                     {
-                        text: '<i class="fa fa-sellsy"></i>',
+                        text: '<i class="fa fa-file-text-o"></i>',
                         action: function (e, dt, button, config) {
                             var data = dt.buttons.exportData();
 

@@ -6,6 +6,11 @@ from wushu.models.Communication import Communication
 
 
 class SportsClub(models.Model):
+    IsFormal = (
+        (True, 'Spor Kulubü'),
+        (False, 'Diger(Özel Salon-Dojo-Sportif Dernek)'),
+    )
+
     name = models.CharField(blank=True, null=True, max_length=120)
     shortName = models.CharField(blank=True, null=True, max_length=120)
     foundingDate = models.CharField(blank=True, null=True, max_length=120)
@@ -15,7 +20,7 @@ class SportsClub(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     coachs = models.ManyToManyField(Coach)
-    isFormal = models.BooleanField()
+    isFormal = models.BooleanField(default=True,choices=IsFormal)
     clubUser = models.ManyToManyField(SportClubUser)
 
     def __str__(self):

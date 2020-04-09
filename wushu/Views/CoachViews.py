@@ -25,49 +25,49 @@ from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.CompetitionForm import CompetitionForm
 # from wushu.Forms.VisaSeminarForm import VisaSeminarForm
-from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub,VisaSeminar
+from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
 from datetime import date,datetime
 from django.utils import timezone
 
-# visaseminer ekle
-@login_required
-def visaSeminar_ekle(request):
-    perm = general_methods.control_access(request)
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-    competition_form = CompetitionForm()
-    if request.method == 'POST':
-        competition_form = CompetitionForm(request.POST)
-        if competition_form.is_valid():
-            competition_form.save()
-            messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
-
-            return redirect('wushu:musabakalar')
-        else:
-
-            messages.warning(request, 'Alanları Kontrol Ediniz')
-
-    return render(request, 'musabaka/musabaka-ekle.html',
-                  {'competition_form': competition_form})
-
-# visaseminar liste
-@login_required
-def return_visaSeminar(request):
-    perm = general_methods.control_access(request)
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-
-    visaSeminar = VisaSeminar.objects.all()
-
-    return render(request, 'antrenor/VisaSeminar.html', {'competitions': visaSeminar})
-
-
+# # visaseminer ekle
+# @login_required
+# def visaSeminar_ekle(request):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#     competition_form = CompetitionForm()
+#     if request.method == 'POST':
+#         competition_form = CompetitionForm(request.POST)
+#         if competition_form.is_valid():
+#             competition_form.save()
+#             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
+#
+#             return redirect('wushu:musabakalar')
+#         else:
+#
+#             messages.warning(request, 'Alanları Kontrol Ediniz')
+#
+#     return render(request, 'musabaka/musabaka-ekle.html',
+#                   {'competition_form': competition_form})
+#
+# # visaseminar liste
+# @login_required
+# def return_visaSeminar(request):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#
+#     visaSeminar = VisaSeminar.objects.all()
+#
+#     return render(request, 'antrenor/VisaSeminar.html', {'competitions': visaSeminar})
+#
+#
 
 
 @login_required

@@ -68,7 +68,7 @@ from django.utils import timezone
 #     return render(request, 'antrenor/VisaSeminar.html', {'competitions': visaSeminar})
 #
 #
-
+#
 
 @login_required
 def return_add_coach(request):
@@ -141,24 +141,27 @@ def return_coachs(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        clubsPk = []
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        for club in clubs:
-            clubsPk.append(club.pk)
-        coachs = Coach.objects.filter(sportsclub__in=clubsPk).distinct()
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        coachs = Coach.objects.all()
+    coachs = Coach.objects.none()
     user_form = UserSearchForm()
+
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
+
             if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+                if user.groups.filter(name='KulupUye'):
+                    sc_user = SportClubUser.objects.get(user=user)
+                    clubsPk = []
+                    clubs = SportsClub.objects.filter(clubUser=sc_user)
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+                    coachs = Coach.objects.filter(sportsclub__in=clubsPk).distinct()
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    coachs = Coach.objects.all()
+
             else:
                 query = Q()
                 if lastName:
@@ -167,6 +170,16 @@ def return_coachs(request):
                     query &= Q(user__first_name__icontains=firstName)
                 if email:
                     query &= Q(user__email__icontains=email)
+                if user.groups.filter(name='KulupUye'):
+                    sc_user = SportClubUser.objects.get(user=user)
+                    clubsPk = []
+                    clubs = SportsClub.objects.filter(clubUser=sc_user)
+                    for club in clubs:
+                        clubsPk.append(club.pk)
+                    coachs = Coach.objects.filter(query).filter(sportsclub__in=clubsPk).distinct()
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    coachs = Coach.objects.filter(query)
+
                 coachs = Coach.objects.filter(query)
     return render(request, 'antrenor/antrenorler.html', {'coachs': coachs, 'user_form': user_form})
 

@@ -13,10 +13,10 @@ class CategoryItemForm(ModelForm):
             'name': forms.TextInput(
                 attrs={'class': 'form-control ', 'required': 'required'}),
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                          'style': 'width: 100%; '}),
+                                          'style': 'width: 100%;','required': 'required'}),
             'isFirst': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
             'parent': forms.Select(choices=[], attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                      'style': 'width: 100%; '})
+                                                      'style': 'width: 100%;',})
         }
 
         def __init__(self, *args, **kwargs):
@@ -24,3 +24,5 @@ class CategoryItemForm(ModelForm):
             self.fields['parent'].empty_label = 'Seçiniz'
             self.fields['parent'].choices = CategoryItem.objects.filter(forWhichClazz='BELT').values_list("name",
                                                                                                           "name").distinct()
+        def branch(self):
+            return self.branch()

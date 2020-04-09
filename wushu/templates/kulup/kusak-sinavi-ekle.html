@@ -84,15 +84,22 @@
 
 
                             <div class="form-group">
-                                <label> {{ exam_form.dekont.label }}</label>
-                                {{ exam_form.dekont }}
-                            </div>
-
-                            <div class="form-group">
                                 <label> {{ exam_form.sportClub.label }}</label>
                                 {{ exam_form.sportClub }}
                             </div>
+
+                        <div class="form-group">
+                            <label> {{ exam_form.branch.label }}</label>
+                            {{ exam_form.branch }}
                         </div>
+
+                        <div class="form-group">
+                            <label> {{ exam_form.dekont.label }}</label>
+                            {{ exam_form.dekont }}
+                        </div>
+
+                        </div>
+
                         {% comment %}<div class="box-footer">
                             <a href="{% url "wushu:kusak-sinavi-ekle" athletes=athletes %}"
                                type="button" class="btn btn-success"><i

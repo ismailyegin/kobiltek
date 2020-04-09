@@ -20,12 +20,14 @@ class BeltExamForm(ModelForm):
         model = BeltExam
 
         fields = (
-             'examDate', 'paymentType', 'dekont','sportClub')
+             'examDate', 'paymentType', 'dekont','sportClub','branch')
 
         labels = { 'examDate': 'Sınav Tarihi', 'paymentType': 'Ücret Gönderim Şekli',
-                  'dekont': 'Dekont', 'sportClub': 'Kulüp'}
+                  'dekont': 'Dekont', 'sportClub': 'Kulüp','branch':'Branch'}
 
         widgets = {
+            'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                          'style': 'width: 100%; '}),
             'examDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
                        'onkeydown': 'return false', 'required': 'required'}),

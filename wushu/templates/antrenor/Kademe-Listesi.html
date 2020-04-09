@@ -177,17 +177,20 @@
 
                                         <td>
 
-                                            <a target="_blank">{{ belt.coach_set.first }} </a>
+                                            <a target="_blank">{{ belt.athlete_set.first }} </a>
 
                                         </td>
+                                        <td>{{ belt.branch }}</td>
 
                                         <td>{{ belt.startDate }}  </td>
-                                        <td>{{ belt.branch }}</td>
+
 
                                         <td>{{ belt.status }}  </td>
                                         <td>{{ belt.definition }}  </td>
 
-                                          <td><a target="_blank" href="/media/{{ belt.dekont }}"><img src="/media/{{belt.dekont }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>
+                                        <td><a target="_blank" href="/media/{{ belt.dekont }}"><img
+                                                src="/media/{{ belt.dekont }}" class="user-image" alt="None"
+                                                style=" width: 30px;height: 30px;"></a></td>
 
                                         <td>
                                             <div class="btn-group">

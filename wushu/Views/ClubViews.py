@@ -25,6 +25,9 @@ from wushu.Forms.UserForm import UserForm
 from wushu.Forms.SearchClupForm import SearchClupForm
 from wushu.Forms.PreRegidtrationForm import PreRegistrationForm
 from wushu.Forms.UserSearchForm import UserSearchForm
+from wushu.Forms.ClupUserSearchForm import CommunicationSearchForm
+from wushu.Forms.ClupUserSearchForm import ClubSearchForm
+
 from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
 from wushu.models.ClubRole import ClubRole
 from wushu.models.EnumFields import EnumFields
@@ -88,6 +91,8 @@ def return_clubs(request):
         logout(request)
         return redirect('accounts:login')
     user = request.user
+    Clupscommunication=CommunicationSearchForm()
+    ClupsSearchForm=ClubSearchForm()
     if user.groups.filter(name='KulupUye'):
         clubuser = SportClubUser.objects.get(user=user)
         clubs = SportsClub.objects.filter(clubUser=clubuser)
@@ -95,7 +100,7 @@ def return_clubs(request):
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         clubs = SportsClub.objects.all()
 
-    return render(request, 'kulup/kulupler.html', {'clubs': clubs})
+    return render(request, 'kulup/kulupler.html', {'clubs': clubs,'Clupscommunication':Clupscommunication,'ClupsSearchForm':ClupsSearchForm})
 
 
 @login_required

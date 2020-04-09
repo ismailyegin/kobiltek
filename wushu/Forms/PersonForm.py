@@ -15,6 +15,7 @@ class PersonForm(ModelForm):
 
         widgets = {
 
+
             'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
             'height': forms.TextInput(attrs={'class': 'form-control'}),

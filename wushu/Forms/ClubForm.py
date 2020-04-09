@@ -15,10 +15,12 @@ class ClubForm(ModelForm):
             'shortName': 'Kısa Adı',
             'foundingDate': 'Kuruluş Tarihi',
             'clubMail': 'Email',
-            'isFormal' : 'Resmi mi?'
+            'isFormal' : 'Kulüp Türü'
 
         }
         widgets = {
+            'isFormal': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                            'style': 'width: 100%; '}),
 
             'name': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 

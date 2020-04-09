@@ -24,51 +24,98 @@ from wushu.Forms.PersonForm import PersonForm
 
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.CompetitionForm import CompetitionForm
-# from wushu.Forms.VisaSeminarForm import VisaSeminarForm
+from wushu.Forms.VisaSeminarForm import VisaSeminarForm
 from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub
+from wushu.models.VisaSeminar import VisaSeminar
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
 from datetime import date,datetime
 from django.utils import timezone
 
-# # visaseminer ekle
-# @login_required
-# def visaSeminar_ekle(request):
-#     perm = general_methods.control_access(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#     competition_form = CompetitionForm()
-#     if request.method == 'POST':
-#         competition_form = CompetitionForm(request.POST)
-#         if competition_form.is_valid():
-#             competition_form.save()
-#             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
-#
-#             return redirect('wushu:musabakalar')
-#         else:
-#
-#             messages.warning(request, 'Alanları Kontrol Ediniz')
-#
-#     return render(request, 'musabaka/musabaka-ekle.html',
-#                   {'competition_form': competition_form})
-#
-# # visaseminar liste
-# @login_required
-# def return_visaSeminar(request):
-#     perm = general_methods.control_access(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#
-#     visaSeminar = VisaSeminar.objects.all()
-#
-#     return render(request, 'antrenor/VisaSeminar.html', {'competitions': visaSeminar})
-#
-#
-#
+# visaseminer ekle
+@login_required
+def visaSeminar_ekle(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visaSeminar = VisaSeminarForm()
+    if request.method == 'POST':
+        visaSeminar = VisaSeminarForm(request.POST)
+        if visaSeminar.is_valid():
+            visaSeminar.save()
+            messages.success(request, 'Vize Semineri Başari  Kaydedilmiştir.')
+
+            return redirect('wushu:visa-seminar')
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/visaSeminar-ekle.html',
+                  {'competition_form': visaSeminar})
+
+
+# visaseminar liste
+@login_required
+def return_visaSeminar(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    Seminar=VisaSeminar.objects.all()
+
+    return render(request, 'antrenor/VisaSeminar.html', {'competitions': Seminar})
+
+@login_required
+def visaSeminar_duzenle(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    seminar= VisaSeminar.objects.get(pk=pk)
+    print(seminar)
+    coach=seminar.coach.all()
+    competition_form = VisaSeminarForm(request.POST or None, instance=seminar)
+    if request.method == 'POST':
+        print('düzenleme geldi ')
+        if competition_form.is_valid():
+            competition_form.save()
+            messages.success(request, 'Vize Seminer Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:visa-seminar')
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/VizeSeminar-Duzenle.html',
+                  {'competition_form': competition_form, 'competition': seminar, 'athletes': coach})
+
+
+@login_required
+def visaSeminar_sil(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = VisaSeminar.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Competition.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+
 
 @login_required
 def return_add_coach(request):

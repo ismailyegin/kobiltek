@@ -243,10 +243,13 @@ urlpatterns = [
 
 
 
-    #
-    # #visa seminar
-    #  url(r'antrenor/visa-Seminar$', CoachViews.return_visaSeminar,name='visa-seminar'),
-    #  url(r'antrenor/visa-Seminar-ekle$', CoachViews.visaSeminar_ekle,name='visa-seminar-ekle'),
+
+    #visa seminar
+     # liste
+     url(r'antrenor/visa-Seminar$', CoachViews.return_visaSeminar,name='visa-seminar'),
+     url(r'antrenor/visa-Seminar-ekle$', CoachViews.visaSeminar_ekle,name='visa-seminar-ekle'),
+     url(r'antrenor/visa-Seminar-duzenle/(?P<pk>\d+)$', CoachViews.visaSeminar_duzenle, name='seminar-duzenle'),
+     url(r'antrenor/visa-Seminar/Seminer-sil(?P<pk>\d+)$', CoachViews.visaSeminar_sil, name='seminar-sil'),
 
 
 

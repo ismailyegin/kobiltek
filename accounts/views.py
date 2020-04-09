@@ -17,6 +17,10 @@ from wushu.services import general_methods
 from wushu.services.general_methods import show_urls
 
 
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+
 def index(request):
     return render(request, 'accounts/index.html')
 
@@ -72,8 +76,10 @@ def forgot(request):
             password = User.objects.make_random_password()
             obj.set_password(password)
             # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
+
             user = obj.save()
             html_content = ''
+
             subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', obj.email
             html_content = '<h2>Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.</h2>'
             html_content = html_content+'<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr:81</p>'

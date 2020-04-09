@@ -1,3 +1,5 @@
+from _socket import gaierror
+
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
@@ -7,6 +9,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+
+from wushu.Forms import VisaForm
 from wushu.Forms.CategoryItemForm import CategoryItemForm
 from wushu.Forms.CommunicationForm import CommunicationForm
 from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
@@ -14,11 +18,53 @@ from wushu.Forms.DisabledPersonForm import DisabledPersonForm
 from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.GradeForm import GradeForm
 from wushu.Forms.UserForm import UserForm
+from wushu.Forms.VisaForm import VisaForm
 from wushu.Forms.PersonForm import PersonForm
+
 from wushu.Forms.UserSearchForm import UserSearchForm
+from wushu.Forms.CompetitionForm import CompetitionForm
+# from wushu.Forms.VisaSeminarForm import VisaSeminarForm
 from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
+
+# # visaseminer ekle
+# @login_required
+# def visaSeminar_ekle(request):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#     competition_form = CompetitionForm()
+#     if request.method == 'POST':
+#         competition_form = CompetitionForm(request.POST)
+#         if competition_form.is_valid():
+#             competition_form.save()
+#             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
+#
+#             return redirect('wushu:musabakalar')
+#         else:
+#
+#             messages.warning(request, 'Alanları Kontrol Ediniz')
+#
+#     return render(request, 'musabaka/musabaka-ekle.html',
+#                   {'competition_form': competition_form})
+#
+# # visaseminar liste
+# @login_required
+# def return_visaSeminar(request):
+#     perm = general_methods.control_access(request)
+#
+#     if not perm:
+#         logout(request)
+#         return redirect('accounts:login')
+#
+#     visaSeminar = VisaSeminar.objects.all()
+#
+#     return render(request, 'antrenor/VisaSeminar.html', {'competitions': visaSeminar})
+
+
 
 
 @login_required
@@ -59,15 +105,16 @@ def return_add_coach(request):
             coach = Coach(user=user, person=person, communication=communication)
 
             coach.save()
+            # antroner kaydından sonra mail gönderilmeyecek
 
-            subject, from_email, to = 'WUSHU - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
-            text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr:81</p>'
-            html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
-            html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            # subject, from_email, to = 'WUSHU - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
+            # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+            # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr:81</p>'
+            # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
+            # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
+            # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
 
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
@@ -121,6 +168,8 @@ def return_coachs(request):
     return render(request, 'antrenor/antrenorler.html', {'coachs': coachs, 'user_form': user_form})
 
 
+
+
 @login_required
 def return_grade(request):
     perm = general_methods.control_access(request)
@@ -133,19 +182,18 @@ def return_grade(request):
     if request.method == 'POST':
 
         category_item_form = CategoryItemForm(request.POST)
-
-        if category_item_form.is_valid():
-
-            categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
-            categoryItem.forWhichClazz = "GRADE"
+        name=request.POST.get('name')
+        if name  is not None:
+            categoryItem = CategoryItem(name=name)
+            categoryItem.forWhichClazz = "COACH_GRADE"
+            categoryItem.isFirst = False
             categoryItem.save()
-
             return redirect('wushu:kademe')
 
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
-    categoryitem = CategoryItem.objects.filter(forWhichClazz="GRADE")
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE")
     return render(request, 'antrenor/kademe.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
 
@@ -160,16 +208,22 @@ def antrenor_kademe_ekle(request, pk):
 
     coach = Coach.objects.get(pk=pk)
     grade_form = GradeForm()
-    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='GRADE')
+    category_item_form = CategoryItemForm()
+
+
 
     if request.method == 'POST':
         grade_form = GradeForm(request.POST, request.FILES)
-        if grade_form.is_valid():
-            grade = Level(startDate=grade_form.cleaned_data['startDate'],
-                          dekont=grade_form.cleaned_data['dekont'],
-                          definition=grade_form.cleaned_data['definition'])
+        category_item_form=CategoryItemForm(request.POST, request.FILES)
+
+
+
+        if  grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None:
+            grade = Level(definition=grade_form.cleaned_data['definition'],
+                          startDate=grade_form.cleaned_data['startDate'],
+                          dekont=grade_form.cleaned_data['dekont'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
-            # grade.branch = coach.licenses.last().branch
+            grade.branch=request.POST.get('branch')
             grade.status = Level.WAITED
             grade.save()
             coach.grades.add(grade)
@@ -179,11 +233,11 @@ def antrenor_kademe_ekle(request, pk):
             return redirect('wushu:update-coach', pk=pk)
 
         else:
-
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
+    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='COACH_GRADE')
     return render(request, 'antrenor/antrenor-kademe-ekle.html',
-                  {'grade_form': grade_form})
+                  {'grade_form': grade_form, 'category_item_form':category_item_form})
 
 
 @login_required
@@ -209,14 +263,16 @@ def categoryItemDelete(request, pk):
 def categoryItemUpdate(request, pk):
     perm = general_methods.control_access(request)
 
+
     if not perm:
         logout(request)
         return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(id=pk)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
     if request.method == 'POST':
-        if category_item_form.is_valid():
-            category_item_form.save()
+        if request.POST.get('name') is not None:
+            categoryItem.name=request.POST.get('name')
+            categoryItem.save()
             messages.warning(request, 'Başarıyla Güncellendi')
             return redirect('wushu:kademe')
         else:
@@ -253,7 +309,9 @@ def coachUpdate(request, pk):
         logout(request)
         return redirect('accounts:login')
     coach = Coach.objects.get(pk=pk)
+
     grade_form = coach.grades.all()
+    visa_form=coach.visa.all()
     user = User.objects.get(pk=coach.user.pk)
     person = Person.objects.get(pk=coach.person.pk)
     communication = Communication.objects.get(pk=coach.communication.pk)
@@ -286,7 +344,7 @@ def coachUpdate(request, pk):
 
     return render(request, 'antrenor/antrenorDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,'personCoach':person})
+                   'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,'personCoach':person,'visa_form':visa_form})
 
 
 @login_required
@@ -332,3 +390,330 @@ def updateCoachProfile(request):
     return render(request, 'antrenor/antrenor-profil-guncelle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'password_form': password_form})
+
+@login_required
+def kademe_delete(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+
+            obj =Level.objects.get(pk=grade_pk)
+            coach = Coach.objects.get(pk=coach_pk)
+            coach.grades.remove(obj)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Level.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+login_required
+def vize_delete(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+
+            obj = Level.objects.get(pk=grade_pk)
+            coach = Coach.objects.get(pk=coach_pk)
+            coach.visa.remove(obj)
+            obj.delete()
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Level.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+
+@login_required
+def kademe_onay(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    belt =Level.objects.get(pk=grade_pk)
+    belt.status = Level.APPROVED
+    belt.save()
+
+    messages.success(request, 'Kademe Onaylanmıştır')
+    return redirect('wushu:update-coach', pk=coach_pk)
+@login_required
+def visa_onay(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visa = Level.objects.get(pk=grade_pk)
+    visa.status = Level.APPROVED
+    visa.save()
+
+    messages.success(request, 'Vize onaylanmıştır')
+    return redirect('wushu:update-coach', pk=coach_pk)
+
+@login_required
+def kademe_reddet(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade = Level.objects.get(pk=grade_pk)
+    grade.status =Level.DENIED
+    grade.save()
+
+    messages.success(request, 'Kademe Reddedilmistir.')
+    return redirect('wushu:update-coach', pk=coach_pk)
+
+
+@login_required
+def vize_reddet(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visa = Level.objects.get(pk=grade_pk)
+    visa.status = Level.DENIED
+    visa.save()
+
+    messages.warning(request, 'Vize Reddedilmistir.')
+    return redirect('wushu:update-coach', pk=coach_pk)
+
+
+
+@login_required
+def kademe_update(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade =Level.objects.get(pk=grade_pk)
+    coach=Coach.objects.get(pk=coach_pk)
+    categoryItem = Level.objects.get(pk=grade_pk)
+
+    grade_form = GradeForm(request.POST or None, request.FILES or None, instance=grade,initial={'definition': grade.definition})
+
+    category_item_form= CategoryItemForm(request.POST or None, instance=categoryItem,initial={'branch':grade.branch})
+    if request.method == 'POST':
+        if grade_form.is_valid() :
+            grade_form.save()
+            messages.success(request, 'Kademe Başarılı bir şekilde güncellenmiştir.')
+            return redirect('wushu:update-coach', pk=coach_pk)
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/kademe-update.html',
+                  {'grade_form': grade_form, 'category_item_form':category_item_form})
+
+
+
+
+@login_required
+def kademe_list(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade=Level.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE).distinct()
+
+
+
+    return render(request, 'antrenor/Kademe-Listesi.html',
+                  {'belts': grade })
+
+
+
+
+@login_required
+def vize_list(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade=Level.objects.filter(levelType=EnumFields.VISA)
+
+
+
+    return render(request, 'antrenor/Vize-Listesi.html',
+                  {'belts': grade })
+
+
+
+@login_required
+def kademe_onayla(request, grade_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade = Level.objects.get(pk=grade_pk)
+    grade.status = Level.APPROVED
+    grade.save()
+    messages.success(request, 'Kademe   Onaylanmıştır')
+    return redirect('wushu:kademe-listesi')
+
+@login_required
+def kademe_reddet_liste(request, grade_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade = Level.objects.get(pk=grade_pk)
+    grade.status = Level.DENIED
+    grade.save()
+    messages.success(request, 'Kademe   Onaylanmıştır')
+    return redirect('wushu:kademe-listesi')
+
+@login_required
+def vize_onayla_liste(request, grade_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visa = Level.objects.get(pk=grade_pk)
+    visa.status = Level.APPROVED
+    visa.save()
+    messages.success(request, 'Vize Onaylanmıştır')
+    return redirect('wushu:vize-listesi')
+@login_required
+def vize_reddet_liste(request, grade_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visa = Level.objects.get(pk=grade_pk)
+    visa.status = Level.DENIED
+    visa.save()
+    messages.success(request, 'Vize Onaylanmıştır')
+    return redirect('wushu:vize-listesi')
+
+
+
+
+def kademe_reddet_hepsi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    Belt = CoachLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE,status="Beklemede")
+    for belt in Belt:
+        belt.status = CoachLevel.DENIED
+        belt.save()
+    messages.success(request, 'Beklemede olan kademeler  reddedilmiştir')
+    return redirect('wushu:kademe-listesi')
+
+def kademe_onay_hepsi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    Belt = CoachLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE,status="Beklemede")
+
+    for belt in Belt:
+
+        belt.status =CoachLevel.APPROVED
+        belt.save()
+    messages.success(request, 'Beklemede olan kademeler  Onaylanmıştır')
+    return redirect('wushu:kademe-listesi')
+
+
+def kademe_bekle_hepsi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    Belt = CoachLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE)
+    for belt in Belt:
+        belt.status = CoachLevel.WAITED
+        belt.save()
+    messages.success(request, 'Kademe   Onaylanmıştır')
+    return redirect('wushu:kademe-listesi')
+
+
+
+@login_required
+def antrenor_vısa_ekle(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    coach = Coach.objects.get(pk=pk)
+    visa_form = VisaForm()
+    category_item_form = CategoryItemForm()
+
+
+
+    if request.method == 'POST':
+        visa_form = VisaForm(request.POST, request.FILES)
+        category_item_form=CategoryItemForm(request.POST, request.FILES)
+
+
+
+        if  visa_form.is_valid():
+
+            visa = Level(startDate=visa_form.cleaned_data['startDate'], dekont=visa_form.cleaned_data['dekont'],branch=visa_form.cleaned_data['branch'])
+            ac=CategoryItem.objects.get(forWhichClazz='VISA')
+            visa.definition=ac
+            visa.levelType = EnumFields.LEVELTYPE.VISA
+            visa.status = Level.APPROVED
+            visa.save()
+            coach.visa.add(visa)
+            coach.save()
+
+            messages.success(request, 'Vize Başarıyla Eklenmiştir.')
+            return redirect('wushu:update-coach', pk=pk)
+
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+
+    return render(request, 'antrenor/Vize-ekle.html', {'grade_form': visa_form, 'category_item_form':category_item_form})
+
+@login_required
+def vize_update(request,grade_pk,coach_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade =Level.objects.get(pk=grade_pk)
+    coach=Coach.objects.get(pk=coach_pk)
+    grade_form = VisaForm(request.POST or None, request.FILES or None, instance=grade)
+
+    if request.method == 'POST':
+        if grade_form.is_valid():
+            grade.save()
+            messages.success(request, 'Vize Başarılı bir şekilde güncellenmiştir.')
+            return redirect('wushu:update-coach', pk=coach_pk)
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    return render(request, 'antrenor/Vize-update.html',
+                  {'grade_form': grade_form})

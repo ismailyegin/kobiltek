@@ -1,12 +1,13 @@
 from django import forms
 from django.forms import ModelForm
 
-from wushu.models import Level, CategoryItem
+from wushu.models.CategoryItem import  CategoryItem
+from wushu.models.Level import Level
 from wushu.models.EnumFields import EnumFields
 
 
 class GradeForm(ModelForm):
-    definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='GRADE'),
+    definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
                                         to_field_name='name',
                                         empty_label="Seçiniz",
                                         label="Tanımı",
@@ -15,10 +16,10 @@ class GradeForm(ModelForm):
                                                    'style': 'width: 100%; '}))
 
     class Meta:
-        model = Level
+        model =Level
 
         fields = (
-            'startDate', 'definition', 'dekont')
+            'startDate','definition', 'dekont')
 
         labels = {'startDate': 'Hak Kazanma Tarihi'}
 

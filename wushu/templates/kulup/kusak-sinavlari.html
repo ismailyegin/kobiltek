@@ -144,10 +144,10 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Kuşak Sınavları</h3>
                         </div>
-                        {% if user.groups.all.0.name == 'KulupUye' %}
+                        {% if user.groups.all.0.name == 'KulupUye' or user.groups.all.0.name == 'Admin' %}
                             <div class="box-header with-border">
                                 <div class="btn-group">
-                                    <a href="{% url "wushu:kusak-sinavi-sporcu-sec" %}"
+                                    <a href="{% url "wushu:kusak-sinavi-ekle" %}"
                                        type="button" class="btn btn-success"><i
                                             class="fa fa-edit"></i> Sınav Oluştur
                                     </a>
@@ -163,7 +163,7 @@
                                         <th>Kulübü</th>
                                     {% endif %}
                                     <th>Sınav Tarihi</th>
-                                    <th>Sınavı Yapan Antrenör</th>
+                                    <th>Antrenör  Sayısı</th>
                                     <th>Sporcu Sayısı</th>
                                     <th>Onay Durumu</th>
                                     <th>İşlemler</th>
@@ -178,7 +178,7 @@
                                                 <td>{{ exam.sportClub }}</td>
                                             {% endif %}
                                             <td>{{ exam.examDate }}</td>
-                                            <td>{{ exam.coach.user.first_name }} {{ exam.coach.user.last_name }}</td>
+                                            <td>{{ exam.coachs.count}}</td>
                                             <td>{{ exam.athletes.count }}</td>
                                             <td>{{ exam.status }}</td>
                                             <td>

@@ -163,12 +163,12 @@ urlpatterns = [
     url(r'kulup/kusak-sinavi-sporcu-sec/(?P<pk>\d+)$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
     #
 
-    # url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
-    # url(r'kulup/kusak-sinavi-antroner-sec/(?P<pk>\d+)$', ClubViews.choose_coach, name='kusak-sinavi-antroner-sec'),
+    url(r'kulup/kusak-sinavi-ekle/$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-antroner-sec/(?P<pk>\d+)$', ClubViews.choose_coach, name='kusak-sinavi-antroner-sec'),
 
 
-    # url(r'kulup/kusak-sinavi-antroner-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_coach_remove, name='kulup-sinavi-antroner-sil'),
-    # url(r'kulup/kusak-sinavi-sporcu-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_athlete_remove, name='kulup-sinavi-sporcu-sil'),
+    url(r'kulup/kusak-sinavi-antroner-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_coach_remove, name='kulup-sinavi-antroner-sil'),
+    url(r'kulup/kusak-sinavi-sporcu-sil/(?P<pk>\d+)/(?P<exam_pk>\d+)$', ClubViews.choose_athlete_remove, name='kulup-sinavi-sporcu-sil'),
 
 
 
@@ -177,12 +177,12 @@ urlpatterns = [
     #
     #
     #
-    # url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
-    # url(r'kulup/kusak-sinavi-duzenle/$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
-    # url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
-    # url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
-    # url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
-    # url(r'kulup/kusak-sinavlari/reddet/(?P<pk>\d+)$', ClubViews.denied_belt_exam, name='kusak-sinavi-reddet'),
+    url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
+    url(r'kulup/kusak-sinavi-duzenle/$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
+    url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),
+    url(r'kulup/kusak-sinavlari/incele/(?P<pk>\d+)$', ClubViews.detail_belt_exam, name='kusak-sinavi-incele'),
+    url(r'kulup/kusak-sinavlari/onayla/(?P<pk>\d+)$', ClubViews.approve_belt_exam, name='kusak-sinavi-onayla'),
+    url(r'kulup/kusak-sinavlari/reddet/(?P<pk>\d+)$', ClubViews.denied_belt_exam, name='kusak-sinavi-reddet'),
     url(r'kulup/kulup-uyesi-profil-guncelle/$', ClubViews.updateClubPersonsProfile,
         name='kulup-uyesi-profil-guncelle'),
 
@@ -243,7 +243,7 @@ urlpatterns = [
 
 
 
-
+    #
     # #visa seminar
     #  url(r'antrenor/visa-Seminar$', CoachViews.return_visaSeminar,name='visa-seminar'),
     #  url(r'antrenor/visa-Seminar-ekle$', CoachViews.visaSeminar_ekle,name='visa-seminar-ekle'),

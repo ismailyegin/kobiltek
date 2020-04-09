@@ -228,6 +228,7 @@ def return_club_person(request):
 
 
 
+
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
@@ -257,6 +258,7 @@ def return_club_person(request):
                     query &= Q(user__email__icontains=email)
                 if sportsclup:
                     query &=Q(sportsclub__name__icontains=sportsclup)
+
                 club_user_array = []
                 if user.groups.filter(name='KulupUye'):
 
@@ -624,16 +626,16 @@ def approve_belt_exam(request, pk):
     return redirect('wushu:kusak-sinavi-incele', pk=pk)
 
 
-# def denied_belt_exam(request, pk):
-#     perm = general_methods.control_access(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#     exam = BeltExam.objects.get(pk=pk)
-#     exam.status = exam.DENIED
-#     exam.save()
-#     return redirect('wushu:kusak-sinavi-incele', pk=pk)
+def denied_belt_exam(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    exam = BeltExam.objects.get(pk=pk)
+    exam.status = exam.DENIED
+    exam.save()
+    return redirect('wushu:kusak-sinavi-incele', pk=pk)
 
 
 # sporcu seç
@@ -646,9 +648,7 @@ def choose_athlete(request, pk):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    athletes=Athlete.objects.none()
-
-    # sinav = BeltExam.objects.get(pk=pk)
+    sinav = BeltExam.objects.get(pk=pk)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
         clubsPk = []
@@ -659,8 +659,8 @@ def choose_athlete(request, pk):
 
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         exam_athlete=[]
-        # for item in sinav.athletes.all():
-        #     exam_athlete.append(item.user.pk)
+        for item in sinav.athletes.all():
+            exam_athlete.append(item.user.pk)
         #     filtere branch eklenmeli
         # filter(belts__branch=sinav.branch).filter(licenses__branch__in=sinav.branch) eklenmeliki sistemde neler olacagını görelim.
 
@@ -668,26 +668,26 @@ def choose_athlete(request, pk):
         # sadece lisansı ve kusagı olan diye baktık
         # print('ben seni sevmedim ki ')
         # .exclude(belts__definition__parent_id=None)  => ile üst kusak var mı diye kontrol ettik.
-        # athletes = Athlete.objects.exclude(beltexam__athletes__user__in=exam_athlete)
-        # print(athletes)
-        # athletes = Athlete.objects.exclude(belts=None)
-        # print(athletes)
-        # athletes=Athlete.objects.exclude(belts__definition__parent_id=None)
-        # print(athletes)
+        athletes = Athlete.objects.exclude(beltexam__athletes__user__in=exam_athlete)
+        print(athletes)
+        athletes = Athlete.objects.exclude(belts=None)
+        print(athletes)
+        athletes=Athlete.objects.exclude(belts__definition__parent_id=None)
+        print(athletes)
 
         # lisasın ve kusasgin(levelin) bransi kontol edilmeli
 
-        # athletes=Athlete.objects.filter(licenses__status='Onaylandı').filter(belts__status='Onaylandı').exclude(beltexam__athletes__user__in=exam_athlete).exclude(belts=None).exclude(licenses=None).exclude(belts__definition__parent_id=None)
-        # print(athletes)
+        athletes=Athlete.objects.filter(licenses__status='Onaylandı').filter(belts__status='Onaylandı').exclude(beltexam__athletes__user__in=exam_athlete).exclude(belts=None).exclude(licenses=None).exclude(belts__definition__parent_id=None)
+        print(athletes)
 
 
-    # if request.method == 'POST':
-    #
-    #     athletes1 = request.POST.getlist('selected_options')
-    #     if athletes1:
-    #         for x in athletes1:
-    #             # sinav.athletes.add(x)
-    #     return redirect('wushu:kusak-sinavi-incele', pk=pk)
+    if request.method == 'POST':
+
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            for x in athletes1:
+                sinav.athletes.add(x)
+        return redirect('wushu:kusak-sinavi-incele', pk=pk)
     return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
 
 
@@ -699,26 +699,26 @@ def choose_coach(request, pk):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    # sinav = BeltExam.objects.get(pk=pk)
+    sinav = BeltExam.objects.get(pk=pk)
     athletes = Coach.objects.none()
     # .filter(grades__branch=sinav.branch) eklenmeli
-    # coa=[]
-    # for item in sinav.coachs.all():
-    #     coa.append(item.user.pk)
-    # coach = Coach.objects.exclude(beltexam__coachs__user_id__in=coa).filter(visa__status='Onaylandı').filter(grades__status='Onaylandı').exclude(grades=None).exclude(visa=None).exclude(grades__definition__name='1.Kademe').exclude(grades__definition=None).distinct()
-    # for fd in coach:
-    #     for visa in fd.visa.all():
-    #         if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
-    #             athletes|=Coach.objects.filter(pk=fd.pk).distinct()
+    coa=[]
+    for item in sinav.coachs.all():
+        coa.append(item.user.pk)
+    coach = Coach.objects.exclude(beltexam__coachs__user_id__in=coa).filter(visa__status='Onaylandı').filter(grades__status='Onaylandı').exclude(grades=None).exclude(visa=None).exclude(grades__definition__name='1.Kademe').exclude(grades__definition=None).distinct()
+    for fd in coach:
+        for visa in fd.visa.all():
+            if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
+                athletes|=Coach.objects.filter(pk=fd.pk).distinct()
 
-    # if request.method == 'POST':
-        # athletes1 = request.POST.getlist('selected_options')
-        # if athletes1:
-        #     for x in athletes1:
-        #         if  not sinav.coachs.all().filter(beltexam__coachs__user_id=x):
-        #             sinav.coachs.add(x)
-        #             sinav.save()
-        # return redirect('wushu:kusak-sinavi-incele', pk=pk)
+    if request.method == 'POST':
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            for x in athletes1:
+                if  not sinav.coachs.all().filter(beltexam__coachs__user_id=x):
+                    sinav.coachs.add(x)
+                    sinav.save()
+        return redirect('wushu:kusak-sinavi-incele', pk=pk)
     return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
 
 
@@ -908,48 +908,48 @@ def updateClubPersonsProfile(request):
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'password_form': password_form, 'club_form': club_form})
 
-#
-# @login_required
-# def Exam_list_antroner_delete(request, pk):
-#     perm = general_methods.control_access(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#     if request.method == 'POST' and request.is_ajax():
-#         try:
-#             obj = SportsClub.objects.get(pk=pk)
-#             obj.delete()
-#             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
-#         except SportsClub.DoesNotExist:
-#             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+@login_required
+def Exam_list_antroner_delete(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportsClub.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except SportsClub.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 # listeden antroner sil
 
-# @login_required
-# def choose_coach_remove(request, pk, exam_pk):
-#     perm = general_methods.control_access_klup(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#
-#     # sinav = BeltExam.objects.get(pk=exam_pk)
-#     # sinav.coachs.remove(Coach.objects.get(pk=pk))
-#
-#     return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)
+@login_required
+def choose_coach_remove(request, pk, exam_pk):
+    perm = general_methods.control_access_klup(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    sinav = BeltExam.objects.get(pk=exam_pk)
+    sinav.coachs.remove(Coach.objects.get(pk=pk))
+
+    return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)
 
 
-# @login_required
-# def choose_athlete_remove(request, pk, exam_pk):
-#     perm = general_methods.control_access_klup(request)
-#
-#     if not perm:
-#         logout(request)
-#         return redirect('accounts:login')
-#
-#     sinav = BeltExam.objects.get(pk=exam_pk)
-#     sinav.athletes.remove(Athlete.objects.get(pk=pk))
-#
-#     return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)
+@login_required
+def choose_athlete_remove(request, pk, exam_pk):
+    perm = general_methods.control_access_klup(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    sinav = BeltExam.objects.get(pk=exam_pk)
+    sinav.athletes.remove(Athlete.objects.get(pk=pk))
+
+    return redirect('wushu:kusak-sinavi-incele', pk=exam_pk)

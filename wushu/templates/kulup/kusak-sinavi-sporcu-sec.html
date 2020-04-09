@@ -142,13 +142,13 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Sporcu Seç</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body berktug"  >
                             <form method="post" enctype="multipart/form-data" role="form">
                                 {% csrf_token %}
                                 <table id="sporcular" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Seç</th>
+                                        <th>Seç1</th>
                                         <th>Ad Soyad</th>
                                         <th>Kuşak</th>
                                         <th>Lisans No</th>
@@ -160,6 +160,7 @@
                                     {% if athletes.all %}
                                         {% for athlete in athletes %}
                                             <tr>
+
                                                 <td><input type="checkbox" name="selected_options"
                                                            value="{{ athlete.pk }}"></td>
                                                 <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
@@ -195,6 +196,34 @@
 
     </section>
 
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $(function () {
+            //Enable iCheck plugin for checkboxes
+            //iCheck for checkbox and radio inputs
+            $('.berktug input[type="checkbox"]').iCheck({
+
+                checkboxClass: 'icheckbox_flat-blue',
+
+            });
+
+        });
+    </script>
+
     <script>
         $(function () {
             $('#sporcular').DataTable({
@@ -208,18 +237,6 @@
 
         })
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 {% endblock %}
 

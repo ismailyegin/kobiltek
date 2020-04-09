@@ -128,100 +128,44 @@
 
 
     <section class="content">
-        <div class="row">
-            <div class="col-lg-12 ">
-                <div class="box-body">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Antrenör Filtrele</h3>
-                        </div>
-                        <form method="post" role="form">
-                            <div class="box-body">
-                                {% csrf_token %}
 
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label> {{ user_form.first_name.label }}</label>
-                                        {{ user_form.first_name }}
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label> {{ user_form.email.label }}</label>
-                                        {{ user_form.email }}
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <!-- /.box-body -->
-
-                            <div class="box-footer">
-                                <button type="submit" class="btn btn-primary">Ara</button>
-                            </div>
-                        </form>
-
-
-                    </div>
-                </div>
-                <!-- /.box -->
-            </div>
-        </div>
 
         <div class="row">
-
 
             <section class="col-lg-12 ">
 
 
                 <div class="box-body">
 
-                    <form method="post" enctype="multipart/form-data" role="form">
-                    {% csrf_token %}
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Kulüp Üyeleri</h3>
-                            </div>
 
-                            <div class="box-header with-border">
-                                <div class="btn-group">
-                                    <div class="box-footer">
-                                        <button type="submit" class="btn btn-primary">Kulüp Üyesi Seç</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="box-body  berktug">
-                                <table id="antrenorler" class="table table-bordered table-hover">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Antrenör Seç</h3>
+                        </div>
+                        <div class="box-body berktug"  >
+                            <form method="post" enctype="multipart/form-data" role="form">
+                                {% csrf_token %}
+                                <table id="sporcular" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
                                         <th>Seç</th>
-                                        <th> Ad Soyad</th>
-                                        <th>Doğum Tarihi</th>
-                                        <th>İl</th>
-                                        <th>Cep Tel</th>
-                                        <th>E-Mail</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Kuşak</th>
+                                        <th>Lisans No</th>
 
 
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% if coaches.all %}
-                                        {% for coach in coaches %}
+                                    {% if athletes.all %}
+                                        {% for athlete in athletes %}
                                             <tr>
+
                                                 <td><input type="checkbox" name="selected_options"
-                                                           value="{{ coach.pk }}"></td>
-                                                <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
-                                                <td>{{ coach.person.tc }} </td>
-                                                <td>{{ coach.communication.city }} </td>
-                                                <td>{{ coach.communication.phoneNumber }} </td>
-                                                <td>{{ coach.user.email }} </td>
+                                                           value="{{ athlete.pk }}"></td>
+                                                <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                                <td>{{ athlete.belts.last.definition.name }}</td>
+                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
 
                                             </tr>
 
@@ -231,10 +175,15 @@
 
                                     </tbody>
                                 </table>
-                            </div>
 
+                                <div class="box-header with-border">
+                                    <div class="box-footer">
+                                        <button type="submit" class="btn btn-primary">Devam Et</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                     <!-- /.box -->
 
 
@@ -246,6 +195,20 @@
         <!-- /.row (main row) -->
 
     </section>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
 
 
     <script>
@@ -261,16 +224,9 @@
         });
     </script>
 
-
-
-
-
-
-
-
     <script>
         $(function () {
-            $('#antrenorler').DataTable({
+            $('#sporcular').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -279,17 +235,8 @@
                 'autoWidth': true
             })
 
-
-
-        });
+        })
     </script>
-
-
-
-
-
-
-
 
 {% endblock %}
 

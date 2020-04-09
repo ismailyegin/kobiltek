@@ -32,6 +32,7 @@ from wushu.models.PreRegistration import PreRegistration
 from wushu.services import general_methods
 from datetime import date,datetime
 import datetime
+from django.utils import timezone
 
 
 from django.contrib.auth.models import Group, Permission, User
@@ -655,32 +656,17 @@ def choose_athlete(request, pk):
         clubs = SportsClub.objects.filter(clubUser=sc_user)
         for club in clubs:
             clubsPk.append(club.pk)
-        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
-
+        exam_athlete = []
+        for item in sinav.athletes.all():
+            exam_athlete.append(item.user.pk)
+        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı').distinct()
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         exam_athlete=[]
         for item in sinav.athletes.all():
             exam_athlete.append(item.user.pk)
-        #     filtere branch eklenmeli
-        # filter(belts__branch=sinav.branch).filter(licenses__branch__in=sinav.branch) eklenmeliki sistemde neler olacagını görelim.
-
-
-        # sadece lisansı ve kusagı olan diye baktık
-        # print('ben seni sevmedim ki ')
-        # .exclude(belts__definition__parent_id=None)  => ile üst kusak var mı diye kontrol ettik.
-        athletes = Athlete.objects.exclude(beltexam__athletes__user__in=exam_athlete)
-        print(athletes)
-        athletes = Athlete.objects.exclude(belts=None)
-        print(athletes)
-        athletes=Athlete.objects.exclude(belts__definition__parent_id=None)
-        print(athletes)
-
-        # lisasın ve kusasgin(levelin) bransi kontol edilmeli
-
-        athletes=Athlete.objects.filter(licenses__status='Onaylandı').filter(belts__status='Onaylandı').exclude(beltexam__athletes__user__in=exam_athlete).exclude(belts=None).exclude(licenses=None).exclude(belts__definition__parent_id=None)
-        print(athletes)
-
-
+        print(sinav.branch)
+        athletes=Athlete.objects.exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı')
+    #   .exclude(belts__definition__parent_id=None)    eklenmeli ama eklendigi zaman kuşaklarindan bir tanesi en üst olunca almıyor
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
@@ -705,11 +691,11 @@ def choose_coach(request, pk):
     coa=[]
     for item in sinav.coachs.all():
         coa.append(item.user.pk)
-    coach = Coach.objects.exclude(beltexam__coachs__user_id__in=coa).filter(visa__status='Onaylandı').filter(grades__status='Onaylandı').exclude(grades=None).exclude(visa=None).exclude(grades__definition__name='1.Kademe').exclude(grades__definition=None).distinct()
-    for fd in coach:
-        for visa in fd.visa.all():
-            if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
-                athletes|=Coach.objects.filter(pk=fd.pk).distinct()
+    athletes = Coach.objects.filter(grades__branch=sinav.branch,grades__status='Onaylandı').exclude(beltexam__coachs__user_id__in=coa).filter(visa__startDate__year=timezone.now().year).exclude(grades=None).exclude(visa=None).exclude(grades__definition__name='1.Kademe').exclude(grades__definition=None).distinct()
+    # for fd in coach:
+    #     for visa in fd.visa.all():
+    #         if(date(sinav.examDate.year,sinav.examDate.month,sinav.examDate.day)-date(visa.creationDate.year,visa.creationDate.month,visa.creationDate.day)).days<365:
+    #             athletes|=Coach.objects.filter(pk=fd.pk).distinct()
 
     if request.method == 'POST':
         athletes1 = request.POST.getlist('selected_options')
@@ -725,8 +711,6 @@ def choose_coach(request, pk):
 @login_required
 def add_belt_exam(request):
     perm = general_methods.control_access(request),
-    print('kusak sinavi ekle')
-
     if not perm:
         logout(request)
         return redirect('accounts:login')

@@ -131,7 +131,7 @@
 
         <!-- /.row -->
         <!-- Main row -->
-    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
         <div class="row">
             <section class="col-lg-12 ">
 
@@ -166,12 +166,12 @@
                                         {{ ClupsSearchForm.clubMail }}
                                     </div>
                                 </div>
-{#                                <div class="col-md-2">#}
-{#                                    <div class="form-group">#}
-{#                                        <label> {{ ClupsSearchForm.isFormal.label }}</label>#}
-{#                                        {{ ClupsSearchForm.isFormal }}#}
-{#                                    </div>#}
-{#                                </div>#}
+                                {#                                <div class="col-md-2">#}
+                                {#                                    <div class="form-group">#}
+                                {#                                        <label> {{ ClupsSearchForm.isFormal.label }}</label>#}
+                                {#                                        {{ ClupsSearchForm.isFormal }}#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
 
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -179,13 +179,14 @@
                                         {{ ClupsSearchForm.city }}
                                     </div>
                                 </div>
-
-                                       <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label> {{ ClupsSearchForm.kisi.label }}</label>
-                                        {{ ClupsSearchForm.kisi }}
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label> {{ ClupsSearchForm.kisi.label }}</label>
+                                            {{ ClupsSearchForm.kisi }}
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
 
 
                             </div>
@@ -205,9 +206,6 @@
                 </div>
             </section>
         </div>
-     {% endif %}
-
-
 
 
         <div class="row">

@@ -1,3 +1,4 @@
+from idlelib.idle_test.test_run import S
 from itertools import product
 
 from django.contrib.auth import logout, update_session_auth_hash
@@ -25,7 +26,6 @@ from wushu.Forms.UserForm import UserForm
 from wushu.Forms.SearchClupForm import SearchClupForm
 from wushu.Forms.PreRegidtrationForm import PreRegistrationForm
 from wushu.Forms.UserSearchForm import UserSearchForm
-from wushu.Forms.ClupUserSearchForm import CommunicationSearchForm
 from wushu.Forms.ClupUserSearchForm import ClubSearchForm
 
 from wushu.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
@@ -87,20 +87,52 @@ def return_add_club(request):
 def return_clubs(request):
     perm = general_methods.control_access(request)
 
+
     if not perm:
         logout(request)
         return redirect('accounts:login')
     user = request.user
-    Clupscommunication=CommunicationSearchForm()
-    ClupsSearchForm=ClubSearchForm()
-    if user.groups.filter(name='KulupUye'):
-        clubuser = SportClubUser.objects.get(user=user)
-        clubs = SportsClub.objects.filter(clubUser=clubuser)
+    clubs = SportsClub.objects.none()
+    ClupsSearchForm=ClubSearchForm(request.POST)
+    if request.method == 'POST':
 
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        clubs = SportsClub.objects.all()
+        if ClupsSearchForm.is_valid():
+            kisi = ClupsSearchForm.cleaned_data.get('kisi')
+            city = ClupsSearchForm.cleaned_data.get('city')
+            name = ClupsSearchForm.cleaned_data.get('name')
+            shortName = ClupsSearchForm.cleaned_data.get('shortName')
+            clubMail = ClupsSearchForm.cleaned_data.get('clubMail')
+            if not (kisi or city or name or shortName or clubMail):
+                if user.groups.filter(name='KulupUye'):
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser)
 
-    return render(request, 'kulup/kulupler.html', {'clubs': clubs,'Clupscommunication':Clupscommunication,'ClupsSearchForm':ClupsSearchForm})
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    clubs = SportsClub.objects.all()
+
+            else:
+                query = Q()
+                if city:
+                    query &= Q(communication__city__name__icontains=city)
+                if name:
+                    query &= Q(name__icontains=name)
+                if clubMail:
+                    query &= Q(clubMail__icontains=clubMail)
+                if shortName:
+                    query &= Q(shortName__icontains=shortName)
+                if kisi:
+                    query &= Q(clubUser=kisi)
+                if user.groups.filter(name='KulupUye'):
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser).filter(query)
+
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    clubs = SportsClub.objects.filter(query)
+
+
+
+
+    return render(request, 'kulup/kulupler.html', {'clubs': clubs,'ClupsSearchForm':ClupsSearchForm})
 
 
 @login_required

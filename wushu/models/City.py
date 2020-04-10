@@ -5,7 +5,7 @@ class City(models.Model):
     name = models.TextField(blank=True, null=True, verbose_name='Şehir')
 
     def __str__(self):
-        return '%s ' % self.name
+        return '%s' % self.name
 
 
 

@@ -12,7 +12,7 @@
 {#    <script src="{% static 'TurkeyMaps/js/jquery-1.8.0.min.js' %}"></script>#}
     <script src="{% static 'TurkeyMaps/js/raphael-min.js' %}"></script>
     <script src="{% static 'TurkeyMaps/js/paths.js' %}"></script>
-    <script src="{% static 'TurkeyMaps/js/turkiye.js' %}"></script>
+    <script src="/static/TurkeyMaps/js/turkiye.js?v=123"></script>
     <script src="{% static 'TurkeyMaps/js/jquery.qtip.min.js'%}"></script>
 
 
@@ -26,12 +26,64 @@
 	})
 </script>
 <style type="text/css">
-	body{background:#fff;}
-	#map{width:1050px;height:620px;position:relative;margin:auto;}
-	#map svg {position: relative;top: -100px; left: 0px;}
-	svg > a {cursor: pointer;display:block;}
+body{background:#fff;}
+   @media only screen and (min-width: 1199px) and (max-width: 2000px){#map{width:1050px;height:620px;position:relative;margin:auto;transform:scale(.6,.6);
 
+-webkit-transform:scale(.6,.6);
+
+-moz-transform:scale(.6,.6);float:right;margin-right:-100px;margin-top:-200px;margin-bottom:-150px;}
+	#map svg {position: relative;top: -100px; float:right;left: 0px;}
+     svg > a {cursor: pointer;display:block;}}
+	 @media only screen and (min-width: 992px) and (max-width: 1199px){#map{width:1050px;height:620px;position:relative;margin:auto;transform:scale(.5,.5);
+
+-webkit-transform:scale(.5,.5);
+
+-moz-transform:scale(.5,.5);float:right;margin-right:-250px;margin-top:-200px;margin-bottom:-150px;}
+	#map svg {position: relative;top: -100px; float:right;left: 0px;}
+     svg > a {cursor: pointer;display:block;}}
+	@media only screen and (min-width: 768px) and (max-width: 991px){
+
+ #map {
+  width:1050px;height:620px;position:relative;margin:auto;
+  transform:scale(.5,.5);
+
+-webkit-transform:scale(.5,.5);
+
+-moz-transform:scale(.5,.5);
+   float:right;margin-right:-150px;margin-top:-200px;margin-bottom:-200px;
+    }}
+  @media only screen and (min-width: 451px) and (max-width: 767px){
+
+ #map {
+  width:1050px;height:620px;position:relative;margin:auto;
+  transform:scale(.5,.5);
+
+-webkit-transform:scale(.5,.5);
+
+-moz-transform:scale(.5,.5);
+   float:right;margin-right:-300px;margin-top:-200px;margin-bottom:-200px;
+    }}
+    @media only screen and (max-width: 450px) {
+
+ #map {
+   width:1050px;height:620px;position:relative;margin:auto;
+  transform:scale(.3,.3);
+
+-webkit-transform:scale(.3,.3);
+
+-moz-transform:scale(.3,.3);
+   float:right;margin-right:-370px;margin-top:-250px;margin-bottom:-250px;
+      }}
 	#sehir{font-size:30px;text-align:center;margin-top:25px;color:#666;}
+
+
+
+	{#body{background:#fff;}#}
+	{##map{width:1050px;height:620px;position:relative;margin:auto;}#}
+	{##map svg {position: relative;top: -100px; left: 0px;}#}
+	{#svg > a {cursor: pointer;display:block;}#}
+    {##}
+	{##sehir{font-size:30px;text-align:center;margin-top:25px;color:#666;}#}
 </style>
 
 
@@ -637,10 +689,14 @@
                 <!-- /.col -->
             </div>
 
-            <div class="row"  style="height:600px; overflow-x: scroll; overflow-y: scroll;">
-                                 <div id="sehir"></div>
+            <div>
+                      <div class="row">
+                                        <div id="sehir"></div>
+                                        <div  id="map" ></div>
 
-                                <div  id="map"  style="overflow-x: scroll;overflow-y: scroll" ></div>
+
+                      </div>
+
 
 
             </div>

@@ -2,9 +2,12 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from rest_framework_simplejwt import views as jwt_views
+from django.http import JsonResponse
 
 from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete,Person
 from wushu.services import general_methods
+from rest_framework.authtoken.models import Token
 
 
 from datetime import date,datetime
@@ -115,9 +118,6 @@ def return_admin_dashboard(request):
     total_brans_wing_chun=Athlete.objects.filter(licenses__branch='WING CHUN').count()
     total_brans_kyokushin_ashihara=Athlete.objects.filter(licenses__branch='KYOKUSHIN ASHIHARA').count()
     total_brans_jeet_kune_do_kulelkavi=Athlete.objects.filter(licenses__branch='JEET KUNE DO KULELKAVIDO').count()
-
-
-
     return render(request, 'anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
                    'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete,'total_athlete_gender_man':total_athlete_gender_man,
@@ -125,3 +125,22 @@ def return_admin_dashboard(request):
                    'total_brans_wushu':total_brans_wushu,'total_brans_aikido':total_brans_aikido,'total_brans_wing_chun':total_brans_wing_chun,
                    'total_brans_kyokushin_ashihara':total_brans_kyokushin_ashihara,'total_brans_jeet_kune_do_kulelkavi':total_brans_jeet_kune_do_kulelkavi
                    })
+
+@login_required
+def City_athlete_cout(request):
+
+
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            cout=Athlete.objects.filter(communication__city__name__icontains=request.POST.get('city')).count()
+            data = {
+                'say': cout,
+            }
+            return JsonResponse(data)
+        except Level.DoesNotExist:
+            return JsonResponse({'status':'Fail'})
+
+    else:
+        return JsonResponse({'status': 'Fail'})
+#
+#

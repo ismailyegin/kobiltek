@@ -18,11 +18,43 @@
 
     <script type="text/javascript">
 	$(function(){
-		$("#map svg path").hover(
+		{#$("#map svg path").hover(#}
+		{#  function() {#}
+		{#	var id=$(this).attr("id");#}
+		{#	$("#sehir").text(id);#}
+		{# });#}
+		$("#map svg path").click(
 		  function() {
 			var id=$(this).attr("id");
-			$("#sehir").text(id);
+			console.log(id);
+			    $.ajax({
+                        url: "{% url "wushu:sehir-sporcu-sayisi"%}",
+                        type: "POST",
+                        data: {
+
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+
+                            'city': id.toString(),
+                        },
+                        success: function (result) {
+
+                            debugger;
+
+
+
+                            console.log(result.say);
+                            $("#sehir").text( id+'   Sporcu sayisi ='+result.say)
+                        }
+                    });
+
+
+
+
+
+
+
 		 });
+
 	})
 </script>
 <style type="text/css">
@@ -691,11 +723,13 @@ body{background:#fff;}
 
             <div>
                       <div class="row">
+                          <div >
                                         <div id="sehir"></div>
+                          <br>
                                         <div  id="map" ></div>
+                           </div>
 
 
-                      </div>
 
 
 

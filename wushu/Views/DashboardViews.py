@@ -2,12 +2,12 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from rest_framework_simplejwt import views as jwt_views
+# from rest_framework_simplejwt import views as jwt_views
 from django.http import JsonResponse
 
 from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete,Person
 from wushu.services import general_methods
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
 
 
 from datetime import date,datetime

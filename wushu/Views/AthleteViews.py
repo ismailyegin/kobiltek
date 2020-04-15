@@ -195,8 +195,10 @@ def return_athletes(request):
                     for club in clubs:
                         clubsPk.append(club.pk)
                     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).filter(query).distinct()
+
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     athletes = Athlete.objects.filter(query).distinct()
+
     sportclup = SearchClupForm(request.POST, request.FILES or None)
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)

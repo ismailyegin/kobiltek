@@ -80,11 +80,9 @@ def visaSeminar_duzenle(request, pk):
         return redirect('accounts:login')
 
     seminar= VisaSeminar.objects.get(pk=pk)
-    print(seminar)
     coach=seminar.coach.all()
     competition_form = VisaSeminarForm(request.POST or None, instance=seminar)
     if request.method == 'POST':
-        print('düzenleme geldi ')
         if competition_form.is_valid():
             competition_form.save()
             messages.success(request, 'Vize Seminer Başarıyla Güncellenmiştir.')
@@ -93,6 +91,7 @@ def visaSeminar_duzenle(request, pk):
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
+
 
     return render(request, 'antrenor/VizeSeminar-Duzenle.html',
                   {'competition_form': competition_form, 'competition': seminar, 'athletes': coach})
@@ -216,8 +215,6 @@ def return_coachs(request):
                 coachs = Coach.objects.all()
         else:
             query = Q()
-            fdk = Coach.objects.filter(visa__startDate__year=timezone.now().year)
-            print('fdk=', fdk)
             if lastName:
                 query &= Q(user__last_name__icontains=lastName)
             if firstName:
@@ -792,3 +789,48 @@ def vize_update(request,grade_pk,coach_pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
     return render(request, 'antrenor/Vize-update.html',
                   {'grade_form': grade_form})
+
+
+@login_required
+def choose_coach(request, pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    visa = VisaSeminar.objects.get(pk=pk)
+    coa = []
+    for item in visa.coach.all():
+        coa.append(item.user.pk)
+
+    athletes = Coach.objects.exclude(visaseminar__coach__user_id__in=coa)
+    if request.method == 'POST':
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            for x in athletes1:
+                if not visa.coach.all().filter(beltexam__coachs__user_id=x):
+                    visa.coach.add(x)
+                    visa.save()
+        return redirect('wushu:seminar-duzenle', pk=pk)
+    return render(request, 'antrenor/visaSeminarCoach.html', {'athletes': athletes})
+
+
+@login_required
+def visaSeminar_Delete_Coach(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            visa = VisaSeminar.objects.get(pk=competition)
+            visa.coach.remove(Coach.objects.get(pk=pk))
+            visa.save()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

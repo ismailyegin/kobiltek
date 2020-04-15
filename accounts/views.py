@@ -1,11 +1,13 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, Permission, User
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, render_to_response
 from accounts.forms import LoginForm, PermForm
+from accounts.models import Forgot
 
 from wushu.Forms.PreRegidtrationForm import PreRegistrationForm
 
@@ -15,8 +17,6 @@ from wushu import urls
 from wushu.models import MenuAthlete, MenuCoach, MenuReferee, MenuDirectory, MenuAdmin, MenuClubUser
 from wushu.services import general_methods
 from wushu.services.general_methods import show_urls
-
-
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -67,35 +67,36 @@ def login(request):
     return render(request, 'registration/login.html')
 
 
-def forgot(request):
-    if request.method == 'POST':
-        mail = request.POST.get('username')
-        obj = User.objects.filter(username=mail)
-        if obj.count() != 0:
-            obj = obj[0]
-            password = User.objects.make_random_password()
-            obj.set_password(password)
-            # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
+# def forgot(request):
+#     if request.method == 'POST':
+#         mail = request.POST.get('username')
+#         obj = User.objects.filter(username=mail)
+#         if obj.count() != 0:
+#             obj = obj[0]
+#             password = User.objects.make_random_password()
+#             obj.set_password(password)
+#             # form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
+#
+#             user = obj.save()
+#             html_content = ''
+#
+#             subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', obj.email
+#             html_content = '<h2>Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.</h2>'
+#             html_content = html_content+'<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr:81</p>'
+#             html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
+#             html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
+#             msg = EmailMultiAlternatives(subject, '', from_email, [to])
+#             msg.attach_alternative(html_content, "text/html")
+#             msg.send()
+#
+#             messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
+#             return redirect("accounts:login")
+#         else:
+#             messages.warning(request, "Geçerli bir mail adresi giriniz.")
+#             return redirect("accounts:forgot")
+#
+#     return render(request, 'registration/forgot-password.html')
 
-            user = obj.save()
-            html_content = ''
-
-            subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', obj.email
-            html_content = '<h2>Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.</h2>'
-            html_content = html_content+'<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81"></a>sbs.twf.gov.tr:81</p>'
-            html_content = html_content + '<p><strong>Kullanıcı Adı:</strong>' + obj.username + '</p>'
-            html_content = html_content + '<p><strong>Şifre:</strong>' + password + '</p>'
-            msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
-
-            messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
-            return redirect("accounts:login")
-        else:
-            messages.warning(request, "Geçerli bir mail adresi giriniz.")
-            return redirect("accounts:forgot")
-
-    return render(request, 'registration/forgot-password.html')
 
 def pre_registration(request):
     PreRegistrationform = PreRegistrationForm()
@@ -127,6 +128,10 @@ def pre_registration(request):
 
 def pagelogout(request):
     logout(request)
+    return redirect('accounts:login')
+
+
+def mail(request):
     return redirect('accounts:login')
 
 
@@ -188,3 +193,80 @@ def permission_post(request):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+def updateUrlProfile(request):
+    print('ben geldim')
+    if request.method == 'GET':
+        print('get islemi çalisti ')
+        data = request.GET.get('query')
+        print(data)
+        gelen = Forgot.objects.get(uuid=data)
+
+        print('gelen=', gelen.user)
+        user = gelen.user
+        password_form = SetPasswordForm(user)
+        print(user)
+        if gelen.status == False:
+            # gelen.status=True
+            # gelen.save()
+            # request.user=user
+            print('ben geldim')
+            return render(request, 'registration/newPassword.html',
+                          {'password_form': password_form})
+
+        else:
+            return redirect('accounts:login')
+    if request.method == 'POST':
+        print('Post islemi gerçeklesti')
+
+        gelen = Forgot.objects.get(uuid=request.GET.get('query'))
+        password_form = SetPasswordForm(gelen.user, request.POST)
+        user = gelen.user
+        if password_form.is_valid():
+            user.set_password(password_form.cleaned_data['new_password1'])
+            user.save()
+            # zaman kontrolüde yapilacak
+            gelen.status = True
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+
+            return redirect('accounts:login')
+
+
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+            return render(request, 'registration/newPassword.html',
+                          {'password_form': password_form})
+
+    return render(request, 'accounts/index.html')
+
+
+def forgot(request):
+    if request.method == 'POST':
+        mail = request.POST.get('username')
+        obj = User.objects.filter(username=mail)
+
+        if obj.count() != 0:
+            user = User.objects.get(username=mail)
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            html_content = ''
+            subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', mail
+            html_content = '<h2>TÜRKİYE WUSHU KUNG FU FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://127.0.0.1:8000/newpassword?query=' + str(
+                fdk.uuid) + '">http://127.0.0.1:8000/wushu/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
+            return redirect("accounts:login")
+        else:
+            messages.warning(request, "Geçerli bir mail adresi giriniz.")
+            return redirect("accounts:forgot")
+
+    return render(request, 'registration/forgot-password.html')

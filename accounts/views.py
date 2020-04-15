@@ -196,48 +196,48 @@ def permission_post(request):
 
 
 def updateUrlProfile(request):
-    print('ben geldim')
     if request.method == 'GET':
-        print('get islemi çalisti ')
-        data = request.GET.get('query')
-        print(data)
-        gelen = Forgot.objects.get(uuid=data)
+        try:
+            data = request.GET.get('query')
+            gelen = Forgot.objects.get(uuid=data)
+            user = gelen.user
+            password_form = SetPasswordForm(user)
+            print(user)
+            if gelen.status == False:
+                gelen.status = True
+                gelen.save()
+                return render(request, 'registration/newPassword.html',
+                              {'password_form': password_form})
 
-        print('gelen=', gelen.user)
-        user = gelen.user
-        password_form = SetPasswordForm(user)
-        print(user)
-        if gelen.status == False:
-            gelen.status = True
-            gelen.save()
-            request.user = user
-            print('ben geldim')
-            return render(request, 'registration/newPassword.html',
-                          {'password_form': password_form})
-
-        else:
+            else:
+                return redirect('accounts:login')
+        except:
             return redirect('accounts:login')
+
+
     if request.method == 'POST':
-        print('Post islemi gerçeklesti')
+        try:
+            gelen = Forgot.objects.get(uuid=request.GET.get('query'))
+            password_form = SetPasswordForm(gelen.user, request.POST)
+            user = gelen.user
+            if password_form.is_valid():
+                user.set_password(password_form.cleaned_data['new_password1'])
+                user.save()
+                # zaman kontrolüde yapilacak
+                gelen.status = True
+                messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
 
-        gelen = Forgot.objects.get(uuid=request.GET.get('query'))
-        password_form = SetPasswordForm(gelen.user, request.POST)
-        user = gelen.user
-        if password_form.is_valid():
-            user.set_password(password_form.cleaned_data['new_password1'])
-            user.save()
-            # zaman kontrolüde yapilacak
-            gelen.status = True
-            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+                return redirect('accounts:login')
 
+
+            else:
+
+                messages.warning(request, 'Alanları Kontrol Ediniz')
+                return render(request, 'registration/newPassword.html',
+                              {'password_form': password_form})
+        except:
             return redirect('accounts:login')
 
-
-        else:
-
-            messages.warning(request, 'Alanları Kontrol Ediniz')
-            return render(request, 'registration/newPassword.html',
-                          {'password_form': password_form})
 
     return render(request, 'accounts/index.html')
 

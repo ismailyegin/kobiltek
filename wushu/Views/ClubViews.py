@@ -220,6 +220,7 @@ def updateClubPersons(request, pk):
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     sportClubUser_form = SportClubUserForm(request.POST or None, instance=athlete)
+    clubs = SportsClub.objects.filter(clubUser__user=user)
 
     if request.method == 'POST':
 
@@ -246,7 +247,7 @@ def updateClubPersons(request, pk):
 
     return render(request, 'kulup/kulup-uyesi-duzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'sportClubUser_form': sportClubUser_form})
+                   'person_form': person_form, 'sportClubUser_form': sportClubUser_form, 'clubs': clubs})
 
 
 @login_required
@@ -802,7 +803,6 @@ def update_belt_exam(request, pk):
     return render(request, 'kulup/kulupDuzenle.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
                    'club': club})
-
 
 @login_required
 def delete_belt_exam(request, pk):

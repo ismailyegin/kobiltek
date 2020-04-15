@@ -208,9 +208,9 @@ def updateUrlProfile(request):
         password_form = SetPasswordForm(user)
         print(user)
         if gelen.status == False:
-            # gelen.status=True
-            # gelen.save()
-            # request.user=user
+            gelen.status = True
+            gelen.save()
+            request.user = user
             print('ben geldim')
             return render(request, 'registration/newPassword.html',
                           {'password_form': password_form})

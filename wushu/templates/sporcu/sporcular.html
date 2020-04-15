@@ -244,23 +244,33 @@
 
 
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <td>{{ athlete.licenses.last.sportsClub }}</td>
+
+                                                <td>
+                                                    {% for license in athlete.licenses.all %}
+                                                        {% if  license.status == 'Onaylandı' %}
+                                                            <p>{{ license.sportsClub }}</p>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
 
                                             {% endif %}
 
-                                            {% if  athlete.licenses.last.status == 'Onaylandı' %}
-                                                <td>{{ athlete.licenses.last.branch }}</td>
-                                            {% else %}
-                                                <td>-</td>
+                                            <td>
+                                                {% for license in athlete.licenses.all %}
+                                                    {% if  license.status == 'Onaylandı' %}
+                                                        <p>{{ license.branch }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
 
-                                            {% endif %}
 
-                                            {% if  athlete.belts.last.status == 'Onaylandı' %}
-                                                <td>{{ athlete.belts.last.definition }}</td>
-                                            {% else %}
-                                                <td>-</td>
-                                            {% endif %}
-
+                                            <td>
+                                                {% for belts in athlete.belts.all %}
+                                                    {% if  belts.status == 'Onaylandı' %}
+                                                        <p>{{ belts.definition }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
 
 
                                             <td>

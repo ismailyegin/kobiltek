@@ -1036,7 +1036,9 @@ def sporcu_kusak_hepsinireddet(request):
 def isActive(request):
     for fd in License.objects.all():
         fd.isActive = True
+        fd.save()
     for fd in Level.objects.all():
         fd.isActive = True
+        fd.save()
 
     return redirect('wushu:kusak-listesi')

@@ -789,26 +789,26 @@ def update_belt_exam(request, pk):
                              initial={'sportsClub': sinav.sportClub.name})
     print(exam_form)
     user = request.user
-    # if user.groups.filter(name='KulupUye'):
-    #     sc_user = SportClubUser.objects.get(user=user)
-    #     clubs = SportsClub.objects.filter(clubUser=sc_user)
-    #     clubsPk = []
-    #     for club in clubs:
-    #         clubsPk.append(club.pk)
-    #     exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
-    #
-    #
-    # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-    #     exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
-    #
-    # if request.method == 'POST':
-    #     exam_form = BeltExamForm(request.POST, request.FILES or None)
-    #     if exam_form.is_valid():
-    #         exam = exam_form.save()
-    #         messages.success(request, 'Sınav başarıyla güncellendi')
-    #         return redirect('wushu:kusak-sinavlari')
-    #     else:
-    #         messages.warning(request, 'Alanları Kontrol Ediniz')
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+
+
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
+
+    if request.method == 'POST':
+        exam_form = BeltExamForm(request.POST, request.FILES or None)
+        if exam_form.is_valid():
+            exam = exam_form.save()
+            messages.success(request, 'Sınav başarıyla güncellendi')
+            return redirect('wushu:kusak-sinavlari')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'kulup/kusak-sinavi-güncelle.html', {'exam_form': exam_form})
 

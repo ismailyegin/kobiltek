@@ -139,22 +139,51 @@
                             <div class="box-body">
                                 {% csrf_token %}
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.last_name.label }}</label>
                                         {{ user_form.last_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label> {{ user_form.email.label }}</label>
                                         {{ user_form.email }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ branch.branch.label }}</label>
+                                        {{ branch.branch }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ user_form.definition.label }}</label>
+                                        {{ user_form.definition }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> Vize</label>
+                                        <select name="visa" class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%; " id="id_visa" tabindex="-1"
+                                                aria-hidden="true">
+                                            <option value="" selected="">Seçiniz</option>
+
+                                            <option value="VISA">Vizeli</option>
+
+                                            <option value="NONE">Vizesiz</option>
+
+                                        </select>
+
+
                                     </div>
                                 </div>
 

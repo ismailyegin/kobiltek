@@ -21,6 +21,8 @@ from wushu.Forms.GradeForm import GradeForm
 from wushu.Forms.UserForm import UserForm
 from wushu.Forms.VisaForm import VisaForm
 from wushu.Forms.PersonForm import PersonForm
+from wushu.Forms.CoachSearchForm import CoachSearchForm
+from wushu.Forms.SearchClupForm import SearchClupForm
 
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.CompetitionForm import CompetitionForm
@@ -189,46 +191,59 @@ def return_coachs(request):
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     coachs = Coach.objects.none()
-    user_form = UserSearchForm()
+    user_form = CoachSearchForm()
+    searchClupForm = SearchClupForm()
 
     if request.method == 'POST':
-        user_form = UserSearchForm(request.POST)
-        if user_form.is_valid():
-            firstName = user_form.cleaned_data.get('first_name')
-            lastName = user_form.cleaned_data.get('last_name')
-            email = user_form.cleaned_data.get('email')
+        user_form = CoachSearchForm(request.POST)
+        searchClupForm = SearchClupForm(request.POST)
+        branch = request.POST.get('branch')
+        grade = request.POST.get('definition')
+        visa = request.POST.get('visa')
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        email = request.POST.get('email')
 
-            if not (firstName or lastName or email):
-                if user.groups.filter(name='KulupUye'):
-                    sc_user = SportClubUser.objects.get(user=user)
-                    clubsPk = []
-                    clubs = SportsClub.objects.filter(clubUser=sc_user)
-                    for club in clubs:
-                        clubsPk.append(club.pk)
-                    coachs = Coach.objects.filter(sportsclub__in=clubsPk).distinct()
-                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                    coachs = Coach.objects.all()
+        if not (firstName or lastName or email or branch or grade or visa):
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                coachs = Coach.objects.filter(sportsclub__in=clubsPk).distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                coachs = Coach.objects.all()
+        else:
+            query = Q()
+            fdk = Coach.objects.filter(visa__startDate__year=timezone.now().year)
+            print('fdk=', fdk)
+            if lastName:
+                query &= Q(user__last_name__icontains=lastName)
+            if firstName:
+                query &= Q(user__first_name__icontains=firstName)
+            if email:
+                query &= Q(user__email__icontains=email)
+            if branch:
+                query &= Q(grades__branch=branch)
+            if grade:
+                query &= Q(grades__definition__name=grade)
+            if visa == 'VISA':
+                query &= Q(visa__startDate__year=timezone.now().year)
 
-            else:
-                query = Q()
-                if lastName:
-                    query &= Q(user__last_name__icontains=lastName)
-                if firstName:
-                    query &= Q(user__first_name__icontains=firstName)
-                if email:
-                    query &= Q(user__email__icontains=email)
-                if user.groups.filter(name='KulupUye'):
-                    sc_user = SportClubUser.objects.get(user=user)
-                    clubsPk = []
-                    clubs = SportsClub.objects.filter(clubUser=sc_user)
-                    for club in clubs:
-                        clubsPk.append(club.pk)
-                    coachs = Coach.objects.filter(query).filter(sportsclub__in=clubsPk).distinct()
-                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                    coachs = Coach.objects.filter(query)
-
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                coachs = Coach.objects.filter(query).filter(sportsclub__in=clubsPk).distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                 coachs = Coach.objects.filter(query)
-    return render(request, 'antrenor/antrenorler.html', {'coachs': coachs, 'user_form': user_form})
+            if visa == 'NONE':
+                coachs = coachs.exclude(visa__startDate__year=timezone.now().year)
+    return render(request, 'antrenor/antrenorler.html',
+                  {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm})
 
 
 
@@ -284,9 +299,9 @@ def antrenor_kademe_ekle(request, pk):
         if  grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get('branch') is not None:
             grade = Level(definition=grade_form.cleaned_data['definition'],
                           startDate=grade_form.cleaned_data['startDate'],
-                          dekont=grade_form.cleaned_data['dekont'])
+                          dekont=grade_form.cleaned_data['dekont'],
+                          branch=grade_form.cleaned_data['branch'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
-            grade.branch=request.POST.get('branch')
             grade.status = Level.WAITED
             grade.save()
             coach.grades.add(grade)
@@ -300,7 +315,7 @@ def antrenor_kademe_ekle(request, pk):
 
     grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='COACH_GRADE')
     return render(request, 'antrenor/antrenor-kademe-ekle.html',
-                  {'grade_form': grade_form, 'category_item_form':category_item_form})
+                  {'grade_form': grade_form})
 
 
 @login_required
@@ -569,7 +584,6 @@ def kademe_update(request,grade_pk,coach_pk):
     coach=Coach.objects.get(pk=coach_pk)
     categoryItem = Level.objects.get(pk=grade_pk)
     grade_form = GradeForm(request.POST or None, request.FILES or None, instance=grade,initial={'definition': grade.definition})
-    category_item_form= CategoryItemForm(request.POST or None, instance=categoryItem,initial={'branch':grade.branch})
     if request.method == 'POST':
         if grade_form.is_valid():
             grade_form.save()
@@ -581,7 +595,7 @@ def kademe_update(request,grade_pk,coach_pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'antrenor/kademe-update.html',
-                  {'grade_form': grade_form, 'category_item_form':category_item_form})
+                  {'grade_form': grade_form})
 
 
 

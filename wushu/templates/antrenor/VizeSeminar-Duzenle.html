@@ -101,6 +101,27 @@
 
         </ol>
     </section>
+    <div class="box box-primary">
+
+        <div class="box-header with-border">
+            <div class="box-header with-border">
+                <h3 class="box-title">Onay Durumu</h3>
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ competition.status }}</h3>
+
+
+                    <div class="text-right">
+                        <a href="{% url "wushu:seminar-onayla" competition.pk %}"
+                           type="button" class="btn btn-warning"><i
+                                class="fa fa-edit"></i>Onayla
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
     <section class="content">
 
         <form method="post" enctype="multipart/form-data" role="form">
@@ -124,7 +145,6 @@
                                         <label> {{ competition_form.startDate.label }}</label>
                                         {{ competition_form.startDate }}
                                     </div>
-
 
 
                                     <div class="form-group">
@@ -177,7 +197,7 @@
                                 <a href="{% url "wushu:vize-semineri-antroner-sec" competition.pk %}"
                                    type="button" class="btn btn-success"><i
                                         class="fa fa-edit"></i>Antrenör Ekle
-                                    </a>
+                                </a>
 
                             </div>
                         </div>
@@ -210,8 +230,8 @@
 
                                                     <a onclick="deleteAthlete({{ athlete.id }}, {{ competition.pk }})"
                                                        type="button" class="btn btn-danger"><i
-                                                                class="fa fa-edit"></i>Kaldır
-                                                        </a>
+                                                            class="fa fa-edit"></i>Kaldır
+                                                    </a>
 
 
                                                 </div>

@@ -257,7 +257,7 @@ def forgot(request):
             html_content = '<h2>TÜRKİYE WUSHU KUNG FU FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
             html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://127.0.0.1:8000/newpassword?query=' + str(
-                fdk.uuid) + '">http://127.0.0.1:8000/wushu/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                fdk.uuid) + '">http://sbs.twf.gov.tr:81/wushu/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
 
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")

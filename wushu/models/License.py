@@ -24,6 +24,7 @@ class License(models.Model):
     modificationDate = models.DateTimeField(auto_now=True)
     branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
     sportsClub = models.ForeignKey(SportsClub, on_delete=models.CASCADE)
+    isActive = models.BooleanField(default=True)
     licenseNo = models.CharField(blank=False, null=False, max_length=255)
     expireDate = models.DateField(blank=False, null=False)
     cityHeadShip = models.ForeignKey(City, on_delete=models.CASCADE)

@@ -1030,3 +1030,13 @@ def sporcu_kusak_hepsinireddet(request):
 
     messages.success(request, 'Kuşaklar başari  Reddedilmiştir')
     return redirect('wushu:kusak-listesi')
+
+
+@login_required
+def isActive(request):
+    for fd in License.objects.all():
+        fd.isActive = True
+    for fd in Level.objects.all():
+        fd.isActive = True
+
+    return redirect('wushu:kusak-listesi')

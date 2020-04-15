@@ -704,11 +704,10 @@ def kademe_onay_hepsi(request):
         logout(request)
         return redirect('accounts:login')
 
-    Belt = CoachLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE,status="Beklemede")
+    Belt = Level.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
 
     for belt in Belt:
-
-        belt.status =CoachLevel.APPROVED
+        belt.status = Level.APPROVED
         belt.save()
     messages.success(request, 'Beklemede olan kademeler  Onaylanmıştır')
     return redirect('wushu:kademe-listesi')
@@ -834,3 +833,28 @@ def visaSeminar_Delete_Coach(request, pk, competition):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def visaSeminar_onayla(request, pk):
+    seminar = VisaSeminar.objects.get(pk=pk)
+    if seminar.status == VisaSeminar.WAITED:
+        visa = Level(dekont='Federasyon', branch=seminar.branch)
+        visa.startDate = date(timezone.now().year, 1, 1)
+        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
+        visa.levelType = EnumFields.LEVELTYPE.VISA
+        visa.status = Level.APPROVED
+        visa.save()
+
+        for item in seminar.coach.all():
+            item.visa.add(visa)
+            item.save()
+        seminar.status = VisaSeminar.APPROVED
+        seminar.save()
+    else:
+        messages.warning(request, 'Seminer Daha Önce Onaylanmistir.')
+
+    return redirect('wushu:seminar-duzenle', pk=pk)
+
+    return render(request, 'antrenor/VisaSeminar.html')
+    # {'grade_form': grade_form})

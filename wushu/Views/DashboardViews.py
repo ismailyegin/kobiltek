@@ -104,8 +104,8 @@ def return_admin_dashboard(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    # son eklenen 5 sporcuyu ekledik
-    last_athlete=Athlete.objects.order_by('-creationDate')[:5]
+    # son eklenen 8 sporcuyu ekledik
+    last_athlete=Athlete.objects.order_by('-creationDate')[:8]
     total_club = SportsClub.objects.all().count()
     total_athlete = Athlete.objects.all().count()
     total_athlete_gender_man=Athlete.objects.filter(person__gender='Erkek').count()

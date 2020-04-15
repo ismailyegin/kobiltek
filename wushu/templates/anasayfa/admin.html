@@ -9,25 +9,25 @@
     <link rel="stylesheet" href="{% static 'TurkeyMaps/css/jquery.qtip.min.css' %}">
 
 
-{#    <script src="{% static 'TurkeyMaps/js/jquery-1.8.0.min.js' %}"></script>#}
+    {#    <script src="{% static 'TurkeyMaps/js/jquery-1.8.0.min.js' %}"></script>#}
     <script src="{% static 'TurkeyMaps/js/raphael-min.js' %}"></script>
     <script src="{% static 'TurkeyMaps/js/paths.js' %}"></script>
     <script src="/static/TurkeyMaps/js/turkiye.js?v=123"></script>
-    <script src="{% static 'TurkeyMaps/js/jquery.qtip.min.js'%}"></script>
+    <script src="{% static 'TurkeyMaps/js/jquery.qtip.min.js' %}"></script>
 
 
     <script type="text/javascript">
-	$(function(){
-		{#$("#map svg path").hover(#}
-		{#  function() {#}
-		{#	var id=$(this).attr("id");#}
-		{#	$("#sehir").text(id);#}
-		{# });#}
-		$("#map svg path").click(
-		  function() {
-			var id=$(this).attr("id");
-			console.log(id);
-			    $.ajax({
+        $(function () {
+            {#$("#map svg path").hover(#}
+            {#  function() {#}
+            {#	var id=$(this).attr("id");#}
+            {#	$("#sehir").text(id);#}
+            {# });#}
+            $("#map svg path").click(
+                function () {
+                    var id = $(this).attr("id");
+                    console.log(id);
+                    $.ajax({
                         url: "{% url "wushu:sehir-sporcu-sayisi"%}",
                         type: "POST",
                         data: {
@@ -38,85 +38,202 @@
                         },
                         success: function (result) {
 
-                            debugger;
-
+                            {#debugger;#}
 
 
                             console.log(result.say);
-                            $("#sehir").text( id+'   Sporcu sayisi ='+result.say)
+                            $("#sehir").text(id + '   Sporcu sayisi =' + result.say)
                         }
                     });
 
 
+                });
+
+        })
+    </script>
+    <style type="text/css">
+        body {
+            background: #fff;
+        }
+
+        @media only screen and (min-width: 1199px) and (max-width: 2000px){#map {
+            width:
+
+        1050px
+
+        ;height:
+
+        620px
+
+        ;position:relative
+
+        ;margin:auto
+
+        ;transform:scale(.6,.6)
+
+        ;
+
+            -webkit-transform:scale(.6,.6)
+
+        ;
+
+            -moz-transform:scale(.6,.6)
+
+        ;float:right
+
+        ;margin-right:
+
+        -100px
+
+        ;margin-top:
+
+        -200px
+
+        ;margin-bottom:
+
+        -150px
+
+        ;
+        }
+
+        #map svg {
+            position: relative;
+            top: -100px;
+            float: right;
+            left: 0px;
+        }
+
+        svg > a {
+            cursor: pointer;
+            display: block;
+        }
+
+        }
+        @media only screen and (min-width: 992px) and (max-width: 1199px){#map {
+            width:
+
+        1050px
+
+        ;height:
+
+        620px
+
+        ;position:relative
+
+        ;margin:auto
+
+        ;transform:scale(.5,.5)
+
+        ;
+
+            -webkit-transform:scale(.5,.5)
+
+        ;
+
+            -moz-transform:scale(.5,.5)
+
+        ;float:right
+
+        ;margin-right:
+
+        -250px
+
+        ;margin-top:
+
+        -200px
+
+        ;margin-bottom:
+
+        -150px
+
+        ;
+        }
+
+        #map svg {
+            position: relative;
+            top: -100px;
+            float: right;
+            left: 0px;
+        }
+
+        svg > a {
+            cursor: pointer;
+            display: block;
+        }
+
+        }
+        @media only screen and (min-width: 768px) and (max-width: 991px) {
+
+            #map {
+                width: 1050px;
+                height: 620px;
+                position: relative;
+                margin: auto;
+                transform: scale(.5, .5);
+
+                -webkit-transform: scale(.5, .5);
+
+                -moz-transform: scale(.5, .5);
+                float: right;
+                margin-right: -150px;
+                margin-top: -200px;
+                margin-bottom: -200px;
+            }
+        }
+
+        @media only screen and (min-width: 451px) and (max-width: 767px) {
+
+            #map {
+                width: 1050px;
+                height: 620px;
+                position: relative;
+                margin: auto;
+                transform: scale(.5, .5);
+
+                -webkit-transform: scale(.5, .5);
+
+                -moz-transform: scale(.5, .5);
+                float: right;
+                margin-right: -300px;
+                margin-top: -200px;
+                margin-bottom: -200px;
+            }
+        }
+
+        @media only screen and (max-width: 450px) {
+
+            #map {
+                width: 1050px;
+                height: 620px;
+                position: relative;
+                margin: auto;
+                transform: scale(.3, .3);
+
+                -webkit-transform: scale(.3, .3);
+
+                -moz-transform: scale(.3, .3);
+                float: right;
+                margin-right: -370px;
+                margin-top: -250px;
+                margin-bottom: -250px;
+            }
+        }
+
+        #sehir {
+            font-size: 30px;
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+        }
 
 
-
-
-
-		 });
-
-	})
-</script>
-<style type="text/css">
-body{background:#fff;}
-   @media only screen and (min-width: 1199px) and (max-width: 2000px){#map{width:1050px;height:620px;position:relative;margin:auto;transform:scale(.6,.6);
-
--webkit-transform:scale(.6,.6);
-
--moz-transform:scale(.6,.6);float:right;margin-right:-100px;margin-top:-200px;margin-bottom:-150px;}
-	#map svg {position: relative;top: -100px; float:right;left: 0px;}
-     svg > a {cursor: pointer;display:block;}}
-	 @media only screen and (min-width: 992px) and (max-width: 1199px){#map{width:1050px;height:620px;position:relative;margin:auto;transform:scale(.5,.5);
-
--webkit-transform:scale(.5,.5);
-
--moz-transform:scale(.5,.5);float:right;margin-right:-250px;margin-top:-200px;margin-bottom:-150px;}
-	#map svg {position: relative;top: -100px; float:right;left: 0px;}
-     svg > a {cursor: pointer;display:block;}}
-	@media only screen and (min-width: 768px) and (max-width: 991px){
-
- #map {
-  width:1050px;height:620px;position:relative;margin:auto;
-  transform:scale(.5,.5);
-
--webkit-transform:scale(.5,.5);
-
--moz-transform:scale(.5,.5);
-   float:right;margin-right:-150px;margin-top:-200px;margin-bottom:-200px;
-    }}
-  @media only screen and (min-width: 451px) and (max-width: 767px){
-
- #map {
-  width:1050px;height:620px;position:relative;margin:auto;
-  transform:scale(.5,.5);
-
--webkit-transform:scale(.5,.5);
-
--moz-transform:scale(.5,.5);
-   float:right;margin-right:-300px;margin-top:-200px;margin-bottom:-200px;
-    }}
-    @media only screen and (max-width: 450px) {
-
- #map {
-   width:1050px;height:620px;position:relative;margin:auto;
-  transform:scale(.3,.3);
-
--webkit-transform:scale(.3,.3);
-
--moz-transform:scale(.3,.3);
-   float:right;margin-right:-370px;margin-top:-250px;margin-bottom:-250px;
-      }}
-	#sehir{font-size:30px;text-align:center;margin-top:25px;color:#666;}
-
-
-
-	{#body{background:#fff;}#}
-	{##map{width:1050px;height:620px;position:relative;margin:auto;}#}
-	{##map svg {position: relative;top: -100px; left: 0px;}#}
-	{#svg > a {cursor: pointer;display:block;}#}
-    {##}
-	{##sehir{font-size:30px;text-align:center;margin-top:25px;color:#666;}#}
-</style>
+        {#body{background:#fff;}#}
+        {##map{width:1050px;height:620px;position:relative;margin:auto;}#}
+        {##map svg {position: relative;top: -100px; left: 0px;}#}
+        {#svg > a {cursor: pointer;display:block;}#}
+        {##}
+        {##sehir{font-size:30px;text-align:center;margin-top:25px;color:#666;}#}
+    </style>
 
 
 
@@ -258,7 +375,7 @@ body{background:#fff;}
 
                                     <div class="progress-group">
                                         <span class="progress-text">Toplam Sporcu</span>
-                                        <span class="progress-number"><b>{{total_athlete}}</b>/{{ total_athlete }}</span>
+                                        <span class="progress-number"><b>{{ total_athlete }}</b>/{{ total_athlete }}</span>
 
                                         <div class="progress sm">
                                             <div class="progress-bar progress-bar-aqua" style="width: 100%"></div>
@@ -267,7 +384,7 @@ body{background:#fff;}
                                     <!-- /.progress-group -->
                                     <div class="progress-group">
                                         <span class="progress-text">Toplam Erkek Sporcu</span>
-                                        <span class="progress-number"><b>{{total_athlete_gender_man}}</b>/{{ total_athlete_gender_man }}</span>
+                                        <span class="progress-number"><b>{{ total_athlete_gender_man }}</b>/{{ total_athlete_gender_man }}</span>
 
                                         <div class="progress sm">
                                             <div class="progress-bar progress-bar-red" style="width: 100%"></div>
@@ -285,7 +402,7 @@ body{background:#fff;}
                                     <!-- /.progress-group -->
                                     <div class="progress-group">
                                         <span class="progress-text">Toplam Antrenör</span>
-                                        <span class="progress-number"><b>{{total_coachs}}</b>/{{ total_coachs }}</span>
+                                        <span class="progress-number"><b>{{ total_coachs }}</b>/{{ total_coachs }}</span>
 
                                         <div class="progress sm">
                                             <div class="progress-bar progress-bar-yellow" style="width: 100%"></div>
@@ -313,6 +430,15 @@ body{background:#fff;}
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Braşlarin Sporcu Sayılari</h3>
+                            <div class="box-tools pull-right">
+
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                        class="fa fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -373,252 +499,17 @@ body{background:#fff;}
 
                         <div class="col-md-12">
                             <!-- USERS LIST -->
-                            <div class="box box-danger">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Antrenörler</h3>
 
-                                    <div class="box-tools pull-right">
-
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                                class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <ul class="users-list clearfix">
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Kevin Durant</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Stephen Curry</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Paul George</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Kawhi Leonard</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Kyrie Irving</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">John Wall</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Mike Conley</a>
-
-                                        </li>
-                                        <li>
-                                            <img src="/media/elif-akyuz.jpg" style="width: 100px;height: 100px"
-                                                 alt="User Image">
-                                            <a class="users-list-name" href="#">Nadia</a>
-
-                                        </li>
-                                    </ul>
-                                    <!-- /.users-list -->
-                                </div>
-                                <!-- /.box-body -->
-                                <div class="box-footer text-center">
-                                    <a href="javascript:void(0)" class="uppercase">Tüm Antrenörleri Görüntüleyin</a>
-                                </div>
-                                <!-- /.box-footer -->
-                            </div>
                             <!--/.box -->
                         </div>
                         <!-- /.col -->
                     </div>
-                    <!-- /.row -->
 
-                    <!-- TABLE: LATEST ORDERS -->
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Son Müsabakalar</h3>
-
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                        class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                        class="fa fa-times"></i></button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="table-responsive">
-                                <table class="table no-margin">
-                                    <thead>
-                                    <tr>
-
-                                        <th>Rakip</th>
-                                        <th>Sonuç</th>
-                                        <th>Müsabaka Süresi</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-
-                                        <td>Keviin Durant</td>
-                                        <td><span class="label label-success">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Stephen Curry</td>
-                                        <td><span class="label label-warning">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Kawhi Leonard</td>
-                                        <td><span class="label label-danger">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Paul George</td>
-                                        <td><span class="label label-info">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Kyrie Irving</td>
-                                        <td><span class="label label-warning">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Draymond Green</td>
-                                        <td><span class="label label-danger">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td>Mike Conley</td>
-                                        <td><span class="label label-success">Galibiyet</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                <canvas width="34" height="20"
-                                                        style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.box-body -->
-                        <div class="box-footer clearfix">
-
-                            <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">Tüm
-                                Müsabakaları Göster</a>
-                        </div>
-                        <!-- /.box-footer -->
-                    </div>
-                    <!-- /.box -->
                 </div>
                 <!-- /.col -->
 
                 <div class="col-md-4">
-                    <!-- Info Boxes Style 2 -->
-                    <div class="info-box bg-yellow">
-                        <span class="info-box-icon"><i class="fa fa-male"></i></span>
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">En İyi Sporcu</span>
-                            <span class="info-box-number">Elif Akyüz</span>
-
-
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box bg-green">
-                        <span class="info-box-icon"><i class="fa fa-male"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">En İyi Antrenör</span>
-                            <span class="info-box-number">Salih Orhan </span>
-
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box bg-red">
-                        <span class="info-box-icon"><i class="fa fa-home"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">En İyi Kulüp</span>
-                            <span class="info-box-number">Kobiltek Spor Kulubü</span>
-
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box bg-aqua">
-                        <span class="info-box-icon"><i class="fa  fa-flag-checkered"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">En İyi Müsabaka</span>
-                            <span class="info-box-number">Antalta Müsabakası </span>
-
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
                     <!-- /.info-box -->
 
                     <div class="box box-default">
@@ -660,9 +551,11 @@ body{background:#fff;}
                         <div class="box-footer no-padding">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="#">Kadın
-                                    <span class="pull-right text-red"><i class="fa fa-angle-down"></i> {{ total_athlete_gender_woman }}</span></a>
+                                    <span class="pull-right text-red"><i
+                                            class="fa fa-angle-down"></i> {{ total_athlete_gender_woman }}</span></a>
                                 </li>
-                                <li><a href="#">Erkek <span class="pull-right text-green"><i class="fa fa-angle-up"></i> {{ total_athlete_gender_man }}</span></a>
+                                <li><a href="#">Erkek <span class="pull-right text-green"><i
+                                        class="fa fa-angle-up"></i> {{ total_athlete_gender_man }}</span></a>
                                 </li>
 
                             </ul>
@@ -672,72 +565,82 @@ body{background:#fff;}
                     <!-- /.box -->
 
                     <!-- PRODUCT LIST -->
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Son Eklenen Sporcular</h3>
 
 
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                        class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                        class="fa fa-times"></i></button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-
-
-                        <div class="box-body">
-                            <ul class="products-list product-list-in-box">
-                                {% for athlete in last_athletes %}
-                                    <li class="item">
-                                        <div class="product-img">
-                                            <img src="/media/{{ athlete.person.profileImage }}" alt="Product Image">
-
-                                        </div>
-                                        <div class="product-info">
-                                            <a href="{% url "wushu:update-athletes" athlete.pk %}"
-                                               class="product-title">{{ athlete.user.first_name }} {{ athlete.user.last_name }}
-                                            </a>
-                                            <span class="product-description">     {{ athlete.licenses.last.sportsClub }}
-                                              </span>
-                                        </div>
-                                    </li>
-
-                                {% endfor %}
-
-
-                            </ul>
-                        </div>
-                        <!-- /.box-body -->
-                        <div class="box-footer text-center">
-                            <a href="{% url "wushu:sporcular" %}" class="uppercase">Tüm Sporcuları Görüntüle</a>
-                        </div>
-                        <!-- /.box-footer -->
-                    </div>
                     <!-- /.box -->
                 </div>
                 <!-- /.col -->
             </div>
-
             <div>
-                      <div class="row">
-                          <div >
-                                        <div id="sehir"></div>
-                          <br><br><br>
-                                        <div  id="map" ></div>
-                           </div>
+
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Son Eklenen Sporcular</h3>
+
+                        <div class="box-tools pull-right">
+
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                    class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body no-padding">
+                        <ul class="users-list clearfix">
+                            {% for athlete in last_athletes %}
+                                <li>
+                                <img src="/media/{{ athlete.person.profileImage }}" style="width: 100px;height: 100px"
+                                     alt="User Image">
+                                <a href="{% url "wushu:update-athletes" athlete.pk %}"
+                                   class="users-list-name">{{ athlete.user.first_name }} {{ athlete.user.last_name }}
+                                    ({{ athlete.licenses.last.sportsClub }}) </a>
+                                <a class="users-list-name">({{ athlete.licenses.last.sportsClub }}) </a>
+                                {#                                          <span class="product-description">     #}
+                                {#                                              </span>#}
 
 
+                            {% endfor %}
 
 
+                            </li>
 
+                        </ul>
+                        <!-- /.users-list -->
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer text-center">
+                        <a href="javascript:void(0)" class="uppercase">Tüm Sporculari Görüntüleyin</a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
             </div>
 
 
+            <div class="row">
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Şehirlerin Sporcu Sayilari</h3>
 
+                        <div class="box-tools pull-right">
 
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                    class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding">
+                        <div id="sehir"></div>
+                        <br><br><br>
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
 
 
         </section>
@@ -767,7 +670,9 @@ body{background:#fff;}
         {#    options: {#}
         {#        responsive: true#}
         {#    }#}
-        {#});#}
+        {#})
+        ;
+        #}
     </script>
 
 
@@ -857,63 +762,58 @@ body{background:#fff;}
             salesChart.Line(salesChartData, salesChartOptions);
 
 
-        {#pie log#}
-        var pieChartCanvas = $('#pieChart2').get(0).getContext('2d');
-        var pieChart = new Chart(pieChartCanvas);
-        var PieData = [
-            {
-                value: {{total_athlete_gender_woman}},
-                color: '#f56954',
-                highlight: '#f56954',
-                label: 'Kadın'
-            },
-            {
-                value: {{total_athlete_gender_man}},
-                color: '#00a65a',
-                highlight: '#00a65a',
-                label: 'Erkek'
-            },
+            {#pie log#}
+            var pieChartCanvas = $('#pieChart2').get(0).getContext('2d');
+            var pieChart = new Chart(pieChartCanvas);
+            var PieData = [
+                {
+                    value: {{total_athlete_gender_woman}},
+                    color: '#f56954',
+                    highlight: '#f56954',
+                    label: 'Kadın'
+                },
+                {
+                    value: {{total_athlete_gender_man}},
+                    color: '#00a65a',
+                    highlight: '#00a65a',
+                    label: 'Erkek'
+                },
 
-        ];
-        var pieOptions = {
-            // Boolean - Whether we should show a stroke on each segment
-            segmentShowStroke: true,
-            // String - The colour of each segment stroke
-            segmentStrokeColor: '#fff',
-            // Number - The width of each segment stroke
-            segmentStrokeWidth: 1,
-            // Number - The percentage of the chart that we cut out of the middle
-            percentageInnerCutout: 50, // This is 0 for Pie charts
-            // Number - Amount of animation steps
-            animationSteps: 100,
-            // String - Animation easing effect
-            animationEasing: 'easeOutBounce',
-            // Boolean - Whether we animate the rotation of the Doughnut
-            animateRotate: true,
-            // Boolean - Whether we animate scaling the Doughnut from the centre
-            animateScale: false,
-            // Boolean - whether to make the chart responsive to window resizing
-            responsive: true,
-            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-            maintainAspectRatio: false,
-            // String - A legend template
-            legendTemplate: '',
-            // String - A tooltip template
-            tooltipTemplate: ''
-        };
-        // Create pie or douhnut chart
-        // You can switch between pie and douhnut using the method below.
-        pieChart.Doughnut(PieData, pieOptions);
-        // -----------------
-        // - END PIE CHART -
-
-
-
-
+            ];
+            var pieOptions = {
+                // Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke: true,
+                // String - The colour of each segment stroke
+                segmentStrokeColor: '#fff',
+                // Number - The width of each segment stroke
+                segmentStrokeWidth: 1,
+                // Number - The percentage of the chart that we cut out of the middle
+                percentageInnerCutout: 50, // This is 0 for Pie charts
+                // Number - Amount of animation steps
+                animationSteps: 100,
+                // String - Animation easing effect
+                animationEasing: 'easeOutBounce',
+                // Boolean - Whether we animate the rotation of the Doughnut
+                animateRotate: true,
+                // Boolean - Whether we animate scaling the Doughnut from the centre
+                animateScale: false,
+                // Boolean - whether to make the chart responsive to window resizing
+                responsive: true,
+                // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+                maintainAspectRatio: false,
+                // String - A legend template
+                legendTemplate: '',
+                // String - A tooltip template
+                tooltipTemplate: ''
+            };
+            // Create pie or douhnut chart
+            // You can switch between pie and douhnut using the method below.
+            pieChart.Doughnut(PieData, pieOptions);
+            // -----------------
+            // - END PIE CHART -
 
 
         });
-
 
 
     </script>

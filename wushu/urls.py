@@ -213,10 +213,6 @@ urlpatterns = [
     #     # vize ekle
     url(r'antrenor/antrenor-vize-ekle/(?P<pk>\d+)$', CoachViews.antrenor_vısa_ekle, name='antrenor-vize-ekle'),
 
-    #  silinecek
-    url(r'isActive$', AthleteViews.isActive),
-
-
 
         # Kademe onay reddet sil güncelle liste
     url(r'antrenor/vize-Liste-Reddet/(?P<grade_pk>\d+)$', CoachViews.vize_reddet_liste,

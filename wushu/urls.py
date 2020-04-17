@@ -127,6 +127,29 @@ urlpatterns = [
         name='hakem-duzenle'),
     url(r'hakem/hakem-profil-guncelle/$', RefereeViews.updateRefereeProfile,
         name='hakem-profil-guncelle'),
+    # /kademe
+    url(r'hakem/Hakem-kademe-ekle/(?P<pk>\d+)$', RefereeViews.hakem_kademe_ekle, name='hakem-kademe-ekle'),
+    url(r'hakem/Kademe-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.kademe_onay,
+        name='kademe-onayla-hakem'),
+    url(r'hakem/Kademe-Duzenle/reddet/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.kademe_reddet,
+        name='kademe-reddet-hakem'),
+    url(r'hakem/Kademe-Duzenle/güncelle/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.kademe_update,
+        name='kademe-güncelle-hakem'),
+    url(r'hakem/Kademe-Duzenle/sil/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.kademe_delete,
+        name='Kademe-sil-hakem'),
+    # /vize
+    url(r'hakem/hakem-vize-ekle/(?P<pk>\d+)$', RefereeViews.vısa_ekle, name='hakem-vize-ekle'),
+    url(r'hakem/Vize-Duzenle/onayla/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.visa_onay,
+        name='hakem-vize-onayla'),
+    url(r'hakem/Vize-Duzenle/reddet/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.visa_reddet,
+        name='hakem-vize-reddet'),
+    url(r'hakem/Vize-Duzenle/guncelle/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.vize_update,
+        name='hakem-vize-güncelle'),
+    url(r'hakem/Vize-Duzenle/sil/(?P<grade_pk>\d+)/(?P<referee_pk>\d+)$', RefereeViews.vize_delete,
+        name='hakem-vize-sil'),
+
+
+
 
     # Kulüpler
     url(r'kulup/basvuru-listesi/$', PreRegistration.return_preRegistration, name='basvuru-listesi'),
@@ -174,10 +197,6 @@ urlpatterns = [
 
 
 
-    #
-    #
-    #
-    #
     url(r'kulup/kusak-sinavi-ekle/(?P<athlete1>\S+?)$', ClubViews.add_belt_exam, name='kusak-sinavi-ekle'),
     url(r'kulup/kusak-sinavi-duzenle/(?P<pk>\d+)$', ClubViews.update_belt_exam, name='kusak-sinavi-duzenle'),
     url(r'kulup/kusak-sinavlari/sil/(?P<pk>\d+)$', ClubViews.delete_belt_exam, name='kusak-sinavi-sil'),

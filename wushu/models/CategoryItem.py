@@ -15,7 +15,12 @@ class CategoryItem(models.Model):
     isFirst = models.BooleanField()
 
     def __str__(self):
-        return '%s %s %s' % (self.name,'-',self.branch)
+        if self.branch == None:
+            return '%s' % (self.name)
+        else:
+            return '%s%s%s' % (self.name + '-' + self.branch)
+
+
 
 
     class Meta:

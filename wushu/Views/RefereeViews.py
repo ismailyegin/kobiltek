@@ -17,7 +17,9 @@ from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.GradeFormReferee import GradeFormReferee
-# /silinecek//
+from wushu.Forms.RefereeSearchForm import RefereeSearchForm
+from wushu.Forms.SearchClupForm import SearchClupForm
+
 from wushu.Forms.VisaForm import VisaForm
 from wushu.models import Judge, CategoryItem, Person, Communication, Level
 from wushu.models.EnumFields import EnumFields
@@ -93,26 +95,42 @@ def return_referees(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    referees = Judge.objects.all()
-    user_form = UserSearchForm()
+    referees = Judge.objects.none()
+    searchClupForm = SearchClupForm()
+    user_form = RefereeSearchForm()
     if request.method == 'POST':
-        user_form = UserSearchForm(request.POST)
-        if user_form.is_valid():
-            firstName = user_form.cleaned_data.get('first_name')
-            lastName = user_form.cleaned_data.get('last_name')
-            email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
-            else:
-                query = Q()
-                if lastName:
-                    query &= Q(user__last_name__icontains=lastName)
-                if firstName:
-                    query &= Q(user__first_name__icontains=firstName)
-                if email:
-                    query &= Q(user__email__icontains=email)
-                referees = Judge.objects.filter(query)
-    return render(request, 'hakem/hakemler.html', {'referees': referees, 'user_form': user_form})
+        searchClupForm = SearchClupForm(request.POST)
+        user_form = RefereeSearchForm(request.POST)
+        branch = request.POST.get('branch')
+        grade = request.POST.get('definition')
+        visa = request.POST.get('visa')
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        email = request.POST.get('email')
+        print(firstName, lastName, email, branch, grade, visa)
+        if not (firstName or lastName or email or branch or grade or visa):
+            referees = Judge.objects.all()
+        else:
+            query = Q()
+            if lastName:
+                query &= Q(user__last_name__icontains=lastName)
+            if firstName:
+                query &= Q(user__first_name__icontains=firstName)
+            if email:
+                query &= Q(user__email__icontains=email)
+            if branch:
+                query &= Q(grades__branch=branch)
+            if grade:
+                query &= Q(grades__definition__name=grade)
+            if visa == 'VISA':
+                print('visa ')
+                query &= Q(visa__startDate__year=timezone.now().year)
+            referees = Judge.objects.filter(query)
+            if visa == 'NONE':
+                referees = referees.exclude(visa__startDate__year=timezone.now().year)
+
+    return render(request, 'hakem/hakemler.html',
+                  {'referees': referees, 'user_form': user_form, 'branch': searchClupForm})
 
 
 @login_required
@@ -330,6 +348,10 @@ def hakem_kademe_ekle(request, pk):
             grade.save()
             referee.grades.add(grade)
             referee.save()
+            for item in referee.grades.all():
+                if item.branch == grade.branch:
+                    item.isActive = False
+                    item.save()
 
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)
@@ -448,6 +470,11 @@ def vısa_ekle(request, pk):
             visa.save()
             referee.visa.add(visa)
             referee.save()
+            for item in referee.visa.all():
+                if item.branch == visa.branch:
+                    item.isActive = False
+                    item.save()
+
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)

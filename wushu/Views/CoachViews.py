@@ -303,6 +303,10 @@ def antrenor_kademe_ekle(request, pk):
             grade.save()
             coach.grades.add(grade)
             coach.save()
+            for item in coach.grades.all():
+                if item.branch == grade.branch:
+                    item.isActive = False
+                    item.save()
 
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)
@@ -488,7 +492,7 @@ def kademe_delete(request,grade_pk,coach_pk):
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
-login_required
+@login_required
 def vize_delete(request,grade_pk,coach_pk):
     perm = general_methods.control_access(request)
 
@@ -758,6 +762,10 @@ def antrenor_vısa_ekle(request, pk):
             visa.save()
             coach.visa.add(visa)
             coach.save()
+            for item in coach.grades.all():
+                if item.branch == visa.branch:
+                    item.isActive = False
+                    item.save()
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)

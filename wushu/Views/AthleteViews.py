@@ -375,6 +375,11 @@ def sporcu_kusak_ekle(request, pk):
             athlete.belts.add(belt)
             athlete.save()
 
+            for item in athlete.belts.all():
+                if item.branch == belt.branch:
+                    item.isActive = False
+                    item.save()
+
             messages.success(request, 'Kuşak Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
 
@@ -433,6 +438,11 @@ def sporcu_lisans_ekle(request, pk):
         if license_form.is_valid():
             license = license_form.save()
             athlete.licenses.add(license)
+            for item in athlete.licenses.all():
+                if item.branch == license.branch:
+                    item.isActive = False
+                    item.save()
+
 
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)

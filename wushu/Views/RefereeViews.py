@@ -107,7 +107,7 @@ def return_referees(request):
         firstName = request.POST.get('first_name')
         lastName = request.POST.get('last_name')
         email = request.POST.get('email')
-        print(firstName, lastName, email, branch, grade, visa)
+        # print(firstName, lastName, email, branch, grade, visa)
         if not (firstName or lastName or email or branch or grade or visa):
             referees = Judge.objects.all()
         else:
@@ -119,15 +119,15 @@ def return_referees(request):
             if email:
                 query &= Q(user__email__icontains=email)
             if branch:
-                query &= Q(grades__branch=branch)
+                query &= Q(grades__branch=branch, grades__status='Onaylandı')
             if grade:
-                query &= Q(grades__definition__name=grade)
+                query &= Q(grades__definition__name=grade, grades__status='Onaylandı')
             if visa == 'VISA':
                 print('visa ')
                 query &= Q(visa__startDate__year=timezone.now().year)
-            referees = Judge.objects.filter(query)
+            referees = Judge.objects.filter(query).distinct()
             if visa == 'NONE':
-                referees = referees.exclude(visa__startDate__year=timezone.now().year)
+                referees = referees.exclude(visa__startDate__year=timezone.now().year).distinct()
 
     return render(request, 'hakem/hakemler.html',
                   {'referees': referees, 'user_form': user_form, 'branch': searchClupForm})

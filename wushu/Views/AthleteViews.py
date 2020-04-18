@@ -186,7 +186,7 @@ def return_athletes(request):
                 if sportsclup:
                     query &=Q(licenses__sportsClub__in=clubsPk)
                 if brans:
-                    query &= Q(licenses__branch=brans)
+                    query &= Q(licenses__branch=brans, licenses__status='Onaylandı')
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)

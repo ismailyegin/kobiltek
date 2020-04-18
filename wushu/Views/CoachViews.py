@@ -222,9 +222,9 @@ def return_coachs(request):
             if email:
                 query &= Q(user__email__icontains=email)
             if branch:
-                query &= Q(grades__branch=branch)
+                query &= Q(grades__branch=branch, grades__status='Onaylandı')
             if grade:
-                query &= Q(grades__definition__name=grade)
+                query &= Q(grades__definition__name=grade, grades__status='Onaylandı')
             if visa == 'VISA':
                 query &= Q(visa__startDate__year=timezone.now().year)
 

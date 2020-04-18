@@ -238,7 +238,7 @@
                                     <th>Cep Tel</th>
                                     <th>E-Mail</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Güncelleme</th>
+                                        <th>İncele/Sil</th>
                                     {% endif %}
 
 
@@ -259,7 +259,7 @@
                                                     <div class="btn-group">
                                                         <a href="{% url "wushu:update-coach" coach.pk %}"
                                                            type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i> Güncelle
+                                                                class="fa fa-edit"></i> İncele
                                                         </a>
                                                         <a class="btn btn-danger"
                                                            data-toggle="modal" onclick=deleteCoach({{ coach.pk }})><i

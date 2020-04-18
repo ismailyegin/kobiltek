@@ -18,7 +18,7 @@ class CategoryItem(models.Model):
         if self.branch == None:
             return '%s' % (self.name)
         else:
-            return '%s%s%s' % (self.name + '-' + self.branch)
+            return '%s' % (self.name + '-' + self.branch)
 
 
 

@@ -276,7 +276,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Hak Kazanma Tarihi</th>
+                                <th> Hak Kazanma Yılı</th>
                                 <th> Branş</th>
                                 <th> Tanımı</th>
                                 <th>Dekont</th>
@@ -291,7 +291,7 @@
                                 {% for grade in grades_form %}
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ grade.startDate }}  </td>
+                                        <td>{{ grade.startDate.year }}  </td>
                                         <td>{{ grade.branch }}  </td>
                                         <td>{{ grade.definition }}  </td>
                                         <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="KOBİLTEK" style=" width: 30px;height: 30px;"></td>

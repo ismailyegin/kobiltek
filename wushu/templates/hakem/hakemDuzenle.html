@@ -356,7 +356,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Hak Kazanma Tarihi</th>
+                                <th> Hak Kazanma Yılı</th>
                                 <th> Branş</th>
                                 <th> Dekont</th>
                                 <th> Onay Durumu</th>
@@ -373,7 +373,7 @@
                                     <tr>
 
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ grade.startDate }}  </td>
+                                        <td>{{ grade.startDate.year }}  </td>
                                         <td>{{ grade.branch }}  </td>
 
 
@@ -389,8 +389,6 @@
                                                        type="button" class="btn btn-success"><i
                                                             class="fa fa-edit"></i>Onayla
                                                     </a>
-                                                    {##}
-                                                    {##}
                                                     <a href="{% url "wushu:hakem-vize-reddet" grade_pk=grade.pk referee_pk=judge.pk %}"
                                                        type="button" class="btn btn-danger"><i
                                                             class="fa fa-trash"></i>Reddet

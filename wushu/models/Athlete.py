@@ -23,4 +23,4 @@ class Athlete(models.Model):
         return '%s %s' % (self.user.first_name, self.user.last_name)
 
     class Meta:
-        default_permissions = ()
+        ordering = ['pk']

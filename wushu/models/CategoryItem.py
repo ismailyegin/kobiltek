@@ -20,8 +20,5 @@ class CategoryItem(models.Model):
         else:
             return '%s' % (self.name + '-' + self.branch)
 
-
-
-
     class Meta:
         default_permissions = ()

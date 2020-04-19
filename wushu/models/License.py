@@ -38,7 +38,8 @@ class License(models.Model):
         return '%s ' % self.sportsClub.name
 
     def save(self, force_insert=False, force_update=False):
-        self.reddetwhy = self.reddetwhy.upper()
+        if self.reddetwhy:
+            self.reddetwhy = self.reddetwhy.upper()
         super(License, self).save(force_insert, force_update)
 
 

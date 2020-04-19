@@ -7,14 +7,17 @@ from wushu.models.EnumFields import EnumFields
 
 
 class VisaSeminar(models.Model):
-    OPEN = 'Ön Kayıt Açık'
-    CLOSED = 'Ön Kayıt Tamamlandı'
+
     WAITED = 'Beklemede'
+    APPROVED = 'Onaylandı'
+    PROPOUND = 'Onaya Gönderildi'
+    DENIED = 'Reddedildi'
 
     STATUS_CHOICES = (
-        (OPEN,'Ön Kayıt Açık'),
-        (CLOSED, 'Ön Kayıt Tamamlandı'),
-        (WAITED, 'Beklemede')
+        (APPROVED, 'Onaylandı'),
+        (PROPOUND, 'Onaya Gönderildi'),
+        (DENIED, 'Reddedildi'),
+        (WAITED, 'Beklemede'),
     )
 
 

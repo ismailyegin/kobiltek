@@ -3,6 +3,7 @@ import enum
 from django.db import models
 
 from wushu.models.Coach import Coach
+from wushu.models.Judge import Judge
 from wushu.models.EnumFields import EnumFields
 
 
@@ -23,8 +24,6 @@ class VisaSeminar(models.Model):
 
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
-
-
     name = models.CharField(blank=False, null=False, max_length=1000)
     startDate = models.DateTimeField()
     finishDate = models.DateTimeField()
@@ -32,6 +31,8 @@ class VisaSeminar(models.Model):
     branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
     status = models.CharField(max_length=128, verbose_name='Kayıt Durumu', choices=STATUS_CHOICES, default=WAITED)
     coach=models.ManyToManyField(Coach)
+    referee = models.ManyToManyField(Judge)
+    forWhichClazz = models.CharField(blank=False, null=False, max_length=255)
 
 
     def __str__(self):

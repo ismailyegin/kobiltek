@@ -18,7 +18,7 @@ class VisaForm(ModelForm):
         widgets = {
 
             'startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker5', 'autocomplete': 'off',
                        'onkeydown': 'return false'}),
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),

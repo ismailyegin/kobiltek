@@ -676,7 +676,7 @@ def choose_referee(request, pk):
 @login_required
 def visaSeminar_Delete_Referee(request, pk, competition):
     perm = general_methods.control_access(request)
-    messages.success(request, 'Hakem Kaldırıldi.')
+
     if not perm:
         logout(request)
         return redirect('accounts:login')
@@ -685,7 +685,6 @@ def visaSeminar_Delete_Referee(request, pk, competition):
             visa = VisaSeminar.objects.get(pk=competition)
             visa.referee.remove(Judge.objects.get(pk=pk))
             visa.save()
-
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

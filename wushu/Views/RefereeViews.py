@@ -470,11 +470,10 @@ def vısa_ekle(request, pk):
         visa_form = VisaForm(request.POST, request.FILES)
         category_item_form = CategoryItemForm(request.POST, request.FILES)
 
-        if visa_form.is_valid():
+        try:
+            visa = Level(dekont=request.POST.get('dekont'), branch=request.POST.get('branch'))
+            visa.startDate = date(int(request.POST.get('startDate')), 1, 1)
 
-
-            visa = Level(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
-            visa.startDate = date(timezone.now().year, 1, 1)
             visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
             visa.levelType = EnumFields.LEVELTYPE.VISA
             visa.status = Level.APPROVED
@@ -482,15 +481,12 @@ def vısa_ekle(request, pk):
                 if item.branch == visa.branch:
                     item.isActive = False
                     item.save()
-
             visa.save()
             referee.visa.add(visa)
             referee.save()
-
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)
-
-        else:
+        except:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'hakem/vize-ekle.html', {'grade_form': visa_form, 'category_item_form': category_item_form})

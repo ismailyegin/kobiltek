@@ -46,7 +46,10 @@ def visaSeminar_ekle(request):
     if request.method == 'POST':
         visaSeminar = VisaSeminarForm(request.POST)
         if visaSeminar.is_valid():
-            visaSeminar.save()
+
+            visa = visaSeminar.save()
+            visa.forWhichClazz = 'COACH'
+            visa.save()
             messages.success(request, 'Vize Semineri Başari  Kaydedilmiştir.')
 
             return redirect('wushu:visa-seminar')
@@ -67,7 +70,7 @@ def return_visaSeminar(request):
         logout(request)
         return redirect('accounts:login')
 
-    Seminar=VisaSeminar.objects.all()
+    Seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
     return render(request, 'antrenor/VisaSeminar.html', {'competitions': Seminar})
 

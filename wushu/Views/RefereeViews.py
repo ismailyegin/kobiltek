@@ -21,7 +21,9 @@ from wushu.Forms.RefereeSearchForm import RefereeSearchForm
 from wushu.Forms.SearchClupForm import SearchClupForm
 
 from wushu.Forms.VisaForm import VisaForm
+from wushu.Forms.VisaSeminarForm import VisaSeminarForm
 from wushu.models import Judge, CategoryItem, Person, Communication, Level
+from wushu.models.VisaSeminar import VisaSeminar
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
 from datetime import date, datetime
@@ -560,3 +562,156 @@ def vize_delete(request, grade_pk, referee_pk):
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def return_visaSeminar(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    Seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE')
+
+    return render(request, 'hakem/Hakem-VizeSeminer.html', {'competitions': Seminar})
+
+
+# visaseminer ekle
+@login_required
+def visaSeminar_ekle(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visaSeminar = VisaSeminarForm()
+    if request.method == 'POST':
+        visaSeminar = VisaSeminarForm(request.POST)
+        if visaSeminar.is_valid():
+
+            visa = visaSeminar.save()
+            visa.forWhichClazz = 'REFEREE'
+            visa.save()
+            messages.success(request, 'Vize Semineri Başari  Kaydedilmiştir.')
+
+            return redirect('wushu:hakem-visa-seminar')
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'hakem/hakem-visaSeminerEkle.html',
+                  {'competition_form': visaSeminar})
+
+
+@login_required
+def visaSeminar_duzenle(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    seminar = VisaSeminar.objects.get(pk=pk)
+    referee = seminar.referee.all()
+    competition_form = VisaSeminarForm(request.POST or None, instance=seminar)
+    if request.method == 'POST':
+        if competition_form.is_valid():
+            competition_form.save()
+            messages.success(request, 'Vize Seminer Başarıyla Güncellenmiştir.')
+
+            return redirect('wushu:hakem-visa-seminar')
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'hakem/hakem-VizeSeminerGüncelle.html',
+                  {'competition_form': competition_form, 'competition': seminar, 'athletes': referee})
+
+
+@login_required
+def visaSeminar_sil(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = VisaSeminar.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Competition.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def choose_coach(request, pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    visa = VisaSeminar.objects.get(pk=pk)
+    coa = []
+    for item in visa.referee.all():
+        coa.append(item.user.pk)
+
+    athletes = Judge.objects.exclude(visaseminar__referee__user_id__in=coa)
+    if request.method == 'POST':
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            for x in athletes1:
+                if not visa.referee.all().filter(visaseminar__referee__user_id=x):
+                    visa.referee.add(x)
+                    visa.save()
+        return redirect('wushu:hakem-seminar-duzenle', pk=pk)
+    return render(request, 'hakem/hakem-vizeseminerHakemEkle.html', {'athletes': athletes})
+
+
+@login_required
+def visaSeminar_Delete_Coach(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            visa = VisaSeminar.objects.get(pk=competition)
+            visa.referee.remove(Judge.objects.get(pk=pk))
+            visa.save()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def visaSeminar_onayla(request, pk):
+    print('bana geldi ')
+    seminar = VisaSeminar.objects.get(pk=pk)
+
+    if seminar.status == VisaSeminar.WAITED:
+        visa = Level(dekont='Federasyon', branch=seminar.branch)
+        visa.startDate = date(timezone.now().year, 1, 1)
+        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
+        visa.levelType = EnumFields.LEVELTYPE.VISA
+        visa.status = Level.APPROVED
+        visa.save()
+
+        for item in seminar.referee.all():
+            item.visa.add(visa)
+            item.save()
+        seminar.status = VisaSeminar.APPROVED
+        seminar.save()
+    else:
+        messages.warning(request, 'Seminer Daha Önce Onaylanmistir.')
+
+    return redirect('wushu:hakem-seminar-duzenle', pk=pk)

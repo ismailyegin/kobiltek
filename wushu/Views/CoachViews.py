@@ -27,7 +27,8 @@ from wushu.Forms.SearchClupForm import SearchClupForm
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.CompetitionForm import CompetitionForm
 from wushu.Forms.VisaSeminarForm import VisaSeminarForm
-from wushu.models import Coach, CategoryItem, Athlete, Person, Communication, SportClubUser, Level, SportsClub
+from wushu.models import Coach, Athlete, Person, Communication, SportClubUser, Level, SportsClub
+from wushu.models.CategoryItem import CategoryItem
 from wushu.models.VisaSeminar import VisaSeminar
 from wushu.models.EnumFields import EnumFields
 from wushu.services import general_methods
@@ -287,9 +288,6 @@ def antrenor_kademe_ekle(request, pk):
     coach = Coach.objects.get(pk=pk)
     grade_form = GradeForm()
     category_item_form = CategoryItemForm()
-
-
-
     if request.method == 'POST':
         grade_form = GradeForm(request.POST, request.FILES)
         category_item_form=CategoryItemForm(request.POST, request.FILES)
@@ -306,11 +304,6 @@ def antrenor_kademe_ekle(request, pk):
             grade.save()
             coach.grades.add(grade)
             coach.save()
-            for item in coach.grades.all():
-                if item.branch == grade.branch:
-                    item.isActive = False
-                    item.save()
-
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)
 
@@ -526,11 +519,19 @@ def kademe_onay(request,grade_pk,coach_pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    belt =Level.objects.get(pk=grade_pk)
-    belt.status = Level.APPROVED
-    belt.save()
-
-    messages.success(request, 'Kademe Onaylanmıştır')
+    grade = Level.objects.get(pk=grade_pk)
+    coach = Coach.objects.get(pk=coach_pk)
+    try:
+        for item in coach.grades.all():
+            if item.branch == grade.branch:
+                item.isActive = False
+                item.save()
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+        messages.success(request, 'Kademe   Onaylanmıştır')
+    except:
+        messages.warning(request, 'Lütfen yeniden deneyiniz.')
     return redirect('wushu:update-coach', pk=coach_pk)
 @login_required
 def visa_onay(request,grade_pk,coach_pk):
@@ -611,10 +612,11 @@ def kademe_list(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade=Level.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE).distinct()
 
-
-
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
+        coa.append(item.pk)
+    grade = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE).distinct()
     return render(request, 'antrenor/Kademe-Listesi.html',
                   {'belts': grade })
 
@@ -645,9 +647,21 @@ def kademe_onayla(request, grade_pk):
         logout(request)
         return redirect('accounts:login')
     grade = Level.objects.get(pk=grade_pk)
-    grade.status = Level.APPROVED
-    grade.save()
-    messages.success(request, 'Kademe   Onaylanmıştır')
+    coach = grade.CoachGrades.first()
+    try:
+        for item in coach.grades.all():
+            if item.branch == grade.branch:
+                item.isActive = False
+                item.save()
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+        messages.success(request, 'Kademe   Onaylanmıştır')
+    except:
+        messages.warning(request, 'Lütfen yeniden deneyiniz.')
+
+
+
     return redirect('wushu:kademe-listesi')
 
 @login_required
@@ -713,10 +727,20 @@ def kademe_onay_hepsi(request):
 
     Belt = Level.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
 
-    for belt in Belt:
-        belt.status = Level.APPROVED
-        belt.save()
-    messages.success(request, 'Beklemede olan kademeler  Onaylanmıştır')
+    for grade in Belt:
+        coach = grade.CoachGrades.first()
+        try:
+            for item in coach.grades.all():
+                if item.branch == grade.branch:
+                    item.isActive = False
+                    item.save()
+            grade.status = Level.APPROVED
+            grade.isActive = True
+            grade.save()
+            messages.success(request, 'Beklemede olan Kademeler Onaylanmıştır')
+        except:
+            messages.warning(request, 'Lütfen yeniden deneyiniz.')
+
     return redirect('wushu:kademe-listesi')
 
 
@@ -765,10 +789,6 @@ def antrenor_vısa_ekle(request, pk):
             visa.save()
             coach.visa.add(visa)
             coach.save()
-            for item in coach.grades.all():
-                if item.branch == visa.branch:
-                    item.isActive = False
-                    item.save()
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)

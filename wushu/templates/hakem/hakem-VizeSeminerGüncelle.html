@@ -261,9 +261,6 @@
 
     <script>
         function deleteAthlete(id, competition) {
-
-            console.log(id);
-            console.log(competition)
             var html = '';
             $("#modal-danger").on("shown.bs.modal", function (e) {
                 $("#btn-conf").click(function () {
@@ -275,6 +272,7 @@
                             isActive: 'False'
                         },
                         success: function (result) {
+
 
                             html = ' Başarıyla Silindi.';
                             debugger;

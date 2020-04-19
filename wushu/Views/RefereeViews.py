@@ -373,11 +373,19 @@ def kademe_onay(request, grade_pk, referee_pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    belt = Level.objects.get(pk=grade_pk)
-    belt.status = Level.APPROVED
-    belt.save()
-
-    messages.success(request, 'Kademe Onaylanmıştır')
+    grade = Level.objects.get(pk=grade_pk)
+    referee = Judge.objects.get(pk=referee_pk)
+    try:
+        for item in referee.grades.all():
+            if item.branch == grade.branch:
+                item.isActive = False
+                item.save()
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+        messages.success(request, 'Kademe   Onaylanmıştır')
+    except:
+        messages.warning(request, 'Lütfen yeniden deneyiniz.')
     return redirect('wushu:hakem-duzenle', pk=referee_pk)
 
 
@@ -464,19 +472,20 @@ def vısa_ekle(request, pk):
 
         if visa_form.is_valid():
 
+
             visa = Level(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
             visa.startDate = date(timezone.now().year, 1, 1)
             visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
             visa.levelType = EnumFields.LEVELTYPE.VISA
             visa.status = Level.APPROVED
-            visa.save()
-            referee.visa.add(visa)
-            referee.save()
             for item in referee.visa.all():
                 if item.branch == visa.branch:
                     item.isActive = False
                     item.save()
 
+            visa.save()
+            referee.visa.add(visa)
+            referee.save()
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)

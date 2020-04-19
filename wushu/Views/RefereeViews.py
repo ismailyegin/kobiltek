@@ -649,7 +649,7 @@ def visaSeminar_sil(request, pk):
 
 
 @login_required
-def choose_coach(request, pk):
+def choose_referee(request, pk):
     perm = general_methods.control_access(request)
     if not perm:
         logout(request)
@@ -674,7 +674,7 @@ def choose_coach(request, pk):
 
 
 @login_required
-def visaSeminar_Delete_Coach(request, pk, competition):
+def visaSeminar_Delete_Referee(request, pk, competition):
     perm = general_methods.control_access(request)
 
     if not perm:
@@ -685,6 +685,9 @@ def visaSeminar_Delete_Coach(request, pk, competition):
             visa = VisaSeminar.objects.get(pk=competition)
             visa.referee.remove(Judge.objects.get(pk=pk))
             visa.save()
+            messages.success(request, 'Hakem Kaldırıldi.')
+
+
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

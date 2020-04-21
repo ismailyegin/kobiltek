@@ -29,7 +29,7 @@ def return_users(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    users = User.objects.all()
+    users = User.objects.none()
     user_form = UserSearchForm()
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
@@ -37,8 +37,10 @@ def return_users(request):
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+            active = request.POST.get('is_active')
+            print(active)
+            if not (firstName or lastName or email or active):
+                users = User.objects.all()
             else:
                 query = Q()
                 if lastName:
@@ -47,7 +49,13 @@ def return_users(request):
                     query &= Q(first_name__icontains=firstName)
                 if email:
                     query &= Q(email__icontains=email)
-                print(query)
+                if active == 'True':
+                    print(active)
+                    query &= Q(is_active=True)
+                if active == 'False':
+                    query &= Q(is_active=False)
+
+                    print('geldim ')
                 users = User.objects.filter(query)
     return render(request, 'kullanici/kullanicilar.html', {'users': users, 'user_form': user_form})
 

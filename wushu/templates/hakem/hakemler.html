@@ -232,11 +232,13 @@
                                 <tr>
                                     <th>#</th>
                                     <th> Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
-                                    <th>İl</th>
-                                    <th>Cep Tel</th>
                                     <th>E-Mail</th>
-                                    <th>Güncelleme</th>
+                                    <th>Branş</th>
+                                    <th>Kademe</th>
+                                    <th>Vize</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>İncele/Sil</th>
+                                    {% endif %}
 
 
                                 </tr>
@@ -247,10 +249,46 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ referee.user.first_name }} {{ referee.user.last_name }} </td>
-                                            <td>{{ referee.person.tc }} </td>
-                                            <td>{{ referee.communication.city }} </td>
-                                            <td>{{ referee.communication.phoneNumber }} </td>
                                             <td>{{ referee.user.email }} </td>
+                                            <td>
+
+
+                                                {% for grade in referee.grades.all %}
+                                                    {% if  grade.status == 'Onaylandı' and grade.isActive == True %}
+
+                                                        <p>{{ grade.branch }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
+                                            <td>
+
+
+                                                {% for grade in referee.grades.all %}
+                                                    {% if  grade.status == 'Onaylandı' and grade.isActive == True %}
+
+                                                        <p>{{ grade.definition }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
+                                            <td>
+
+
+                                                {% for grade in referee.visa.all %}
+                                                    {% if  grade.status == 'Onaylandı' and grade.isActive == True %}
+
+                                                        <p>{{ grade.branch }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "wushu:hakem-duzenle" referee.pk %}"
@@ -319,7 +357,7 @@
                         success: function (result) {
 
                             html = 'Hakem Başarıyla Silindi';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {

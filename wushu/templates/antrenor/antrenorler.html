@@ -233,10 +233,10 @@
                                 <tr>
                                     <th>#</th>
                                     <th> Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
-                                    <th>İl</th>
-                                    <th>Cep Tel</th>
                                     <th>E-Mail</th>
+                                    <th>Branş</th>
+                                    <th>Kademe</th>
+                                    <th>Vize</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>İncele/Sil</th>
                                     {% endif %}
@@ -250,10 +250,47 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
-                                            <td>{{ coach.person.tc }} </td>
-                                            <td>{{ coach.communication.city }} </td>
-                                            <td>{{ coach.communication.phoneNumber }} </td>
                                             <td>{{ coach.user.email }} </td>
+                                            <td>
+
+
+                                                {% for grade in coach.grades.all %}
+                                                    {% if  grade.status == 'Onaylandı' and grade.isActive == True %}
+
+                                                        <p>{{ grade.branch }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
+                                            <td>
+
+
+                                                {% for grade in coach.grades.all %}
+                                                    {% if  grade.status == 'Onaylandı'  and grade.isActive == True %}
+
+                                                        <p>{{ grade.definition }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
+                                            <td>
+
+
+                                                {% for grade in coach.visa.all %}
+                                                    {% if  grade.status == 'Onaylandı' and  grade.isActive == True %}
+
+                                                        <p>{{ grade.branch }}  </p>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+                                            </td>
+
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>
                                                     <div class="btn-group">

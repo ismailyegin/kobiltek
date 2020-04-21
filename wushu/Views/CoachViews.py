@@ -142,8 +142,8 @@ def return_add_coach(request):
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
+            user.first_name = user_form.cleaned_data['first_name'].upper()
+            user.last_name = user_form.cleaned_data['last_name'].upper()
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Antrenor')
             password = User.objects.make_random_password()
@@ -230,7 +230,7 @@ def return_coachs(request):
             if grade:
                 query &= Q(grades__definition__name=grade, grades__status='Onaylandı')
             if visa == 'VISA':
-                query &= Q(visa__startDate__year=timezone.now().year)
+                query &= Q(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
 
             if user.groups.filter(name='KulupUye'):
                 sc_user = SportClubUser.objects.get(user=user)
@@ -242,7 +242,7 @@ def return_coachs(request):
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                 coachs = Coach.objects.filter(query)
             if visa == 'NONE':
-                coachs = coachs.exclude(visa__startDate__year=timezone.now().year)
+                coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
     return render(request, 'antrenor/antrenorler.html',
                   {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm})
 
@@ -400,11 +400,10 @@ def coachUpdate(request, pk):
         communication_form = CommunicationForm(request.POST or None, instance=communication)
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
-            """user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
+            user.username = user_form.cleaned_data['email']
+            user.first_name = user_form.cleaned_data['first_name'].upper()
+            user.last_name = user_form.cleaned_data['last_name'].upper()
             user.email = user_form.cleaned_data['email']
-            """
 
             user = user_form.save(commit=False)
             user.username = user_form.cleaned_data['email']
@@ -444,8 +443,8 @@ def updateCoachProfile(request):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
+            user.first_name = user_form.cleaned_data['first_name'].upper()
+            user.last_name = user_form.cleaned_data['last_name'].upper()
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()

@@ -83,7 +83,9 @@ def return_add_athlete(request):
             group = Group.objects.get(name='Sporcu')
             password = User.objects.make_random_password()
             user.set_password(password)
+            user.is_active = False
             user.save()
+
             user.groups.add(group)
             user.save()
 

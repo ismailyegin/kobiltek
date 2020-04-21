@@ -55,6 +55,7 @@ def return_add_referee(request):
             group = Group.objects.get(name='Hakem')
             password = User.objects.make_random_password()
             user.set_password(password)
+            user.is_active = False
             user.save()
             user.groups.add(group)
             user.save()
@@ -68,14 +69,14 @@ def return_add_referee(request):
 
             judge.save()
 
-            subject, from_email, to = 'WUSHU - Hakem Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr:81', user.email
-            text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr<</p>'
-            html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
-            html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            # subject, from_email, to = 'WUSHU - Hakem Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr:81', user.email
+            # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+            # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr<</p>'
+            # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
+            # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
+            # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
 
             messages.success(request, 'Hakem Başarıyla Kayıt Edilmiştir.')
 

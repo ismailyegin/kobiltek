@@ -148,8 +148,10 @@ def return_add_coach(request):
             group = Group.objects.get(name='Antrenor')
             password = User.objects.make_random_password()
             user.set_password(password)
+            user.is_active = False
             user.save()
             user.groups.add(group)
+
             user.save()
 
             person = person_form.save(commit=False)

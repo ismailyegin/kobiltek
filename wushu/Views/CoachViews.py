@@ -629,10 +629,11 @@ def vize_list(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade=Level.objects.filter(levelType=EnumFields.VISA)
 
-
-
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='VISA'):
+        coa.append(item.pk)
+    grade = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
     return render(request, 'antrenor/Vize-Listesi.html',
                   {'belts': grade })
 
@@ -702,29 +703,35 @@ def vize_reddet_liste(request, grade_pk):
     return redirect('wushu:vize-listesi')
 
 
-
-
+@login_required
 def kademe_reddet_hepsi(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    Belt = CoachLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE,status="Beklemede")
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
+        coa.append(item.pk)
+    Belt = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
     for belt in Belt:
         belt.status = CoachLevel.DENIED
         belt.save()
     messages.success(request, 'Beklemede olan kademeler   Onaylanmıştır')
     return redirect('wushu:kademe-listesi')
 
+
+@login_required
 def kademe_onay_hepsi(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
-    Belt = Level.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
+        coa.append(item.pk)
+    Belt = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
 
     for grade in Belt:
         coach = grade.CoachGrades.first()
@@ -743,6 +750,7 @@ def kademe_onay_hepsi(request):
     return redirect('wushu:kademe-listesi')
 
 
+@login_required
 def kademe_bekle_hepsi(request):
     perm = general_methods.control_access(request)
 

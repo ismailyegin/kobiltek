@@ -720,3 +720,156 @@ def visaSeminar_onayla(request, pk):
         messages.warning(request, 'Seminer Daha Önce Onaylanmistir.')
 
     return redirect('wushu:hakem-seminar-duzenle', pk=pk)
+
+
+@login_required
+def kademe_list(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
+        coa.append(item.pk)
+    grade = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE).distinct()
+    return render(request, 'hakem/hakem-KademeListesi.html',
+                  {'belts': grade})
+
+
+@login_required
+def kademe_onayla(request, referee_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade = Level.objects.get(pk=referee_pk)
+    Judge = grade.Judgegrades.first()
+    try:
+        for item in Judge.grades.all():
+            if item.branch == grade.branch:
+                item.isActive = False
+                item.save()
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+        messages.success(request, 'Kademe   Onaylanmıştır')
+    except:
+        messages.warning(request, 'Lütfen yeniden deneyiniz.')
+
+    return redirect('wushu:hakem-kademe-listesi')
+
+
+@login_required
+def kademe_reddet_liste(request, referee_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    grade = Level.objects.get(pk=referee_pk)
+    grade.status = Level.DENIED
+    grade.save()
+    messages.success(request, 'Kademe  Reddedilmiştir.')
+    return redirect('wushu:hakem-kademe-listesi')
+
+
+def kademe_onay_hepsi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
+        coa.append(item.pk)
+    Belt = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+
+    for grade in Belt:
+        coach = grade.Judgegrades.first()
+        try:
+            for item in coach.grades.all():
+                if item.branch == grade.branch:
+                    item.isActive = False
+                    item.save()
+            grade.status = Level.APPROVED
+            grade.isActive = True
+            grade.save()
+            messages.success(request, 'Beklemede olan Kademeler Onaylanmıştır')
+        except:
+            messages.warning(request, 'Lütfen yeniden deneyiniz.')
+
+    return redirect('wushu:hakem-kademe-listesi')
+
+
+@login_required
+def kademe_reddet_hepsi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
+        coa.append(item.pk)
+    Belt = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+    for belt in Belt:
+        belt.status = Level.DENIED
+        belt.save()
+    messages.success(request, 'Beklemede olan kademeler   Onaylanmıştır')
+    return redirect('wushu:hakem-kademe-listesi')
+
+
+@login_required
+def vize_list(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    coa = []
+    for item in CategoryItem.objects.filter(forWhichClazz='VISA_REFEREE'):
+        coa.append(item.pk)
+    grade = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
+    return render(request, 'hakem/hakem-Vize-Listesi.html',
+                  {'belts': grade})
+
+
+@login_required
+def vize_onayla_liste(request, referee_pk):
+    try:
+        perm = general_methods.control_access(request)
+
+        if not perm:
+            logout(request)
+            return redirect('accounts:login')
+        visa = Level.objects.get(pk=referee_pk)
+        visa.status = Level.APPROVED
+        refere = visa.Judgevisa.first()
+        for item in refere.visa.all():
+            if item.branch == visa.branch:
+                item.isActive = False
+                item.save()
+        visa.isActive = True
+        visa.save()
+        messages.success(request, 'Vize Onaylanmıştır.')
+    except:
+        messages.warning(request, 'Yeniden deneyiniz.')
+
+    return redirect('wushu:hakem-vize-listesi')
+
+
+@login_required
+def vize_reddet_liste(request, referee_pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    visa = Level.objects.get(pk=referee_pk)
+    visa.status = Level.DENIED
+    visa.save()
+    messages.success(request, 'Vize reddedilmistir.')
+    return redirect('wushu:hakem-vize-listesi')

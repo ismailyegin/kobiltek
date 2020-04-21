@@ -258,6 +258,23 @@ urlpatterns = [
         name='visaSeminar-hakem-sil'),
     url(r'hakem/visa-Seminar-Onayla/(?P<pk>\d+)$', RefereeViews.visaSeminar_onayla, name='hakem-seminar-onayla'),
 
+    url(r'hakem/Kademe-listesi/', RefereeViews.kademe_list, name='hakem-kademe-listesi'),
+    url(r'hakem/kademe-Liste-Onayla/(?P<referee_pk>\d+)$', RefereeViews.kademe_onayla,
+        name='hakem-kademe-list-onay'),
+    url(r'hakem/kademe-Liste-reddet/(?P<referee_pk>\d+)$', RefereeViews.kademe_reddet_liste,
+        name='hakem-kademe-list-reddet'),
+    url(r'hakem/vize-Liste-Reddet/(?P<referee_pk>\d+)$', RefereeViews.vize_reddet_liste,
+        name='hakem-vize-list-reddet'),
+
+    url(r'hakem/kademe-Liste-onay-hepsi$', RefereeViews.kademe_onay_hepsi,
+        name='hakem-kademe-list-onay-hepsi'),
+    url(r'hakem/kademe-Liste-reddet-hepsi$', RefereeViews.kademe_reddet_hepsi,
+        name='hakem-kademe-list-reddet-hepsi'),
+    url(r'hakem/Vize-listesi/', RefereeViews.vize_list, name='hakem-vize-listesi'),
+    url(r'hakem/vize-Liste-Onayla/(?P<referee_pk>\d+)$', RefereeViews.vize_onayla_liste,
+        name='hakem-vize-list-onay'),
+
+
     # Yönetim Kurulu
     url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),
     url(r'yonetim/kurul-uyesi-ekle/$', DirectoryViews.add_directory_member, name='kurul-uyesi-ekle'),

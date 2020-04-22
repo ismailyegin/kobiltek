@@ -462,11 +462,11 @@
             </div>
 
 
+            <div>
 
-            <div class="row">
                 <div class="box box-danger">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Şehirlerin Sporcu Sayilari</h3>
+                        <h3 class="box-title">Şehir Degerlendirme</h3>
                         <div id="sehir"></div>
 
                         <div class="box-tools pull-right">
@@ -479,6 +479,7 @@
                             </button>
                         </div>
                     </div>
+                    <!-- /.box-header -->
                     <div class="box-body no-padding">
 
                         <div class="svg-turkiye-haritasi">
@@ -751,11 +752,17 @@
                                     </g>
 
                             </svg>
-                        </div>
 
+
+                            <!-- /.users-list -->
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer text-center">
+                            <a href="{% url "wushu:sporcular" %}" class="uppercase">Tüm Sporculari Görüntüleyin</a>
+                        </div>
+                        <!-- /.box-footer -->
                     </div>
                 </div>
-            </div>
 
 
         </section>

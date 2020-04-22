@@ -56,4 +56,5 @@ class EnumFields(enum.Enum):
         (VISA, 'VISA'),
         (GRADE, 'GRADE'),
         (BELT, 'BELT'),
+
     )

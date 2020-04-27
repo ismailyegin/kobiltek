@@ -72,8 +72,7 @@ def musabaka_duzenle(request, pk):
         athletes = SandaAthlete.objects.filter(competition=musabaka.pk)
     if musabaka.subBranch == 'TAOLU':
         categori = musabaka.categori.all()
-        for item in categori:
-            print(item.categori.categoryName)
+
     competition_form = CompetitionForm(request.POST or None, instance=musabaka)
     if request.method == 'POST':
         if competition_form.is_valid():
@@ -134,7 +133,6 @@ def musabaka_sporcu_sec(request, pk):
         if athletes1:
             for x in athletes1:
                 if competition.subBranch == 'SANDA':
-                    print('islem testi', x)
                     athlete = Athlete.objects.get(pk=x)
                     sandaAthlete = SandaAthlete()
                     sandaAthlete.athlete = athlete
@@ -231,22 +229,22 @@ def return_sporcu(request):
 
     elif request.method == 'POST':
         datatables = request.POST
-        print(datatables)
-        print("post islemi gerceklesti")
+        # print(datatables)
+        # print("post islemi gerceklesti")
 
     # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
     try:
         draw = int(datatables.get('draw'))
-        print("draw degeri =", draw)
+        # print("draw degeri =", draw)
         # Ambil start
         start = int(datatables.get('start'))
-        print("start degeri =", start)
+        # print("start degeri =", start)
         # Ambil length (limit)
         length = int(datatables.get('length'))
-        print("lenght  degeri =", length)
+        # print("lenght  degeri =", length)
         # Ambil data search
         search = datatables.get('search[value]')
-        print("search degeri =", search)
+        # print("search degeri =", search)
     except:
         draw = 1
         start = 0
@@ -295,26 +293,14 @@ def return_sporcu(request):
 
     beka = []
     for item in modeldata:
-        brans = '-'
-        klup = '-'
-        kusak = '-'
-        if item.licenses.count() > 0:
-            if item.licenses.last().sportsClub.name is not None:
-                klup = item.licenses.last().sportsClub.name
-
-            if item.licenses.last().branch is not None:
-                brans = item.licenses.last().branch
-        if item.belts.count() > 0:
-            kusak = item.belts.last()
-            kusak = kusak.definition.name
         data = {
             'say': say,
             'pk': item.pk,
             'name': item.user.first_name + item.user.last_name,
-            'user': item.person.birthDate,
-            'klup': klup,
-            'brans': brans,
-            'kusak': kusak,
+            # 'user': item.person.birthDate,
+            #             # 'klup': klup,
+            #             # 'brans': brans,
+            #             # 'kusak': kusak,
 
         }
         beka.append(data)
@@ -477,26 +463,10 @@ def return_sporcu_sec(request):
 
     beka = []
     for item in modeldata:
-        brans = '-'
-        klup = '-'
-        kusak = '-'
-        if item.licenses.count() > 0:
-            if item.licenses.last().sportsClub.name is not None:
-                klup = item.licenses.last().sportsClub.name
-
-            if item.licenses.last().branch is not None:
-                brans = item.licenses.last().branch
-        if item.belts.count() > 0:
-            kusak = item.belts.last()
-            kusak = kusak.definition.name
         data = {
             'say': say,
             'pk': item.pk,
             'name': item.user.first_name + item.user.last_name,
-            'user': item.person.birthDate,
-            'klup': klup,
-            'brans': brans,
-            'kusak': kusak,
 
         }
         beka.append(data)

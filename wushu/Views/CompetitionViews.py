@@ -367,27 +367,26 @@ def return_sporcu_sec(request):
     if request.method == 'GET':
         datatables = request.GET
         kategori = CompetitionCategori.objects.get(pk=request.GET.get('kategori'))
-        print('ben geldim ', kategori)
 
 
     elif request.method == 'POST':
         datatables = request.POST
-        print(datatables)
-        print("post islemi gerceklesti")
+        # print(datatables)
+        # print("post islemi gerceklesti")
 
     # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
     try:
         draw = int(datatables.get('draw'))
-        print("draw degeri =", draw)
+        # print("draw degeri =", draw)
         # Ambil start
         start = int(datatables.get('start'))
-        print("start degeri =", start)
+        # print("start degeri =", start)
         # Ambil length (limit)
         length = int(datatables.get('length'))
-        print("lenght  degeri =", length)
+        # print("lenght  degeri =", length)
         # Ambil data search
         search = datatables.get('search[value]')
-        print("search degeri =", search)
+        # print("search degeri =", search)
     except:
         draw = 1
         start = 0
@@ -425,10 +424,31 @@ def return_sporcu_sec(request):
 
     else:
         if search:
-            modeldata = Athlete.athlete.filter(
+
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                coa = []
+                for item in kategori.athlete.all():
+                    coa.append(item.user.pk)
+
+                modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).exclude(
+                    competitioncategori__athlete__user_id__in=coa).filter(
                 Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
                     user__email__icontains=search))
-            total = modeldata.count();
+                total = modeldata.count()
+                # .exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı').distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                coa = []
+                for item in kategori.athlete.all():
+                    coa.append(item.user.pk)
+                modeldata = Athlete.objects.exclude(user__in=coa).filter(
+                    Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
+                        user__email__icontains=search))
+                total = modeldata.count()
 
         else:
             if user.groups.filter(name='KulupUye'):

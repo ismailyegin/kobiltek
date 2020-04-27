@@ -326,6 +326,8 @@ urlpatterns = [
     url(r'musabaka/SporcuSec/$', CompetitionViews.return_sporcu_sec, name='catagori-sporcu-sec-ajax'),
     url(r'musabaka/sporcu-sec/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete,
         name='catagori-sporcu-sec'),
+    url(r'musabaka/taoluSporcuSil/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.taolu_sporcu_sil,
+        name='taolu-sporcu-sil'),
 
     #     Yardım ve destek
 

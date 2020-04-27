@@ -148,10 +148,10 @@
                                 <table id="sporcular" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Seç</th>
+                                        <th>#</th>
                                         <th>Ad Soyad</th>
-                                        <th>Kuşak</th>
-                                        <th>Lisans No</th>
+                                        <th>İncele</th>
+                                        <th>Seç</th>
 
 
                                     </tr>
@@ -245,20 +245,6 @@
                 'columns':
                     [
                         {#{"targets": -1},#}
-
-
-                        {
-                            "data": null,
-                            "bSortable": false,
-                            "mRender": function (data) {
-                                {#console.log(data);#}
-
-
-                                return '<input type="checkbox" class="icheckbox_flat-blue" name="selected_options"   value="' + data.pk + '">';
-                            }
-                        },
-
-
                         {'data': 'say'},
                         {'data': 'name'},
                         {#{'data': 'user'},#}
@@ -275,7 +261,17 @@
 
                                 return '<div class="btn-group"><a type="button" class="btn btn-warning" href="/wushu/sporcu/sporcuDuzenle/' + data.pk + '"><i class="fa fa-edit"></i>' + 'İncele' + '</a></div>';
                             }
-                        }
+                        },
+                        {
+                            "data": null,
+                            "bSortable": false,
+                            "mRender": function (data) {
+                                {#console.log(data);#}
+
+
+                                return '<input type="checkbox" class="icheckbox_flat-blue" name="selected_options"   value="' + data.pk + '">';
+                            }
+                        },
 
 
                     ],

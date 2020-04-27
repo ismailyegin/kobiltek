@@ -296,7 +296,7 @@ def return_sporcu(request):
         data = {
             'say': say,
             'pk': item.pk,
-            'name': item.user.first_name + item.user.last_name,
+            'name': item.user.first_name + ' ' + item.user.last_name,
             # 'user': item.person.birthDate,
             #             # 'klup': klup,
             #             # 'brans': brans,
@@ -399,18 +399,12 @@ def return_sporcu_sec(request):
                 coa.append(item.user.pk)
             modeldata = Athlete.objects.exclude(user__in=coa)
             total = modeldata.count()
-
             # print('elimizde olanlar', athletes)
             # kategori.athlete.exclude(
             # exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı')
         #   .exclude(belts__definition__parent_id=None)    eklenmeli ama eklendigi zaman kuşaklarindan bir tanesi en üst olunca almıyor
-
-
-
-
     else:
         if search:
-
             if user.groups.filter(name='KulupUye'):
                 sc_user = SportClubUser.objects.get(user=user)
                 clubsPk = []
@@ -466,14 +460,13 @@ def return_sporcu_sec(request):
         data = {
             'say': say,
             'pk': item.pk,
-            'name': item.user.first_name + item.user.last_name,
+            'name': item.user.first_name + ' ' + item.user.last_name,
 
         }
         beka.append(data)
         say += 1
 
     response = {
-
         'data': beka,
         'draw': draw,
         'recordsTotal': total,
@@ -481,3 +474,23 @@ def return_sporcu_sec(request):
 
     }
     return JsonResponse(response)
+
+
+@login_required
+def taolu_sporcu_sil(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            comp = CompetitionCategori.objects.get(pk=competition)
+            comp.athlete.remove(Athlete.objects.get(pk=pk))
+            comp.save()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

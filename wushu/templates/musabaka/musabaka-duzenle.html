@@ -365,10 +365,7 @@
 
         $(function () {
             var table = $('#taolucategori').DataTable({
-
-
                 dom: 'Bfrtip',
-
                 language: {
                     buttons: {
                         pageLength: {
@@ -377,12 +374,10 @@
                         }
                     }
                 },
-
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
                     ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
                 ],
-
                 'buttons': [
 
 
@@ -445,7 +440,6 @@
                         }
                     }
                 ],
-
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -453,9 +447,6 @@
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-                {#'select': true,#}
-
-
             });
 
 
@@ -500,14 +491,9 @@
                         "data": null,
                         "bSortable": false,
                         "mRender": function (data) {
-                            {#console.log(data);#}
-
-
-                            return '<div class="btn-group"><a type="button" class="btn btn-warning" href="/wushu/sporcu/sporcuDuzenle/' + data.pk + '"><i class="fa fa-edit"></i>' + 'İncele' + '</a></div>';
+                            return '<div class="btn-group"><a type="button" class="btn btn-warning"href="/wushu/sporcu/sporcuDuzenle/' + data.pk + '"><i class="fa fa-edit"></i>' + 'İncele' + '</a><a type="button" class="btn btn-danger" onclick="athlete_del(' + data.pk + ',' + pk + ')" ><i class="fa fa-edit"></i>' + 'sil' + '</a></div>';
                         }
                     }
-
-
                 ],
                 dom: 'Bfrtip',
                 language: {
@@ -518,30 +504,29 @@
                         }
                     }
                 },
-
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
                     ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
                 ],
-                buttons: [
+                'buttons': [
 
 
-                    {#'copy',#}
-                    {#'csv',#}
-                    'pageLength',
+                    {
+                        extend: "pageLength",
+                    },
+
 
                     {
                         extend: 'colvis',
-                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        text: '<i class=" fa  fa-th-list"></i>',
                         titleAttr: 'Ekle Çıkar'
 
 
                     },
-
                     {
                         extend: 'print',
                         title: 'Sporcular',
-                        text: '<i class="fa fa-files-o"></i>',
+                        text: '<i class="fa  fa-print"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
                         },
@@ -561,7 +546,7 @@
                         extend: 'excelHtml5',
                         title: 'Sporcular',
                         text: '<i class="fa fa-file-excel-o"></i>',
-                        messageTop: 'Sporcular Listesi Kobiltek Bilisim  Burasi baslık alani olarak kullanilabilecek',
+                        messageTop: 'Twf Bilgi Sistemi ',
                         footer: true,
                         exportOptions: {
                             {#yer degisimi de yapilabilir.#}
@@ -571,7 +556,7 @@
                         titleAttr: 'Excel Kaydet'
                     },
                     {
-                        text: '<i class="fa fa-sellsy"></i>',
+                        text: '<i class="fa fa-file-text-o"></i>',
                         action: function (e, dt, button, config) {
                             var data = dt.buttons.exportData();
 
@@ -581,8 +566,6 @@
                             );
                         }
                     }
-
-
                 ],
 
 
@@ -590,7 +573,6 @@
 
 
         };
-
 
         function deleteCategori(id, competition) {
             var html = '';
@@ -668,8 +650,56 @@
                 $('#modal-danger').modal('hide');
             });
 
+        };
+
+
+        function athlete_del(pk, competition) {
+            var html = '';
+            alert('benden test')
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function () {
+
+                    $.ajax({
+                        url: "{% url "wushu:taolu-sporcu-sil" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, pk.toString()).replace(/999999999999999/, competition.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+
+                            html = 'Başarıyla Silindi.';
+                            {#debugger;#}
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
+
+
+                                    $('#modal-success').modal('hide');
+                                    kategori(competition);
+
+
+                                    {#window.location.replace("{% url "wushu:hakem-duzenle" judge.pk  %}");#}
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
         }
     </script>
+
+
+
 
 {% endblock %}
 

@@ -1,7 +1,8 @@
 
 from django.db import models
 
-from wushu.models import Athlete, Competition
+from wushu.models.Athlete import Athlete
+from wushu.models.Competition import Competition
 
 
 class SandaAthlete(models.Model):

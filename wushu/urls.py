@@ -316,6 +316,16 @@ urlpatterns = [
         name='musabaka-sporcu-sec'),
     url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
         name='musabaka-sporcu-kaldir'),
+
+    # taolu
+    url(r'musabaka/musabaka-kategori-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_kategori_sec,
+        name='musabaka-kategori-sec'),
+    url(r'musabaka/categori-sil/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.musabaka_categori_sil,
+        name='musabaka-categori-sil'),
+    url(r'musabaka/KategorilerinSporculari/$', CompetitionViews.return_sporcu, name='Kategorilerin-Sporculari'),
+    url(r'musabaka/sporcu-sec/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete,
+        name='catagori-sporcu-sec'),
+
     #     Yardım ve destek
 
     url(r'yardim$', HelpViews.help, name='help'),

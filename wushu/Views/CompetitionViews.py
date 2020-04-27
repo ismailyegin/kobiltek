@@ -227,8 +227,6 @@ def return_sporcu(request):
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
     if request.method == 'GET':
         datatables = request.GET
-        print("get islemi gerceklesti")
-        print('benim bekledigim=', request.GET.get('cmd'))
         kategori = CompetitionCategori.objects.get(pk=request.GET.get('cmd'))
 
     elif request.method == 'POST':
@@ -344,30 +342,8 @@ def choose_athlete(request, pk, competition):
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     kategori = CompetitionCategori.objects.get(pk=pk)
-    if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        clubsPk = []
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        for club in clubs:
-            clubsPk.append(club.pk)
-        coa = []
-        for item in kategori.athlete.all():
-            coa.append(item.user.pk)
+    athletes = Athlete.objects.none()
 
-        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).exclude(
-            competitioncategori__athlete__user_id__in=coa)
-        # .exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı').distinct()
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        coa = []
-        for item in kategori.athlete.all():
-            coa.append(item.user.pk)
-            print(item)
-        athletes = Athlete.objects.exclude(user__in=coa)
-
-        print('elimizde olanlar', athletes)
-        # kategori.athlete.exclude(
-        # exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı')
-    #   .exclude(belts__definition__parent_id=None)    eklenmeli ama eklendigi zaman kuşaklarindan bir tanesi en üst olunca almıyor
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
@@ -376,4 +352,142 @@ def choose_athlete(request, pk, competition):
                 kategori.athlete.add(x)
                 kategori.save()
         return redirect('wushu:musabaka-duzenle', pk=competition)
-    return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
+    return render(request, 'musabaka/musabaka-Sporcu-sec.html',
+                  {'athletes': athletes, 'kategori': kategori, 'competition': competition})
+
+
+@login_required
+def return_sporcu_sec(request):
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+
+    kategori = CompetitionCategori.objects.none()
+
+    # /datatablesten gelen veri kümesi datatables degiskenine alindi
+    if request.method == 'GET':
+        datatables = request.GET
+        kategori = CompetitionCategori.objects.get(pk=request.GET.get('kategori'))
+        print('ben geldim ', kategori)
+
+
+    elif request.method == 'POST':
+        datatables = request.POST
+        print(datatables)
+        print("post islemi gerceklesti")
+
+    # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
+    try:
+        draw = int(datatables.get('draw'))
+        print("draw degeri =", draw)
+        # Ambil start
+        start = int(datatables.get('start'))
+        print("start degeri =", start)
+        # Ambil length (limit)
+        length = int(datatables.get('length'))
+        print("lenght  degeri =", length)
+        # Ambil data search
+        search = datatables.get('search[value]')
+        print("search degeri =", search)
+    except:
+        draw = 1
+        start = 0
+        length = 10
+
+    if length == -1:
+        if user.groups.filter(name='KulupUye'):
+            sc_user = SportClubUser.objects.get(user=user)
+            clubsPk = []
+            clubs = SportsClub.objects.filter(clubUser=sc_user)
+            for club in clubs:
+                clubsPk.append(club.pk)
+            coa = []
+            for item in kategori.athlete.all():
+                coa.append(item.user.pk)
+
+            modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).exclude(
+                competitioncategori__athlete__user_id__in=coa)
+            total = modeldata.count()
+            # .exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı').distinct()
+        elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+            coa = []
+            for item in kategori.athlete.all():
+                coa.append(item.user.pk)
+            modeldata = Athlete.objects.exclude(user__in=coa)
+            total = modeldata.count()
+
+            # print('elimizde olanlar', athletes)
+            # kategori.athlete.exclude(
+            # exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı')
+        #   .exclude(belts__definition__parent_id=None)    eklenmeli ama eklendigi zaman kuşaklarindan bir tanesi en üst olunca almıyor
+
+
+
+
+    else:
+        if search:
+            modeldata = Athlete.athlete.filter(
+                Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
+                    user__email__icontains=search))
+            total = modeldata.count();
+
+        else:
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                coa = []
+                for item in kategori.athlete.all():
+                    coa.append(item.user.pk)
+
+                modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).exclude(
+                    competitioncategori__athlete__user_id__in=coa)[start:start + length]
+                # .exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı').distinct()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                coa = []
+                for item in kategori.athlete.all():
+                    coa.append(item.user.pk)
+                modeldata = Athlete.objects.exclude(user__in=coa)[start:start + length]
+                total = Athlete.objects.exclude(user__in=coa).count()
+
+    say = start + 1
+    start = start + length
+    page = start / length
+
+    beka = []
+    for item in modeldata:
+        brans = '-'
+        klup = '-'
+        kusak = '-'
+        if item.licenses.count() > 0:
+            if item.licenses.last().sportsClub.name is not None:
+                klup = item.licenses.last().sportsClub.name
+
+            if item.licenses.last().branch is not None:
+                brans = item.licenses.last().branch
+        if item.belts.count() > 0:
+            kusak = item.belts.last()
+            kusak = kusak.definition.name
+        data = {
+            'say': say,
+            'pk': item.pk,
+            'name': item.user.first_name + item.user.last_name,
+            'user': item.person.birthDate,
+            'klup': klup,
+            'brans': brans,
+            'kusak': kusak,
+
+        }
+        beka.append(data)
+        say += 1
+
+    response = {
+
+        'data': beka,
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+
+    }
+    return JsonResponse(response)

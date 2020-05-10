@@ -169,7 +169,7 @@ def approve_preRegistration(request,pk):
             try:
                 subject, from_email, to = 'WUSHU - Kulüp Üye Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
                 text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-                html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr:81</p>'
+                html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr/"></a>sbs.twf.gov.tr</p>'
                 html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
                 html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
                 msg = EmailMultiAlternatives(subject, text_content, from_email, [to])

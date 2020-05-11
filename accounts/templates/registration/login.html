@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html style="overflow-y: hidden">
 <head>
     <meta charset="utf-8">
@@ -34,7 +34,8 @@
 
 <div class="login-box">
     <div class="login-logo">
-        <span class="logo-lg"><img width="80%" src="/media/giris-logo.png" alt="User Image" style="margin-bottom: 5px;"> </span>
+        <span class="logo-lg"><img width="80%" src="{% static 'images/giris-logo.png' %}" alt="User Image"
+                                   style="margin-bottom: 5px;"> </span>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -91,8 +92,8 @@
         </form>
 
 
-        <a href="/pre-registration" class="text-center">Kayıt Ol</a><br>
-        <a href="/forgot" class="text-center">Şifremi Unuttum</a><br>
+        <a href={% url "accounts:pre-registration" %} class="text-center">Kayıt Ol</a><br>
+        <a href={% url "accounts:forgot" %} class="text-center">Şifremi Unuttum</a><br>
 
 
     </div>

@@ -5,7 +5,10 @@
 
 {% block content %}
     {# turkiye haritasi    #}
-
+    <link rel="stylesheet"
+          href="https://adminlte.io/themes/AdminLTE/bower_components/fullcalendar/dist/fullcalendar.min.css">
+    <link rel="stylesheet"
+          href="https://adminlte.io/themes/AdminLTE/bower_components/fullcalendar/dist/fullcalendar.print.min.css">
 
     <style>
         .svg-turkiye-haritasi {
@@ -64,7 +67,6 @@
             $("g").hover(
                 function (e) {
                     var id = $(this).attr("id");
-                    $('#il-isimleri').hide();
                 });
 
             $("g").click(
@@ -462,7 +464,8 @@
                         <ul class="users-list clearfix">
                             {% for athlete in last_athletes %}
                                 <li>
-                                <img src="/media/{{ athlete.person.profileImage }}" style="width: 100px;height: 100px"
+                                <img src="{{ MEDIA_URL }}{{ athlete.person.profileImage }}"
+                                     style="width: 100px;height: 100px"
                                      alt="User Image">
                                 <a href="{% url "wushu:update-athletes" athlete.pk %}"
                                    class="users-list-name">{{ athlete.user.first_name }} {{ athlete.user.last_name }}

@@ -118,8 +118,9 @@
                                     <div class="form-group">
                                         <label> {{ person_form.profileImage.label}}</label> <br>
 
-                                        <img src="/media/{{ personCoach.profileImage }}" class="user-image img-circle" alt="KOBİLTEK"
-                                 style="  width: 90px;height: 90px;"><br>
+                                        <img src="{{ MEDIA_URL }}{{ personCoach.profileImage }}"
+                                             class="user-image img-circle" alt="KOBİLTEK"
+                                             style="  width: 90px;height: 90px;"><br>
                                          {{ person_form.profileImage  }}
 
 
@@ -294,7 +295,8 @@
                                         <td>{{ grade.startDate }}  </td>
                                         <td>{{ grade.branch }}  </td>
                                         <td>{{ grade.definition }}  </td>
-                                        <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="KOBİLTEK" style=" width: 30px;height: 30px;"></td>
+                                        <td><img src="{{ MEDIA_URL }}{{ grade.dekont }}" class="user-image"
+                                                 alt="KOBİLTEK" style=" width: 30px;height: 30px;"></td>
                                         <td>{{ grade.status }}  </td>
 
                                             <td>
@@ -385,7 +387,8 @@
                                         <td>{{ grade.branch }}  </td>
 
 
-                                        <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="KOBİLTEK" style=" width: 30px;height: 30px;"></td>
+                                        <td><img src="{{ MEDIA_URL }}{{ grade.dekont }}" class="user-image"
+                                                 alt="KOBİLTEK" style=" width: 30px;height: 30px;"></td>
                                         <td>{{ grade.status }}  </td>
 
                                             <td>

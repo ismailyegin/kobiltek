@@ -142,7 +142,9 @@
                                             <td>{{ exam.examDate }}</td>
 
 
-                                            <td><a href="/media/{{ exam.dekont }}" target="_blank"><img src="/media/{{ exam.dekont }}" class="user-image" alt="KOBİLTEK" style=" width: 30px;height: 30px;"></a></td>
+                                            <td><a href="{{ MEDIA_URL }}{{ exam.dekont }}" target="_blank"><img
+                                                    src="{{ MEDIA_URL }}{{ exam.dekont }}" class="user-image"
+                                                    alt="KOBİLTEK" style=" width: 30px;height: 30px;"></a></td>
 
 
                                             <td>

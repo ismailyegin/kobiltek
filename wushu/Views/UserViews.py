@@ -107,9 +107,6 @@ def active_user(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-
-
-
 @login_required
 def send_information(request, pk):
     perm = general_methods.control_access(request)
@@ -130,8 +127,8 @@ def send_information(request, pk):
         subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', user.email
         html_content = '<h2>TÜRKİYE WUSHU KUNG FU FEDERASYONU BİLGİ SİSTEMİ</h2>'
         html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81/sbs/newpassword?query=' + str(
-            fdk.uuid) + '">http://sbs.twf.gov.tr:81/sbs/wushu/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr/newpassword?query=' + str(
+            fdk.uuid) + '">http://sbs.twf.gov.tr/wushu/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
         msg = EmailMultiAlternatives(subject, '', from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()

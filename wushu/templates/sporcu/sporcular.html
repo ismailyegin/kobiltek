@@ -348,7 +348,7 @@
                     {
                         extend: "pageLength",
                     },
-                    'searchPanes',
+
 
 
                     {
@@ -404,7 +404,7 @@
 
 
                 ],
-                'bubble': true,
+
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -412,22 +412,23 @@
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-                'select': true,
 
 
             });
 
         });
 
-        $('#sporcular').on('click', 'tbody td', function (e) {
-
-            if ($(this).index() > 0) {
-
-                alert($(this).text());
-                editor.submit();
-
-            }
-        });
+        {#$('#sporcular').on('click', 'tbody td', function (e) {#}
+        {##}
+        {#    if ($(this).index() > 0) {#}
+        {##}
+        {#        alert($(this).text());#}
+        {#        editor.submit();#}
+        {##}
+        {#    }#}
+        {#})
+        ;
+        #}
 
     </script>
 

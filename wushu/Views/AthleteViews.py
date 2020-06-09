@@ -227,7 +227,7 @@ def updateathletes(request, pk):
     communication = Communication.objects.get(pk=athlete.communication.pk)
 
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     say=0
     say=athlete.licenses.all().filter(status='Onaylandı').count()

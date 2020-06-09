@@ -307,7 +307,7 @@
                                 </thead>
                                 <tbody>
                                 {% if licenses_form.all %}
-                                    {% for license in licenses_form %}
+                                    {% for license in athlete.licenses.all %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ license.sportsClub }}</td>
@@ -315,8 +315,9 @@
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
-                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <img
-                                                    src="/media/{{ license.lisansPhoto }}" class="user-image" alt="None"
+                                            <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <img
+                                                    src="{{ MEDIA_URL }}{{ license.lisansPhoto }}" class="user-image"
+                                                    alt="None"
                                                     style=" width: 30px;height: 30px;"></a></td>
                                             <td>{{ license.status }}
                                                 {% if  license.status == 'Reddedildi' %}
@@ -430,12 +431,14 @@
                                                 <td>{{ belt.definition }}  </td>
                                                 <td>{{ belt.city }}  </td>
 
-                                                <td><a href="/media/{{ belt.form }}" target="_blank"> <img
-                                                        src="/media/{{ belt.form }}" class="user-image" alt="None"
+                                                <td><a href="{{ MEDIA_URL }}{{ belt.form }}" target="_blank"> <img
+                                                        src="{{ MEDIA_URL }}{{ belt.form }}" class="user-image"
+                                                        alt="None"
                                                         style=" width: 30px;height: 30px;"></a></td>
 
-                                                <td><a href="/media/{{ belt.dekont }}" target="_blank"> <img
-                                                        src="/media/{{ belt.dekont }}" class="user-image" alt="None"
+                                                <td><a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <img
+                                                        src="{{ MEDIA_URL }}{{ belt.dekont }}" class="user-image"
+                                                        alt="None"
                                                         style=" width: 30px;height: 30px;"></a></td>
                                                 <td>{{ belt.status }}  </td>
                                                 {% if belt.status != 'Onaylandı' or user.groups.all.0.name == 'Admin' %}

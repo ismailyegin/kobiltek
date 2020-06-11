@@ -332,5 +332,6 @@ urlpatterns = [
     #     Yardım ve destek
 
     url(r'yardim$', HelpViews.help, name='help'),
+    url(r'sorular$', HelpViews.questions, name='sorular'),
 
 ]

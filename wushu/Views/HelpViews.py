@@ -15,8 +15,6 @@ from django.core.mail import BadHeaderError, send_mail
 
 
 def help(request):
-
-
     if request.method == 'POST':
         user = request.user
         konu=request.POST['konu']
@@ -30,3 +28,7 @@ def help(request):
                 print('Invalid header found.')
                 messages.warning(request, 'Alanları Kontrol Ediniz Bir Şeyler Ters Gitti')
     return render(request,'yardım/help.html')
+
+
+def questions(request):
+    return render(request, 'yardım/questions.html')

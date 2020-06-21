@@ -97,6 +97,7 @@ def approve_preRegistration(request,pk):
                 group = Group.objects.get(name='KulupUye')
                 password = User.objects.make_random_password()
                 user.set_password(password)
+                user.is_active = True
                 user.save()
                 user.groups.add(group)
                 user.save()

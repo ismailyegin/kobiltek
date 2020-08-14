@@ -363,10 +363,10 @@ def sporcu_kusak_ekle(request, pk):
         if belt_form.is_valid():
 
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
-                         dekont=belt_form.cleaned_data['dekont'],
+                         # dekont=belt_form.cleaned_data['dekont'],
                          definition=belt_form.cleaned_data['definition'],
                          form=belt_form.cleaned_data['form'],
-                         city=belt_form.cleaned_data['city'],)
+                         city=belt_form.cleaned_data['city'], )
 
 
             belt.levelType = EnumFields.LEVELTYPE.BELT

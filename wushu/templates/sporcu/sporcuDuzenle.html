@@ -414,7 +414,7 @@
                                         <th> Tanımı</th>
                                         <th> şehir</th>
                                         <th> Form</th>
-                                        <th> Dekont</th>
+                                        {#                                        <th> Dekont</th>#}
                                         <th> Onay Durumu</th>
                                         <th>İşlemler</th>
 
@@ -436,10 +436,13 @@
                                                         alt="None"
                                                         style=" width: 30px;height: 30px;"></a></td>
 
-                                                <td><a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <img
-                                                        src="{{ MEDIA_URL }}{{ belt.dekont }}" class="user-image"
-                                                        alt="None"
-                                                        style=" width: 30px;height: 30px;"></a></td>
+                                                {#                                                <td><a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <img#}
+                                                {#                                                        src="{{ MEDIA_URL }}{{ belt.dekont }}" class="user-image"#}
+                                                {#                                                        alt="None"#}
+                                                {#                                                        style=" width: 30px;height: 30px;"></a></td>#}
+
+
+
                                                 <td>{{ belt.status }}  </td>
                                                 {% if belt.status != 'Onaylandı' or user.groups.all.0.name == 'Admin' %}
                                                     <td>

@@ -77,8 +77,8 @@ def return_add_athlete(request):
         if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Sporcu')
             password = User.objects.make_random_password()
@@ -239,8 +239,8 @@ def updateathletes(request, pk):
             user = user_form.save(commit=False)
             print('user=', user.first_name)
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.save()
             person_form.save()
@@ -1025,8 +1025,8 @@ def updateAthleteProfile(request, pk):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()

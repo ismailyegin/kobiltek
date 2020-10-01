@@ -142,8 +142,8 @@ def return_add_coach(request):
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Antrenor')
             password = User.objects.make_random_password()
@@ -403,8 +403,8 @@ def coachUpdate(request, pk):
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
 
             user = user_form.save(commit=False)
@@ -445,8 +445,8 @@ def updateCoachProfile(request):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name'])
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()

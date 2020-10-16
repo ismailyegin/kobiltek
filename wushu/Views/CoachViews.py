@@ -446,7 +446,7 @@ def updateCoachProfile(request):
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name'])
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()

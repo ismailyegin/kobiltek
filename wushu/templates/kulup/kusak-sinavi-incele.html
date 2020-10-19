@@ -244,63 +244,63 @@
 
                 </div>
             </div>
-            <div class="box box-primary">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Seçili Antronerler</h3>
-                            </div>
-                            <div class="box-header with-border">
-                                <div class="btn-group">
-                                    <a href="{% url "wushu:kusak-sinavi-antroner-sec" exam.pk %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Antronerleri Ekle
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="box-body">
-                                <table id="sporcular" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>Ad Soyad</th>
-                                        <th>Kademe</th>
-                                        <th>Vize</th>
-                                        <th>İşlemler</th>
-
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% if exam.coachs.all %}
-                                        {% for coach in exam.coachs.all %}
-                                            <tr>
-                                                <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
-                                                <td>{{ coach.grade}}</td>
-                                                <td>{{ coach.visa}}</td>
-                                                <td><a onclick="deleteAntroner({{ coach.id }}, {{ exam.pk }})"
-                                                           type="button" class="btn btn-danger"><i
-                                                                class="fa fa-edit"></i>Sil
-                                                        </a></td>
-
-                                            </tr>
-
-                                        {% endfor %}
-                                    {% endif %}
-
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
+            {#            <div class="box box-primary">#}
+            {#                <div class="row">#}
+            {#                    <div class="col-lg-12">#}
+            {#                        <div class="box box-primary">#}
+            {#                            <div class="box-header with-border">#}
+            {#                                <h3 class="box-title">Seçili Antronerler</h3>#}
+            {#                            </div>#}
+            {#                            <div class="box-header with-border">#}
+            {#                                <div class="btn-group">#}
+            {#                                    <a href="{% url "wushu:kusak-sinavi-antroner-sec" exam.pk %}"#}
+            {#                                       type="button" class="btn btn-success"><i#}
+            {#                                            class="fa fa-edit"></i> Antronerleri Ekle#}
+            {#                                    </a>#}
+            {#                                </div>#}
+            {#                            </div>#}
+            {#                            <div class="box-body">#}
+            {#                                <table id="sporcular" class="table table-bordered table-hover">#}
+            {#                                    <thead>#}
+            {#                                    <tr>#}
+            {#                                        <th>Ad Soyad</th>#}
+            {#                                        <th>Kademe</th>#}
+            {#                                        <th>Vize</th>#}
+            {#                                        <th>İşlemler</th>#}
+            {##}
+            {##}
+            {#                                    </tr>#}
+            {#                                    </thead>#}
+            {#                                    <tbody>#}
+            {#                                    {% if exam.coachs.all %}#}
+            {#                                        {% for coach in exam.coachs.all %}#}
+            {#                                            <tr>#}
+            {#                                                <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>#}
+            {#                                                <td>{{ coach.grade}}</td>#}
+            {#                                                <td>{{ coach.visa}}</td>#}
+            {#                                                <td><a onclick="deleteAntroner({{ coach.id }}, {{ exam.pk }})"#}
+            {#                                                           type="button" class="btn btn-danger"><i#}
+            {#                                                                class="fa fa-edit"></i>Sil#}
+            {#                                                        </a></td>#}
+            {##}
+            {#                                            </tr>#}
+            {##}
+            {#                                        {% endfor %}#}
+            {#                                    {% endif %}#}
+            {##}
+            {##}
+            {#                                    </tbody>#}
+            {#                                </table>#}
+            {##}
+            {#                            </div>#}
+            {##}
+            {##}
+            {#                        </div>#}
+            {##}
+            {#                    </div>#}
+            {##}
+            {#                </div>#}
+            {#            </div>#}
 
             </form>
         </div>
@@ -363,7 +363,7 @@
                         },
                         success: function (result) {
 
-                            html = 'Kuşak Başarıyla Silindi.';
+                            html = 'Sporcu  Silindi.';
                             debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {

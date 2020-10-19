@@ -178,8 +178,9 @@
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ exam.sportClub }}</td>
                                             {% endif %}
-                                           <td>{{ exam.branch }}</td>
                                             <td>{{ exam.examDate }}</td>
+                                            <td>{{ exam.branch }}</td>
+
                                             <td>{{ exam.coachs.count}}</td>
                                             <td>{{ exam.athletes.count }}</td>
                                             <td>{{ exam.status }}</td>

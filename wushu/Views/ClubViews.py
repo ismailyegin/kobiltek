@@ -655,8 +655,6 @@ def approve_belt_exam(request, pk):
             athlete.belts.add(level)
             athlete.save()
 
-
-
     exam.status = BeltExam.APPROVED
     exam.save()
     messages.success(request, 'Sınav Onaylanmıştır.')
@@ -783,11 +781,8 @@ def update_belt_exam(request, pk):
         logout(request)
         return redirect('accounts:login')
     sinav = BeltExam.objects.get(pk=pk)
-    # license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,initial={'sportsClub': license.sportsClub})
-    print(sinav.sportClub)
     exam_form = BeltExamForm(request.POST or None, request.FILES or None, instance=sinav,
-                             initial={'sportsClub': sinav.sportClub.name})
-    print(exam_form)
+                             initial={'sportClub': sinav.sportClub, 'dekont': sinav.dekont})
     user = request.user
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
@@ -802,11 +797,10 @@ def update_belt_exam(request, pk):
         exam_form.fields['sportClub'].queryset = SportsClub.objects.all()
 
     if request.method == 'POST':
-        exam_form = BeltExamForm(request.POST, request.FILES or None)
         if exam_form.is_valid():
             exam = exam_form.save()
             messages.success(request, 'Sınav başarıyla güncellendi')
-            return redirect('wushu:kusak-sinavlari')
+            return redirect('wushu:kusak-sinavi-incele', pk=pk)
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 

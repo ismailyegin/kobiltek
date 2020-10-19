@@ -39,7 +39,4 @@ class BeltExamForm(ModelForm):
                                                'style': 'width: 100%; ', 'required': 'required'}),
 
 
-
-            'dekont': forms.FileInput()
-
         }

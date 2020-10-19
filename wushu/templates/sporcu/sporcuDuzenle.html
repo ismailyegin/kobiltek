@@ -298,9 +298,13 @@
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
                                     <th> Lisans No</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th> Lisans Foto.</th>
+                                    {% endif %}
                                     <th> Onay Durumu</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th> İşlemler</th>
+                                    {% endif %}
 
 
                                 </tr>
@@ -315,10 +319,12 @@
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                             <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <img
                                                     src="{{ MEDIA_URL }}{{ license.lisansPhoto }}" class="user-image"
                                                     alt="None"
                                                     style=" width: 30px;height: 30px;"></a></td>
+                                            {% endif %}
                                             <td>{{ license.status }}
                                                 {% if  license.status == 'Reddedildi' %}
                                                     (  {{ license.reddetwhy }})

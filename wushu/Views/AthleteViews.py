@@ -121,6 +121,9 @@ def return_add_athlete(request):
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
 
+            mesaj=str(user.get_full_name())+' Sporcusunu kaydetti'
+            log = general_methods.logwrite(request, request.user,mesaj)
+
             messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
 
             return redirect('wushu:sporcular')
@@ -246,7 +249,6 @@ def updateathletes(request, pk):
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
             user = user_form.save(commit=False)
-            print('user=', user.first_name)
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
@@ -257,6 +259,14 @@ def updateathletes(request, pk):
 
 
             messages.success(request, 'Sporcu Başarıyla Güncellenmiştir.')
+
+
+
+            mesaj=str(user.get_full_name())+' Sporcu güncellendi'
+            log = general_methods.logwrite(request, request.user,mesaj)
+
+
+
             return redirect('wushu:update-athletes', pk=pk)
 
         else:
@@ -387,6 +397,10 @@ def sporcu_kusak_ekle(request, pk):
             athlete.belts.add(belt)
             athlete.save()
 
+
+            mesaj=str(athlete.user.get_full_name())+' kuşak  eklendi  '+str(belt.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
+
             messages.success(request, 'Kuşak Başarıyla Eklenmiştir.')
             return redirect('wushu:update-athletes', pk=pk)
 
@@ -447,6 +461,12 @@ def sporcu_lisans_ekle(request, pk):
             athlete.licenses.add(license)
             athlete.save()
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
+
+
+
+            mesaj=str(athlete.user.get_full_name())+' Lisans eklendi    ' +str(license.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
+
             return redirect('wushu:update-athletes', pk=pk)
 
         else:
@@ -475,6 +495,9 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
         license.status = License.APPROVED
         license.isActive = True
         license.save()
+
+        mesaj = str(athlete.user.get_full_name()) + ' Lisans  onaylandi   '+str(license.pk)
+        log = general_methods.logwrite(request, request.user, mesaj)
         messages.success(request, 'Lisans Onaylanmıştır')
     except:
         messages.warning(request, 'Yeniden deneyiniz.')
@@ -496,8 +519,8 @@ def sporcu_lisans_reddet(request, license_pk, athlete_pk):
         license.status = License.DENIED
         license.save()
 
-
-
+    mesaj =' Lisans Reddedilmiştir'
+    log = general_methods.logwrite(request, request.user, mesaj)
     messages.success(request, 'Lisans Reddedilmiştir')
     return redirect('wushu:update-athletes', pk=athlete_pk)
 
@@ -749,6 +772,9 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
             belt.branch = belt.definition.branch
             belt_form.save()
 
+
+
+
             messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
 
@@ -767,8 +793,6 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
-
-
     license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,
                                initial={'sportsClub': license.sportsClub})
     user = request.user
@@ -789,6 +813,10 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
             if license.status !='Onaylandı':
                 license.status =License.WAITED
                 license.save()
+
+            mesaj=' Lisans  güncellendi  '+str(license.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
+
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
 
@@ -844,6 +872,8 @@ def sporcu_lisans_sil(request, pk, athlete_pk):
         try:
             obj = License.objects.get(pk=pk)
             athlete = Athlete.objects.get(pk=athlete_pk)
+            mesaj=str(athlete.user.get_full_name())+'   Lisans silindi    '+str(obj.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
             athlete.licenses.remove(obj)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})

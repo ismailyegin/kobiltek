@@ -38,6 +38,8 @@ def login(request):
             # correct username and password login the user
             auth.login(request, user)
 
+            log = general_methods.logwrite(request, request.user, " Giris yapti")
+
             if user.groups.all()[0].name == 'Antrenor':
                 return redirect('wushu:antrenor')
 

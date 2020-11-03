@@ -7,7 +7,8 @@ from django.shortcuts import redirect
 
 from wushu.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser, \
     SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember, SportsClub, Communication, City, Country, ClubRole
-
+from wushu.models.Logs import Logs
+from datetime import datetime
 
 def getMenu(request):
     menus = Menu.objects.all()
@@ -210,3 +211,43 @@ def import_csv():
             sportClubUser.save()
 
             print(row)
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    print(ip)
+    return ip
+
+
+def logwrite(request, user, log):
+    logs = Logs(
+        user=user,
+        subject=log,
+        ip=get_client_ip(request)
+    )
+    logs.save()
+
+
+    try:
+        print()
+
+
+        # f = open("log.txt", "a")
+        # log = get_client_ip(request) + "    [" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(
+        #     user) + " " + log + " \n "
+        # f.write(log)
+        # f.close()
+
+    except Exception as e:
+        f = open("log.txt", "a")
+        log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "]  lag kaydetme hata   \n "
+        f.write(log)
+        f.close()
+
+
+
+
+    return log

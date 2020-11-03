@@ -2,9 +2,8 @@ from builtins import print, set, property, int
 from datetime import timedelta, datetime
 from operator import attrgetter
 from os import name
-
+import uuid
 from django.db.models.functions import Lower
-
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
@@ -67,19 +66,29 @@ def return_add_athlete(request):
     # lisan ekleme son alani bu alanlar sadece form bileselerinin sisteme gidebilmesi icin post ile gelen veride gene ayni şekilde  karşılama ve kaydetme islemi yapilacak
 
     if request.method == 'POST':
-
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
         license_form = LicenseForm(request.POST, request.FILES or None)
-
-
-        if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
+        if person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
-            user.email = user_form.cleaned_data['email']
+            user.first_name =  request.POST.get('first_name')
+            user.last_name =  request.POST.get('last_name')
+            email =  request.POST.get('email')
+            if email:
+                try:
+                    if User.objects.filter(email=email).exists():
+                        user.email = str(uuid.uuid4()) + '@kobiltek.com'
+                        user.username = user.email
+                    else:
+                        user.username = email
+                        user.email = email
+                except:
+                    user.email = str(uuid.uuid4()) + '@kobiltek.com'
+                    user.username = user.email
+            else:
+                user.email = str(uuid.uuid4()) + '@kobiltek.com'
+                user.username = user.email
             group = Group.objects.get(name='Sporcu')
             password = User.objects.make_random_password()
             user.set_password(password)

@@ -298,9 +298,9 @@
                                     <th> Bitiş Tarihi</th>
                                     <th> Branş</th>
                                     <th> Lisans No</th>
-                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <th> Lisans Foto.</th>
-                                    {% endif %}
+{#                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+{#                                    <th> Lisans Foto.</th>#}
+{#                                    {% endif %}#}
                                     <th> Onay Durumu</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th> İşlemler</th>
@@ -319,12 +319,12 @@
                                             <td>{{ license.expireDate }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                            <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <img
-                                                    src="{{ MEDIA_URL }}{{ license.lisansPhoto }}" class="user-image"
-                                                    alt="None"
-                                                    style=" width: 30px;height: 30px;"></a></td>
-                                            {% endif %}
+{#                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+{#                                            <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <img#}
+{#                                                    src="{{ MEDIA_URL }}{{ license.lisansPhoto }}" class="user-image"#}
+{#                                                    alt="None"#}
+{#                                                    style=" width: 30px;height: 30px;"></a></td>#}
+{#                                            {% endif %}#}
                                             <td>{{ license.status }}
                                                 {% if  license.status == 'Reddedildi' %}
                                                     (  {{ license.reddetwhy }})
@@ -419,7 +419,7 @@
                                         <th> Branş</th>
                                         <th> Tanımı</th>
                                         <th> şehir</th>
-                                        <th> Form</th>
+{#                                        <th> Form</th>#}
                                         {#                                        <th> Dekont</th>#}
                                         <th> Onay Durumu</th>
                                         <th>İşlemler</th>
@@ -437,10 +437,10 @@
                                                 <td>{{ belt.definition }}  </td>
                                                 <td>{{ belt.city }}  </td>
 
-                                                <td><a href="{{ MEDIA_URL }}{{ belt.form }}" target="_blank"> <img
-                                                        src="{{ MEDIA_URL }}{{ belt.form }}" class="user-image"
-                                                        alt="None"
-                                                        style=" width: 30px;height: 30px;"></a></td>
+{#                                                <td><a href="{{ MEDIA_URL }}{{ belt.form }}" target="_blank"> <img#}
+{#                                                        src="{{ MEDIA_URL }}{{ belt.form }}" class="user-image"#}
+{#                                                        alt="None"#}
+{#                                                        style=" width: 30px;height: 30px;"></a></td>#}
 
                                                 {#                                                <td><a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <img#}
                                                 {#                                                        src="{{ MEDIA_URL }}{{ belt.dekont }}" class="user-image"#}

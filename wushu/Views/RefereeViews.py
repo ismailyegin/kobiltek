@@ -78,10 +78,10 @@ def return_add_referee(request):
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
 
+            mesaj=str(judge.user.get_full_name())+' Hakem eklendi. '
+            log = general_methods.logwrite(request, request.user,mesaj)
             messages.success(request, 'Hakem Başarıyla Kayıt Edilmiştir.')
-
             return redirect('wushu:hakemler')
-
         else:
 
             for x in user_form.errors.as_data():
@@ -250,6 +250,10 @@ def updateReferee(request, pk):
             user.save()
             person_form.save()
             communication_form.save()
+
+
+            mesaj=str(user.get_full_name())+' Hakem güncellendi  '
+            log = general_methods.logwrite(request, request.user,mesaj)
 
             messages.success(request, 'Hakem Başarıyla Güncellendi')
             return redirect('wushu:hakemler')

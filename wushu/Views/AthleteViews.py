@@ -421,6 +421,13 @@ def sporcu_kusak_sil(request, pk, athlete_pk):
         try:
             obj = Level.objects.get(pk=pk)
             athlete = Athlete.objects.get(pk=athlete_pk)
+
+
+            mesaj=str(athlete.user.get_full_name())+'   Kuşak  silindi    '+str(obj.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
+
+
+
             athlete.belts.remove(obj)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -706,6 +713,8 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
         belt.isActive = True
         belt.save()
 
+        mesaj = str(athlete.user.get_full_name()) + ' kuşak  onaylandi  ' + str(belt.pk)
+        log = general_methods.logwrite(request, request.user, mesaj)
         messages.success(request, 'Kuşak Onaylanmıştır')
     except:
         messages.warning(request, 'Yeniden deneyiniz.')
@@ -725,6 +734,11 @@ def sporcu_kusak_reddet(request, belt_pk,athlete_pk):
     belt = Level.objects.get(pk=belt_pk)
     belt.status = Level.DENIED
     belt.save()
+
+    mesaj = ' kuşak  reddedildi  ' + str(belt.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
+
+
 
     messages.success(request, 'Kuşak Reddedilmiştir')
     return redirect('wushu:update-athletes', pk=athlete_pk)
@@ -774,7 +788,8 @@ def sporcu_kusak_duzenle(request, belt_pk, athlete_pk):
 
 
 
-
+            mesaj=str(athlete.user.get_full_name())+' kuşak  güncellendi  '+str(belt.pk)
+            log = general_methods.logwrite(request, request.user,mesaj)
             messages.success(request, 'Kuşak Onaya Gönderilmiştir.')
             return redirect('wushu:update-athletes', pk=athlete_pk)
 

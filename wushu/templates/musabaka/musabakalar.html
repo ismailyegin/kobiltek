@@ -165,7 +165,7 @@
                                     <th>Alt Branş</th>
                                     <th>Kayıt Durumu</th>
                                     <th>Türü</th>
-                                    <th>incele/Sil</th>
+                                    <th>incele</th>
 
 
                                 </tr>
@@ -191,13 +191,13 @@
                                                     </a>
                                                 </div>
 
-                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal"
-                                                       onclick=deleteCompetition({{ competition.pk }})><i
-                                                            class="fa fa-trash"></i>Sil</a>
-                                                {% endif %}
+                                                {#                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+                                                {##}
+                                                {#                                                    <a class="btn btn-danger"#}
+                                                {#                                                       data-toggle="modal"#}
+                                                {#                                                       onclick=deleteCompetition({{ competition.pk }})><i#}
+                                                {#                                                            class="fa fa-trash"></i>Sil</a>#}
+                                                {#                                                {% endif %}#}
                                             </td>
 
                                         </tr>

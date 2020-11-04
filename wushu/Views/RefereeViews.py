@@ -360,6 +360,8 @@ def hakem_kademe_ekle(request, pk):
                     item.isActive = False
                     item.save()
 
+            mesaj = str(referee.user.get_full_name()) + ' Kademe Eklendi ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)
 
@@ -388,6 +390,10 @@ def kademe_onay(request, grade_pk, referee_pk):
         grade.status = Level.APPROVED
         grade.isActive = True
         grade.save()
+
+        mesaj = str(referee.user.get_full_name()) + ' Kademe onaylandı  ' + str(grade.pk)
+        log = general_methods.logwrite(request, request.user, mesaj)
+
         messages.success(request, 'Kademe   Onaylanmıştır')
     except:
         messages.warning(request, 'Lütfen yeniden deneyiniz.')
@@ -405,7 +411,10 @@ def kademe_reddet(request, grade_pk, referee_pk):
     belt.status = Level.DENIED
     belt.save()
 
-    messages.success(request, 'Kademe Onaylanmıştır')
+    mesaj = ' kademe reddedildi  ' + str(belt.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
+
+    messages.success(request, 'Kademe reddedilmiştir.')
     return redirect('wushu:hakem-duzenle', pk=referee_pk)
 
 
@@ -427,6 +436,9 @@ def kademe_update(request, grade_pk, referee_pk):
             if grade.status != Level.APPROVED:
                 grade.status = Level.WAITED
                 grade.save()
+
+            mesaj = str(referee.user.get_full_name()) + ' Kademe güncellendi  ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Kademe Başarılı bir şekilde güncellenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=referee_pk)
 
@@ -450,6 +462,10 @@ def kademe_delete(request, grade_pk, referee_pk):
 
             obj = Level.objects.get(pk=grade_pk)
             referee = Judge.objects.get(pk=referee_pk)
+
+            mesaj = str(referee.user.get_full_name()) + ' Hakem kademe silindi   ' + str(obj.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
             referee.grades.remove(obj)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -490,6 +506,8 @@ def vısa_ekle(request, pk):
             visa.save()
             referee.visa.add(visa)
             referee.save()
+            mesaj = str(referee.user.get_full_name()) + ' Hakem vize eklendi  ' + str(visa.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=pk)
         except:
@@ -509,6 +527,11 @@ def visa_onay(request, grade_pk, referee_pk):
     visa.status = Level.APPROVED
     visa.save()
 
+    mesaj = ' Hakem vize onayladı   ' + str(visa.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
     messages.success(request, 'Vize onaylanmıştır.')
     return redirect('wushu:hakem-duzenle', pk=referee_pk)
 
@@ -523,6 +546,9 @@ def visa_reddet(request, grade_pk, referee_pk):
     visa = Level.objects.get(pk=grade_pk)
     visa.status = Level.DENIED
     visa.save()
+
+    mesaj = ' Hakem vize reddedildi  ' + str(visa.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
 
     messages.warning(request, 'Vize Reddedilmiştir.')
     return redirect('wushu:hakem-duzenle', pk=referee_pk)
@@ -545,6 +571,8 @@ def vize_update(request, grade_pk, referee_pk):
             if grade.status != Level.APPROVED:
                 grade.status = Level.WAITED
                 grade.save()
+            mesaj = str(referee.user.get_full_name()) + ' Hakem vize güncellendi   ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Vize Başarılı bir şekilde güncellenmiştir.')
             return redirect('wushu:hakem-duzenle', pk=referee_pk)
         else:
@@ -565,6 +593,8 @@ def vize_delete(request, grade_pk, referee_pk):
 
             obj = Level.objects.get(pk=grade_pk)
             referee = Judge.objects.get(pk=referee_pk)
+            mesaj = str(referee.user.get_full_name()) + '  Hakem vize silindi   ' + str(obj.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             referee.visa.remove(obj)
             obj.delete()
 

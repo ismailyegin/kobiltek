@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from wushu.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration
+    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, LogViews
 
 app_name = 'wushu'
 
@@ -185,7 +185,7 @@ urlpatterns = [
 
     url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
-    url(r'kulup/kusak-listesi-antroner-sil/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
+    url(r'kulup/klupÜyesiSec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
 
     # Antrenörler
@@ -333,5 +333,8 @@ urlpatterns = [
 
     url(r'yardim$', HelpViews.help, name='help'),
     url(r'sorular$', HelpViews.questions, name='sorular'),
+
+    url(r'log/log-kayıtlari/$', LogViews.return_log,
+        name='logs'),
 
 ]

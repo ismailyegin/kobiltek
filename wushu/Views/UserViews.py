@@ -103,6 +103,11 @@ def active_user(request, pk):
             obj.is_active = True
             obj.save()
         print(obj.is_active)
+
+        mesaj = str(obj.get_full_name()) + ' kullanici durumu degiştirildi.   ' + str(obj.is_active)
+        log = general_methods.logwrite(request, request.user, mesaj)
+
+
         return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
     else:
@@ -132,6 +137,12 @@ def send_information(request, pk):
         msg = EmailMultiAlternatives(subject, '', from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
+        mesaj = str(user.get_full_name()) + ' Aktivasyon mailli gönderildi   '
+        log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
 
         # password = User.objects.make_random_password()
         # obj.set_password(password)

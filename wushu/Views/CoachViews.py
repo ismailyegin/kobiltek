@@ -173,6 +173,9 @@ def return_add_coach(request):
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
 
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör ekledi  '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
             return redirect('wushu:antrenorler')
@@ -306,6 +309,12 @@ def antrenor_kademe_ekle(request, pk):
             grade.save()
             coach.grades.add(grade)
             coach.save()
+
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör kademe eklendi   ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)
 
@@ -413,6 +422,12 @@ def coachUpdate(request, pk):
             person_form.save()
             communication_form.save()
 
+            mesaj = str(user.get_full_name()) + ' Antrenör güncellendi  '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
+
             messages.success(request, 'Antrenör Başarıyla Güncellendi')
             return redirect('wushu:antrenorler')
         else:
@@ -480,6 +495,13 @@ def kademe_delete(request,grade_pk,coach_pk):
 
             obj =Level.objects.get(pk=grade_pk)
             coach = Coach.objects.get(pk=coach_pk)
+
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör kademe  silindi  ' + str(obj.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
+
             coach.grades.remove(obj)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -502,6 +524,10 @@ def vize_delete(request,grade_pk,coach_pk):
 
             obj = Level.objects.get(pk=grade_pk)
             coach = Coach.objects.get(pk=coach_pk)
+
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör vize silindi   ' + str(obj.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
             coach.visa.remove(obj)
             obj.delete()
 
@@ -530,6 +556,11 @@ def kademe_onay(request,grade_pk,coach_pk):
         grade.status = Level.APPROVED
         grade.isActive = True
         grade.save()
+
+        mesaj = str(coach.user.get_full_name()) + ' Antrenör kademe  onaylandi  ' + str(grade.pk)
+        log = general_methods.logwrite(request, request.user, mesaj)
+
+
         messages.success(request, 'Kademe   Onaylanmıştır')
     except:
         messages.warning(request, 'Lütfen yeniden deneyiniz.')
@@ -545,6 +576,9 @@ def visa_onay(request,grade_pk,coach_pk):
     visa.status = Level.APPROVED
     visa.save()
 
+    mesaj = ' Antrenör vize onaylandi   ' + str(visa.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
+
     messages.success(request, 'Vize onaylanmıştır')
     return redirect('wushu:update-coach', pk=coach_pk)
 
@@ -558,7 +592,8 @@ def kademe_reddet(request,grade_pk,coach_pk):
     grade = Level.objects.get(pk=grade_pk)
     grade.status =Level.DENIED
     grade.save()
-
+    mesaj = ' Antrenör kademe  reddedildi  ' + str(grade.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
     messages.success(request, 'Kademe Reddedilmistir.')
     return redirect('wushu:update-coach', pk=coach_pk)
 
@@ -573,6 +608,9 @@ def vize_reddet(request,grade_pk,coach_pk):
     visa = Level.objects.get(pk=grade_pk)
     visa.status = Level.DENIED
     visa.save()
+
+    mesaj = ' Antrenör vize reddedildi   ' + str(visa.pk)
+    log = general_methods.logwrite(request, request.user, mesaj)
 
     messages.warning(request, 'Vize Reddedilmistir.')
     return redirect('wushu:update-coach', pk=coach_pk)
@@ -593,6 +631,9 @@ def kademe_update(request,grade_pk,coach_pk):
     if request.method == 'POST':
         if grade_form.is_valid():
             grade_form.save()
+
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör kademe  güncellendi  ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Kademe Başarılı bir şekilde güncellenmiştir.')
             return redirect('wushu:update-coach', pk=coach_pk)
 
@@ -787,7 +828,7 @@ def antrenor_vısa_ekle(request, pk):
         category_item_form=CategoryItemForm(request.POST, request.FILES)
 
         try:
-            visa = Level(dekont=request.POST.get('dekont'), branch=request.POST.get('branch'))
+            visa = Level(dekont=request.FILES['dekont'], branch=request.POST.get('branch'))
             visa.startDate = date(int(request.POST.get('startDate')), 1, 1)
             visa.definition=CategoryItem.objects.get(forWhichClazz='VISA')
             visa.levelType = EnumFields.LEVELTYPE.VISA
@@ -801,6 +842,9 @@ def antrenor_vısa_ekle(request, pk):
             visa.save()
             coach.visa.add(visa)
             coach.save()
+
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör vize eklendi   ' + str(visa.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('wushu:update-coach', pk=pk)
@@ -824,6 +868,8 @@ def vize_update(request,grade_pk,coach_pk):
     if request.method == 'POST':
         if grade_form.is_valid():
             grade.save()
+            mesaj = str(coach.user.get_full_name()) + ' Antrenör vize güncellenmiştir.   ' + str(grade.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
             messages.success(request, 'Vize Başarılı bir şekilde güncellenmiştir.')
             return redirect('wushu:update-coach', pk=coach_pk)
         else:

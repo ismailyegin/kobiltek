@@ -70,6 +70,9 @@ def rejected_preRegistration(request,pk):
     veri=PreRegistration.objects.get(pk=pk)
     veri.status=PreRegistration.DENIED
     veri.save()
+
+    mesaj = str(veri.name) + ' Klup basvurusu reddedildi  '
+    log = general_methods.logwrite(request, request.user, mesaj)
     prepegidtration=PreRegistration.objects.all()
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
@@ -164,6 +167,14 @@ def approve_preRegistration(request,pk):
 
                 basvuru.status = PreRegistration.APPROVED
                 basvuru.save()
+
+                mesaj = str(clup.name) + ' Klup basvurusu onaylandi  '
+                log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
+
+
             except:
                 messages.success(request, 'Klüp ve iletisim kaydedilemedi')
 

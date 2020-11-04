@@ -71,6 +71,12 @@ def return_add_club(request):
 
             clubsave.save()
 
+            mesaj = str(club_form.cleaned_data['name']) + ' Klubü ekledi   '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
+
             messages.success(request, 'Kulüp Başarıyla Kayıt Edilmiştir.')
 
             return redirect('wushu:kulupler')
@@ -189,6 +195,9 @@ def return_add_club_person(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
+            mesaj = str(user.get_full_name()) + ' klup üyesi  eklendi   '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
             messages.success(request, 'Kulüp Üyesi Başarıyla Kayıt Edilmiştir.')
 
             return redirect('wushu:kulup-uyeleri')
@@ -223,9 +232,7 @@ def updateClubPersons(request, pk):
     clubs = SportsClub.objects.filter(clubUser__user=user)
 
     if request.method == 'POST':
-
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and sportClubUser_form.is_valid():
-
             user = user_form.save(commit=False)
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
@@ -235,6 +242,12 @@ def updateClubPersons(request, pk):
             person_form.save()
             communication_form.save()
             sportClubUser_form.save()
+
+            mesaj = str(user.get_full_name()) + ' Klup üyesi güncellenmiştir.   '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 
@@ -487,7 +500,7 @@ def clubUpdate(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    club = SportsClub.objects.get(id=pk)
+    club = SportsClub.objects.get(pk=pk)
     com_id = club.communication.pk
     communication = Communication.objects.get(id=com_id)
     club_form = ClubForm(request.POST or None, instance=club)
@@ -500,6 +513,11 @@ def clubUpdate(request, pk):
         if club_form.is_valid():
             club_form.save()
             communication_form.save()
+
+            mesaj = str(club.name) + ' klüp güncellendi  '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
             messages.success(request, 'Başarıyla Güncellendi')
             return redirect('wushu:kulupler')
         else:
@@ -587,7 +605,14 @@ def choose_sport_club_user(request, pk):
             club = SportsClub.objects.get(pk=pk)
             for club_user in instances:
                 club.clubUser.add(club_user)
+
+                mesaj = str(club_user.user.get_full_name()) + ' klup üyesi eklendi  ' + str(club.name)
+                log = general_methods.logwrite(request, request.user, mesaj)
+
+
+
             club.save()
+
             messages.success(request, 'Kulüp Üyesi Başarıyla Eklenmiştir.')
 
             return redirect('wushu:update-club', pk=pk)

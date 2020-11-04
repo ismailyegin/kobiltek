@@ -45,7 +45,13 @@ def musabaka_ekle(request):
     if request.method == 'POST':
         competition_form = CompetitionForm(request.POST)
         if competition_form.is_valid():
-            competition_form.save()
+            competition = competition_form.save(commit=False)
+            competition.save()
+
+            mesaj = str(competition.name) + ' müsabaka ekledi   '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
+
             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
 
             return redirect('wushu:musabakalar')
@@ -76,7 +82,11 @@ def musabaka_duzenle(request, pk):
     competition_form = CompetitionForm(request.POST or None, instance=musabaka)
     if request.method == 'POST':
         if competition_form.is_valid():
-            competition_form.save()
+            competition = competition_form.save(commit=False)
+            competition.save()
+            mesaj = str(competition.name) + ' müsabaka güncellendi   '
+            log = general_methods.logwrite(request, request.user, mesaj)
+
             messages.success(request, 'Müsabaka Başarıyla Güncellenmiştir.')
 
             return redirect('wushu:musabaka-duzenle', pk=pk)

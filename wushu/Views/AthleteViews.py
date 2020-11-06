@@ -945,9 +945,11 @@ def sporcu_kusak_listesi(request):
                 clubsPk = []
                 for club in clubs:
                     clubsPk.append(club.pk)
-                belts = Level.objects.filter(query).filter(athlete__licenses__sportsClub__in=clubsPk).filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
+                belts = Level.objects.filter(query).filter(athlete__licenses__sportsClub__in=clubsPk).filter(
+                    levelType=EnumFields.LEVELTYPE.BELT).order_by('-athlete__belts__creationDate').distinct()
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                belts = Level.objects.filter(query).filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
+                belts = Level.objects.filter(query).filter(levelType=EnumFields.LEVELTYPE.BELT).order_by(
+                    '-athlete__belts__creationDate').distinct()
         else:
             if user.groups.filter(name='KulupUye'):
                 clubuser = SportClubUser.objects.get(user=user)
@@ -955,9 +957,11 @@ def sporcu_kusak_listesi(request):
                 clubsPk = []
                 for club in clubs:
                     clubsPk.append(club.pk)
-                belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk).distinct()
+                belts = Level.objects.filter(athlete__licenses__sportsClub__in=clubsPk).order_by(
+                    '-athlete__belts__creationDate').distinct()
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).distinct()
+                belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).order_by(
+                    '-athlete__belts__creationDate').distinct()
 
     sportclup = SearchClupForm(request.POST, request.FILES or None)
     if user.groups.filter(name='KulupUye'):

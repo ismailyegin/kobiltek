@@ -7,6 +7,7 @@ from django.http import JsonResponse
 
 from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete, Person, Judge
 from wushu.services import general_methods
+from wushu.models.EnumFields import EnumFields
 # from rest_framework.authtoken.models import Token
 
 
@@ -63,32 +64,22 @@ def return_club_user_dashboard(request):
         logout(request)
         return redirect('accounts:login')
 
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-
-    belts = Level.objects.all()
-    login_user = request.user
-    user = User.objects.get(pk=login_user.pk)
-    current_user = request.user
-    clubuser = SportClubUser.objects.get(user=current_user)
-    club = SportsClub.objects.filter(clubUser=clubuser)[0]
-    if user.groups.filter(name='KulupUye'):
-
-        belts = Level.objects.filter(athlete__licenses__sportsClub=club)
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        belts = Level.objects.all()
+    clubuser = SportClubUser.objects.get(user=request.user)
+    clubs = SportsClub.objects.filter(clubUser=clubuser)
+    clubsPk = []
+    for club in clubs:
+        clubsPk.append(club.pk)
 
     total_club_user = club.clubUser.count()
     total_coach = Coach.objects.filter(sportsclub=club).count()
-    sc_user = SportClubUser.objects.get(user=user)
-    clubsPk = []
-    clubs = SportsClub.objects.filter(clubUser=sc_user)
-    for club in clubs:
-        clubsPk.append(club.pk)
     total_athlete = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct().count()
+
+    athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk, belts__startDate__year=2020,
+                                      belts__dekont='').distinct()
+
+
     return render(request, 'anasayfa/kulup-uyesi.html',
-                  {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
+                  {'total_club_user': total_club_user, 'total_coach': total_coach, 'athletes': athletes,
                    'total_athlete': total_athlete})
 
 

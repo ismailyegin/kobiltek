@@ -916,7 +916,8 @@ def sporcu_kusak_listesi(request):
         lastName = request.POST.get('last_name')
         email = request.POST.get('email')
         status = request.POST.get('status')
-        if firstName or lastName or email or sportsclup or brans or status:
+        startDate = request.POST.get('startDate')
+        if firstName or lastName or email or sportsclup or brans or status or startDate:
             query = Q()
             if firstName:
                 query &= Q(athlete__user__first_name__icontains=firstName)
@@ -924,6 +925,10 @@ def sporcu_kusak_listesi(request):
                 query &= Q(athlete__user__last_name__icontains=lastName)
             if email:
                 query &= Q(athlete__user__email__icontains=email)
+
+            if startDate:
+                query &= Q(startDate__year=startDate)
+
             if sportsclup:
                 try:
                     query &= Q(athlete__licenses__sportsClub=SportsClub.objects.get(name=sportsclup).pk)

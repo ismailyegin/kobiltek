@@ -145,40 +145,47 @@
 
                             <div class="box-body">
                                 {% csrf_token %}
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label> Ad</label>
                                         <input type="text" name="first_name" class="form-control " value=""
                                                maxlength="30" id="id_first_name">
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label> Soyad</label>
                                         <input type="text" name="last_name" class="form-control "
                                                maxlength="150" id="id_last_name">
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label> Email</label>
                                         <input type="text" name="email" class="form-control "
                                                maxlength="254" id="id_email">
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label> Hak Kazanma Yılı</label>
+                                        <input type="text" name="startDate" class="form-control  pull-right"
+                                               id="datepicker5" autocomplete="off" onkeydown="return false">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ Sportclup.sportsClub.label }}</label>
                                         {{ Sportclup.sportsClub }}
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ Sportclup.branch.label }}</label>
                                         {{ Sportclup.branch }}
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Onay durumu </label>
                                         <select name="status" class="form-control select2 select2-hidden-accessible"

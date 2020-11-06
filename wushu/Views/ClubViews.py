@@ -644,7 +644,14 @@ def return_belt_exams(request):
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         exams = BeltExam.objects.all()
 
-    return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams})
+    if int(timezone.now().month) % 3 == 0:
+        examMonth = True
+    else:
+        examMonth = False
+
+    print(examMonth)
+
+    return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams, 'examMonth': examMonth})
 
 
 def detail_belt_exam(request, pk):

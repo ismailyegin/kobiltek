@@ -145,6 +145,10 @@
                             <h3 class="box-title">Kuşak Sınavları</h3>
                         </div>
                         {% if user.groups.all.0.name == 'KulupUye' or user.groups.all.0.name == 'Admin' %}
+
+
+
+                            {% if examMonth or user.groups.all.0.name == 'Admin' %}
                             <div class="box-header with-border">
                                 <div class="btn-group">
                                     <a href="{% url "wushu:kusak-sinavi-ekle" %}"
@@ -153,6 +157,15 @@
                                     </a>
                                 </div>
                             </div>
+                            {% else %}
+                                <div class="box-header with-border">
+
+                                    <h4>Sınav eklemeleri <strong>(3/6/9/12)</strong> aylarda aktif olacaktır.</h4>
+
+                                </div>
+
+                            {% endif %}
+
                         {% endif %}
                         <div class="box-body">
                             <table id="kulupler" class="table table-bordered table-hover">

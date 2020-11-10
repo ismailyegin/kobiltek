@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from wushu.models import SportClubUser, SportsClub, Coach, Level, License, Athlete, Person, Judge
 from wushu.services import general_methods
 from wushu.models.EnumFields import EnumFields
+
+from wushu.models.CategoryItem import CategoryItem
 # from rest_framework.authtoken.models import Token
 
 
@@ -76,11 +78,28 @@ def return_club_user_dashboard(request):
 
     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk, belts__startDate__year=2020,
                                       belts__dekont='').distinct()
-
-
+    print(EnumFields.WUSHU.value)
+    wushu = CategoryItem.objects.filter(forWhichClazz="BELT", branch=EnumFields.WUSHU.value).order_by('-creationDate')
+    aikido = CategoryItem.objects.filter(forWhichClazz="BELT").filter(branch=EnumFields.AIKIDO.value).order_by(
+        '-creationDate')
+    wingChun = CategoryItem.objects.filter(forWhichClazz="BELT").filter(branch=EnumFields.WINGCHUN.value).order_by(
+        '-creationDate')
+    kyokushin = CategoryItem.objects.filter(forWhichClazz="BELT").filter(branch=EnumFields.KYOKUSHIN.value).order_by(
+        '-creationDate')
+    jetKuneDo = CategoryItem.objects.filter(forWhichClazz="BELT").filter(branch=EnumFields.JEETKUNEDO.value).order_by(
+        '-creationDate')
     return render(request, 'anasayfa/kulup-uyesi.html',
-                  {'total_club_user': total_club_user, 'total_coach': total_coach, 'athletes': athletes,
-                   'total_athlete': total_athlete})
+                  {'total_club_user': total_club_user,
+                   'total_coach': total_coach,
+                   'athletes': athletes,
+                   'total_athlete': total_athlete,
+                   'wushu': wushu,
+                   'aikido': aikido,
+                   'wingChun': wingChun,
+                   'kyokushin': kyokushin,
+                   'jetKuneDo': jetKuneDo,
+
+                   })
 
 
 @login_required

@@ -393,7 +393,6 @@ def sporcu_kusak_ekle(request, pk):
             belt.isActive = False;
 
             belt.status = Level.WAITED
-            belt.isActive = True
             belt.save()
 
             athlete.belts.add(belt)

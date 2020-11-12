@@ -382,7 +382,7 @@ def sporcu_kusak_ekle(request, pk):
         if belt_form.is_valid():
 
             belt = Level(startDate=belt_form.cleaned_data['startDate'],
-                         # dekont=belt_form.cleaned_data['dekont'],
+                         dekont=belt_form.cleaned_data['dekont'],
                          definition=belt_form.cleaned_data['definition'],
                          form=belt_form.cleaned_data['form'],
                          city=belt_form.cleaned_data['city'], )
@@ -1195,18 +1195,31 @@ def sporcu_kusak_duzenle_mobil(request, count):
     if user.groups.filter(name__in=['Yonetim', 'Admin']):
         ileri = int(count) + 1
         geri = int(count) - 1
+        if int(count) >= 0 and int(count) < Level.objects.exclude(form=None).exclude(dekont=None).filter(
+                levelType=EnumFields.BELT).count():
+            licenses = Level.objects.filter(startDate__year=2020).exclude(form=None).exclude(dekont=None).filter(
+                levelType=EnumFields.BELT).order_by('creationDate')[int(count)]
 
-        if int(count) >= 0 and int(count) < Level.objects.count():
-            licenses = Level.objects.all().order_by('-pk')[int(count)]
             if int(count) == 0:
                 geri = 0;
         else:
-            licenses = Level.objects.all().order_by('-pk')[0]
+            licenses = Level.objects.exclude(form=None).exclude(dekont=None).filter(levelType=EnumFields.BELT).order_by(
+                '-creationDate')[0]
             messages.success(request, 'Degerler bitti ')
-            count = '0'
+            count = Level.objects.exclude(form='').exclude(dekont='').filter(levelType=EnumFields.BELT).order_by(
+                'creationDate').count()
+
+    total = Level.objects.filter(startDate__year=2020).exclude(form=None).exclude(dekont=None).filter(
+        levelType=EnumFields.BELT).order_by('creationDate').count()
+
 
     return render(request, 'sporcu/kusakMobil.html',
-                  {'ileri': ileri, 'geri': geri, 'say': count, 'license': licenses})
+                  {'ileri': ileri,
+                   'geri': geri,
+                   'say': count,
+                   'license': licenses,
+                   'total': total
+                   })
 
 
 @login_required

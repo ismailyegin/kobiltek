@@ -111,12 +111,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Dekont Photo</label>
-                                    <a href="/media/{{ license.dekont }}" target="_blank">{{ license.dekont }}
+                                    <a href="{{ MEDIA_URL }}{{ license.dekont }}" target="_blank">{{ license.dekont }}
                                     </a>
                                 </div>
                                 <div class="form-group">
                                     <label>Form Photo</label>
-                                    <a href="/media/{{ license.form }}" target="_blank">{{ license.form }}
+                                    <a href="{{ MEDIA_URL }}{{ license.form }}" target="_blank">{{ license.form }}
                                     </a>
                                 </div>
 
@@ -141,6 +141,10 @@
                                 <div class="form-group">
                                     <label>Onay Durumu :</label>
                                     {{ license.status }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Kalan :</label>
+                                    {{ total }}
                                 </div>
 
 

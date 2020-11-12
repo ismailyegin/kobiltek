@@ -30,11 +30,15 @@ urlpatterns = [
     url(r'sporcu/sporcuLisansEkle/(?P<pk>\d+)$', AthleteViews.sporcu_lisans_ekle, name='sporcu-lisans-ekle'),
     url(r'sporcu/sporcuLisansDuzenle/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_lisans_duzenle,
         name='sporcu-lisans-duzenle'),
-    url(r'sporcu/sporcuLisansDuzenleMobil/(?P<count>\d+)$', AthleteViews.sporcu_lisans_duzenle_mobil,
+    url(r'sporcu/sporcuLisansDuzenleMobil/lisans/(?P<count>\d+)$', AthleteViews.sporcu_lisans_duzenle_mobil,
         name='sporcu-lisans-duzenle-mobil'),
+    url(r'sporcu/sporcuKusakDuzenleMobil/kusak/(?P<count>\d+)$', AthleteViews.sporcu_kusak_duzenle_mobil,
+        name='sporcu-kusak-duzenle-mobil'),
     # ilk degeri verebilmek icin yönlendirme amaci ile kullanildi.
     url(r'sporcu/sporcuLisansDuzenleMobil/$', AthleteViews.sporcu_lisans_duzenle_mobil_ilet,
         name='sporcu-lisans-duzenle-mobil-ilet'),
+    url(r'sporcu/sporcuKusakDuzenleMobil/$', AthleteViews.sporcu_kusak_duzenle_mobil_ilet,
+        name='sporcu-kusak-duzenle-mobil-ilet'),
 
     url(r'sporcu/sporcuLisansDuzenle/onayla/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
         AthleteViews.sporcu_lisans_onayla, name='sporcu-lisans-onayla'),
@@ -47,6 +51,9 @@ urlpatterns = [
         AthleteViews.sporcu_lisans_listesi_onayla, name='sporcu-lisans-listesi-onayla'),
     url(r'sporcu/sporcuLisansListesi/onaylaMobil/(?P<license_pk>\d+)/(?P<count>\d+)$',
         AthleteViews.sporcu_lisans_listesi_onayla_mobil, name='sporcu-lisans-listesi-onayla-mobil'),
+
+    url(r'sporcu/sporcuKusakListesi/onaylaMobil/(?P<license_pk>\d+)/(?P<count>\d+)$',
+        AthleteViews.sporcu_kusak_listesi_onayla_mobil, name='sporcu-kusak-listesi-onayla-mobil'),
     # lisans listesinin hepsini onaylama
     url(r'sporcu/sporcuLisansListesi/hepsinionayla/$', AthleteViews.sporcu_lisans_listesi_hepsionay,
         name='sporcu-lisans-hepsini-onayla'),

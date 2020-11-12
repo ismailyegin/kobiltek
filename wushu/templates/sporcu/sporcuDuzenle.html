@@ -430,7 +430,15 @@
                                     <tbody>
                                     {% if belts_form.all %}
                                         {% for belt in belts_form %}
-                                            <tr>
+
+
+                                            {% if  belt.isActive %}
+                                                <tr style="background-color:#E1d7d7">
+
+                                                    {% else %}
+                                                <tr>
+                                            {% endif %}
+
                                                 <td>{{ forloop.counter }} </td>
                                                 <td>{{ belt.startDate }}  </td>
                                                 <td>{{ belt.branch }}  </td>

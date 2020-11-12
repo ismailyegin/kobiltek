@@ -387,15 +387,18 @@ def sporcu_kusak_ekle(request, pk):
                          form=belt_form.cleaned_data['form'],
                          city=belt_form.cleaned_data['city'], )
 
-
             belt.levelType = EnumFields.LEVELTYPE.BELT
             # last deger kaldirildi yerine alt satiır eklendi
             belt.branch = belt.definition.branch
+            belt.isActive = False;
 
             belt.status = Level.WAITED
+            belt.isActive = True
             belt.save()
+
             athlete.belts.add(belt)
             athlete.save()
+
 
 
             mesaj=str(athlete.user.get_full_name())+' kuşak  eklendi  '+str(belt.pk)
@@ -851,6 +854,15 @@ def sporcu_lisans_duzenle_mobil_ilet(request):
     cout='0'
     return redirect('wushu:sporcu-lisans-duzenle-mobil',count=cout)
 
+
+@login_required
+def sporcu_kusak_duzenle_mobil_ilet(request):
+    cout = '0'
+    return redirect('wushu:sporcu-kusak-duzenle-mobil', count=cout)
+
+
+
+
 @login_required
 def sporcu_lisans_duzenle_mobil(request, count):
     perm = general_methods.control_access(request)
@@ -1172,3 +1184,50 @@ def sporcu_kusak_hepsinireddet(request):
     return redirect('wushu:kusak-listesi')
 
 
+@login_required
+def sporcu_kusak_duzenle_mobil(request, count):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    user = request.user
+
+    if user.groups.filter(name__in=['Yonetim', 'Admin']):
+        ileri = int(count) + 1
+        geri = int(count) - 1
+
+        if int(count) >= 0 and int(count) < Level.objects.count():
+            licenses = Level.objects.all().order_by('-pk')[int(count)]
+            if int(count) == 0:
+                geri = 0;
+        else:
+            licenses = Level.objects.all().order_by('-pk')[0]
+            messages.success(request, 'Degerler bitti ')
+            count = '0'
+
+    return render(request, 'sporcu/kusakMobil.html',
+                  {'ileri': ileri, 'geri': geri, 'say': count, 'license': licenses})
+
+
+@login_required
+def sporcu_kusak_listesi_onayla_mobil(request, license_pk, count):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        license = Level.objects.get(pk=license_pk)
+        athlete = Level.athlete_set.first()
+        for item in athlete.belts.all():
+            if item.branch == license.branch:
+                item.isActive = False
+                item.save()
+        license.status = License.APPROVED
+        license.isActive = True
+        license.save()
+        messages.success(request, 'Kusak  Onaylanmıştır')
+    except:
+        messages.warning(request, 'Yeniden deneyiniz')
+
+    return redirect('wushu:sporcu-kusak-duzenle-mobil', count)

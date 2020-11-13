@@ -1232,17 +1232,19 @@ def sporcu_kusak_listesi_onayla_mobil(request, license_pk, count):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+
     try:
         license = Level.objects.get(pk=license_pk)
-        athlete = Level.athlete_set.first()
+        athlete = license.athlete_set.first()
         for item in athlete.belts.all():
             if item.branch == license.branch:
                 item.isActive = False
                 item.save()
-        license.status = License.APPROVED
+        license.status = Level.APPROVED
         license.isActive = True
         license.save()
         messages.success(request, 'Kusak  Onaylanmıştır')
+
     except:
         messages.warning(request, 'Yeniden deneyiniz')
 

@@ -1,15 +1,11 @@
-from builtins import print, set, property, int
-from datetime import timedelta, datetime
-from operator import attrgetter
-from os import name
 import uuid
-from django.db.models.functions import Lower
+from builtins import print, int
+
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
-from django.contrib import messages
-from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -21,17 +17,17 @@ from wushu.Forms.DisabledCommunicationForm import DisabledCommunicationForm
 from wushu.Forms.DisabledPersonForm import DisabledPersonForm
 from wushu.Forms.DisabledUserForm import DisabledUserForm
 from wushu.Forms.LicenseForm import LicenseForm
-from wushu.Forms.UserForm import UserForm
 from wushu.Forms.PersonForm import PersonForm
-from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.Forms.SearchClupForm import SearchClupForm
+from wushu.Forms.UserForm import UserForm
+from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser, SportsClub
 from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 from wushu.services import general_methods
 
+
 # page
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 # from wushu.models.simplecategory import simlecategory
 
 @login_required
@@ -1190,27 +1186,35 @@ def sporcu_kusak_duzenle_mobil(request, count):
         logout(request)
         return redirect('accounts:login')
     user = request.user
+    licenses = Level.objects.none()
+    total = 0
+
+    print(count)
 
     if user.groups.filter(name__in=['Yonetim', 'Admin']):
         ileri = int(count) + 1
         geri = int(count) - 1
-        if int(count) >= 0 and int(count) < Level.objects.exclude(form=None).exclude(dekont=None).filter(
-                levelType=EnumFields.BELT).count():
-            licenses = Level.objects.filter(startDate__year=2020).exclude(form=None).exclude(dekont=None).filter(
-                levelType=EnumFields.BELT).order_by('creationDate')[int(count)]
 
-            if int(count) == 0:
-                geri = 0;
-        else:
-            licenses = Level.objects.exclude(form=None).exclude(dekont=None).filter(levelType=EnumFields.BELT).order_by(
-                '-creationDate')[0]
-            messages.success(request, 'Degerler bitti ')
-            count = Level.objects.exclude(form='').exclude(dekont='').filter(levelType=EnumFields.BELT).order_by(
-                'creationDate').count()
+        belt = Level.objects.filter(status='Beklemede').filter(startDate__year=2020).exclude(form='').exclude(
+            dekont='').filter(
+            levelType=EnumFields.BELT).order_by('-creationDate')
+        # for item in belt:
+        #     print(Athlete.objects.get(belts=item).user.get_full_name()+'dekont->'+ str(item.dekont)+'Form->'+str(item.form))
+        total = belt.count()
 
-    total = Level.objects.filter(startDate__year=2020).exclude(form=None).exclude(dekont=None).filter(
-        levelType=EnumFields.BELT).order_by('creationDate').count()
+        try:
+            if int(count) >= 0 and int(count) < belt.count():
+                licenses = belt[int(count)]
 
+                if int(count) == 0:
+                    geri = 0;
+            else:
+                licenses = belt[0]
+                messages.success(request, 'Degerler bitti ')
+                count = belt.count()
+        except:
+            print(count)
+            messages.success(request, 'Deger Yok')
 
     return render(request, 'sporcu/kusakMobil.html',
                   {'ileri': ileri,

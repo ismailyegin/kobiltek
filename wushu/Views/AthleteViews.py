@@ -969,6 +969,11 @@ def sporcu_kusak_listesi(request):
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                 belts = Level.objects.filter(levelType=EnumFields.LEVELTYPE.BELT).order_by(
                     '-athlete__belts__creationDate').distinct()
+    else:
+        if user.groups.filter(name__in=['Yonetim', 'Admin']):
+            belts = Level.objects.filter(status=Level.WAITED).filter(levelType=EnumFields.LEVELTYPE.BELT).order_by(
+                '-athlete__belts__creationDate').distinct()
+
 
     sportclup = SearchClupForm(request.POST, request.FILES or None)
     if user.groups.filter(name='KulupUye'):
@@ -1058,6 +1063,9 @@ def sporcu_lisans_listesi(request):
                     licenses = License.objects.filter(sportsClub_id__in=clubsPk).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     licenses = License.objects.all().distinct()
+    else:
+        if user.groups.filter(name__in=['Yonetim', 'Admin']):
+            licenses = License.objects.filter(status=License.WAITED)
 
     sportclup = SearchClupForm(request.POST, request.FILES or None)
     if user.groups.filter(name='KulupUye'):
@@ -1090,10 +1098,7 @@ def updateAthleteProfile(request, pk):
     password_form = SetPasswordForm(request.user, request.POST)
 
     if request.method == 'POST':
-
-
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
-
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']

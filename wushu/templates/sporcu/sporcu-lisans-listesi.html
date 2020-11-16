@@ -233,9 +233,9 @@
                                 <th> Bitiş Tarihi</th>
                                 <th> Branş</th>
                                 <th> Lisans No</th>
-{#                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-{#                                <th> Lisans Foto.</th>#}
-{#                                {% endif %}#}
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                    <th> Lisans Foto.</th>
+                                {% endif %}
                                 <th> Onay Durumu</th>
                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                 <th> İşlemler</th>
@@ -253,11 +253,11 @@
                                         <td>{{ license.expireDate }}  </td>
                                         <td>{{ license.branch }}  </td>
                                         <td>{{ license.licenseNo }}</td>
-{#                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-{#                                        <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <i#}
-{#                                                class="fa fa-file-image-o fa-2x " style="color: red"#}
-{#                                                aria-hidden="true"></i></a></td>#}
-{#                                        {% endif %}#}
+                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                            <td><a href="{{ MEDIA_URL }}{{ license.lisansPhoto }}" target="_blank"> <i
+                                                    class="fa fa-file-image-o fa-2x " style="color: red"
+                                                    aria-hidden="true"></i></a></td>
+                                        {% endif %}
                                         <td> {{ license.status }}
 
                                             {% if  license.status == 'Reddedildi' %}

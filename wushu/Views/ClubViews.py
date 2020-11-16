@@ -679,11 +679,19 @@ def approve_belt_exam(request, pk):
             level = Level()
             level.startDate = exam.examDate
             level.levelType = EnumFields.LEVELTYPE.BELT
-            lastLevel = athlete.belts.last()
+
+            lastLevel = Level.objects.get(branch=exam.branch, isActive=True)
             lastDefinition = lastLevel.definition
             level.definition = lastDefinition.parent
             level.status = Level.APPROVED
+            level.isActive = True
             level.save()
+
+            for item in athlete.belts.all():
+                if item.branch == exam.branch:
+                    item.isActive = False
+                    item.save()
+
             athlete.belts.add(level)
             athlete.save()
 

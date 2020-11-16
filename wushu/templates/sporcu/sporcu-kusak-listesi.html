@@ -254,8 +254,8 @@
                                 <th> Branş</th>
                                 <th> Tanımı</th>
                                 <th> Onay Durumu</th>
-{#                                <th> Dekont</th>#}
-{#                                <th> Form</th>#}
+                                <th> Dekont</th>
+                                <th> Form</th>
                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th> İşlemler</th>
                                 {% endif %}
@@ -283,16 +283,29 @@
                                         <td>{{ belt.branch }}  </td>
                                         <td>{{ belt.definition }}  </td>
                                         <td>{{ belt.status }}  </td>
-{#                                        <td><a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <i#}
-{#                                                class="fa fa-file-image-o fa-2x " style="color: red"#}
-{#                                                aria-hidden="true"></i></a></td>#}
-{#                                        <td><a href="{{ MEDIA_URL }}{{ belt.form }}" target="_blank"> <i#}
-{#                                                class="fa fa-file-image-o fa-2x " style="color: red"#}
-{#                                                aria-hidden="true"></i></a></td>#}
 
-                                        {#                                               resim degerleri kaldırildi #}
-                                        {#                                      <td><a target="_blank" href="/media/{{ belt.dekont }}"><img src="/media/{{ belt.dekont }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>#}
-                                        {#                                      <td><a target="_blank" href="/media/{{ belt.form }}"><img src="/media/{{ belt.form }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>#}
+                                        <td>
+                                            {% if belt.dekont %}
+
+                                                <a href="{{ MEDIA_URL }}{{ belt.dekont }}" target="_blank"> <i
+                                                        class="fa fa-file-image-o fa-2x " style="color: red"
+                                                        aria-hidden="true"></i></a>
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+
+                                            {% if belt.form %}
+                                                <a href="{{ MEDIA_URL }}{{ belt.form }}" target="_blank"> <i
+                                                        class="fa fa-file-image-o fa-2x " style="color: red"
+                                                        aria-hidden="true"></i></a>
+
+                                            {% endif %}
+                                        </td>
+
+                                        {#                                                                                      #}
+                                        {#                                                                              <td><a target="_blank" href="/media/{{ belt.dekont }}"><img src="/media/{{ belt.dekont }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>#}
+                                        {#                                                                              <td><a target="_blank" href="/media/{{ belt.form }}"><img src="/media/{{ belt.form }}" class="user-image" alt="None" style=" width: 30px;height: 30px;"></a></td>#}
 
 
 

@@ -13,7 +13,7 @@ from wushu.models import SportClubUser, SportsClub, Competition, Athlete
 from wushu.models.EnumFields import EnumFields
 from wushu.models.SandaAthlete import SandaAthlete
 
-from wushu.models.TaoluCategori import TaoluCategori
+from wushu.models.TaoluCategory import TaoluCategory
 from wushu.models.CompetitionCategori import CompetitionCategori
 
 

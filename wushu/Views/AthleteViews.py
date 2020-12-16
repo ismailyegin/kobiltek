@@ -26,6 +26,9 @@ from wushu.models.EnumFields import EnumFields
 from wushu.models.Level import Level
 from wushu.services import general_methods
 
+from wushu.Forms.TaoluCategoryForm import TaoluCategoryForm
+from wushu.models.TaoluCategory import TaoluCategory
+
 
 # page
 # from wushu.models.simplecategory import simlecategory
@@ -1254,3 +1257,157 @@ def sporcu_kusak_listesi_onayla_mobil(request, license_pk, count):
         messages.warning(request, 'Yeniden deneyiniz')
 
     return redirect('wushu:sporcu-kusak-duzenle-mobil', count)
+
+
+@login_required
+def return_grade(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    category_item_form = CategoryItemForm()
+
+    if request.method == 'POST':
+
+        category_item_form = CategoryItemForm(request.POST)
+        name = request.POST.get('name')
+        if name is not None:
+            categoryItem = CategoryItem(name=name)
+            categoryItem.forWhichClazz = "WushuYear"
+            categoryItem.isFirst = False
+            categoryItem.save()
+
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="WushuYear")
+    return render(request, 'sporcu/YearCategory.html',
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+
+
+@login_required
+def return_year(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    category_item_form = CategoryItemForm()
+
+    if request.method == 'POST':
+
+        category_item_form = CategoryItemForm(request.POST)
+        name = request.POST.get('name')
+        if name is not None:
+            categoryItem = CategoryItem(name=name)
+            categoryItem.forWhichClazz = "WushuYear"
+            categoryItem.isFirst = False
+            categoryItem.save()
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="WushuYear").order_by('-creationDate')
+    return render(request, 'sporcu/YearCategory.html',
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+
+
+@login_required
+def year_delete(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = CategoryItem.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except CategoryItem.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def yearUpdate(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    year = CategoryItem.objects.get(id=pk)
+    year_form = CategoryItemForm(request.POST or None, instance=year)
+    if request.method == 'POST':
+        if year_form.is_valid():
+            year_form.save()
+
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:yas-katagori')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/YasKategoriDuzenle.html',
+                  {'year_form': year_form})
+
+
+@login_required
+def return_taolu(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    taolu_form = TaoluCategoryForm()
+
+    if request.method == 'POST':
+
+        taolu_form = TaoluCategoryForm(request.POST)
+        if taolu_form.is_valid():
+            taolu_form.save()
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+    categoryitem = TaoluCategory.objects.all().order_by('-creationDate')
+    return render(request, 'sporcu/TaoluCategori.html',
+                  {'taolu_form': taolu_form, 'categoryitem': categoryitem})
+
+
+@login_required
+def categoryTaoluDelete(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = TaoluCategory.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except CategoryItem.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def categoryTaoluUpdate(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    taolu = TaoluCategory.objects.get(id=pk)
+    taolu_form = TaoluCategoryForm(request.POST or None, instance=taolu)
+    if request.method == 'POST':
+        if taolu_form.is_valid():
+            taolu_form.save()
+
+            messages.success(request, 'Başarıyla Güncellendi')
+            return redirect('wushu:taolu-katagori')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'sporcu/TaoluKategoriDüzenle.html',
+                  {'taolu_form': taolu_form})

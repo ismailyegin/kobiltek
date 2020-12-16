@@ -199,6 +199,14 @@ urlpatterns = [
     url(r'antrenor/antrenor-ekle/$', CoachViews.return_add_coach, name='antrenor-ekle'),
     url(r'antrenor/antrenorler/$', CoachViews.return_coachs, name='antrenorler'),
     url(r'antrenor/kademe/$', CoachViews.return_grade, name='kademe'),
+    url(r'sporcu/yaskategori/$', AthleteViews.return_year, name='yas-katagori'),
+    url(r'sporcu/yas/sil/(?P<pk>\d+)$', AthleteViews.year_delete, name='yas-katagori-sil'),
+    url(r'sporcu/yas/Duzenle/(?P<pk>\d+)$', AthleteViews.yearUpdate, name='year-katagori-duzenle'),
+
+    url(r'sporcu/taoluekle/$', AthleteViews.return_taolu, name='taolu-katagori'),
+    url(r'sporcu/taolu/sil/(?P<pk>\d+)$', AthleteViews.categoryTaoluDelete, name='taolu-katagori-sil'),
+    url(r'sporcu/taolu/Duzenle/(?P<pk>\d+)$', AthleteViews.categoryTaoluUpdate, name='taolu-katagori-duzenle'),
+
     url(r'antrenor/kademe/sil/(?P<pk>\d+)$', CoachViews.categoryItemDelete,
         name='categoryItem-delete-kademe'),
     url(r'antrenor/kademeDuzenle/(?P<pk>\d+)$', CoachViews.categoryItemUpdate,

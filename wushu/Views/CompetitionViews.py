@@ -186,13 +186,13 @@ def musabaka_kategori_sec(request, pk):
     coa = []
     for item in kategoriler:
         coa.append(item.pk)
-    categori = TaoluCategori.objects.exclude(competitioncategori__in=coa)
+    categori = TaoluCategory.objects.exclude(competitioncategori__in=coa)
     if request.method == 'POST':
         kategoriler = request.POST.getlist('selected_options')
         if kategoriler:
             for x in kategoriler:
                 if competition.subBranch == 'TAOLU':
-                    kategori = TaoluCategori.objects.get(pk=x)
+                    kategori = TaoluCategory.objects.get(pk=x)
                     competitionCategori = CompetitionCategori()
                     competitionCategori.categori = kategori
                     competitionCategori.save()

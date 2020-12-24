@@ -218,28 +218,17 @@ def get_client_ip(request):
         ip = x_forwarded_for.split(',')[0]
     else:
         ip = request.META.get('REMOTE_ADDR')
-    print(ip)
     return ip
 
 
 def logwrite(request, user, log):
-    logs = Logs(
-        user=user,
-        subject=log,
-        ip=get_client_ip(request)
-    )
-    logs.save()
-
-
     try:
-        print()
-
-
-        # f = open("log.txt", "a")
-        # log = get_client_ip(request) + "    [" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(
-        #     user) + " " + log + " \n "
-        # f.write(log)
-        # f.close()
+        logs = Logs(
+            user=user,
+            subject=log,
+            ip=get_client_ip(request)
+        )
+        logs.save()
 
     except Exception as e:
         f = open("log.txt", "a")

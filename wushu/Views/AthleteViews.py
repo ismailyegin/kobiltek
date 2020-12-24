@@ -688,6 +688,9 @@ def sporcu_kusak_listesi_hepsinionayla(request):
             bt.isActive = True
             bt.save()
 
+            mesaj = str(athlete.user.get_full_name()) + ' kuşak  onaylandi  ' + str(bt.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
         messages.success(request, 'Kuşaklar basari  Onaylanmıştır')
     except:
         messages.warning(request, 'Yeniden deneyiniz.')
@@ -1125,10 +1128,7 @@ def updateAthleteProfile(request, pk):
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'password_form': password_form})
 
-
-
 # lisanslarda beklemede olanlarin hepsini  onayla
-
 @login_required
 def sporcu_lisans_listesi_hepsionay(request):
     try:
@@ -1142,6 +1142,9 @@ def sporcu_lisans_listesi_hepsionay(request):
             license.status = Level.APPROVED
             license.isActive = True
             license.save()
+            mesaj = str(athlete.user.get_full_name()) + ' lisans  onaylandi  ' + str(license.pk)
+            log = general_methods.logwrite(request, request.user, mesaj)
+
     except:
         messages.warning(request, 'Yeniden deneyiniz')
 

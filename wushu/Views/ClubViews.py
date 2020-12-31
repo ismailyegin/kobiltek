@@ -100,6 +100,9 @@ def return_clubs(request):
     user = request.user
     clubs = SportsClub.objects.none()
     ClupsSearchForm=ClubSearchForm(request.POST)
+    if user.groups.filter(name='KulupUye'):
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
     if request.method == 'POST':
 
         if ClupsSearchForm.is_valid():
@@ -274,6 +277,17 @@ def return_club_person(request):
     user_form = UserSearchForm()
     user = request.user
     club_user_array=SportClubUser.objects.none()
+    if user.groups.filter(name='KulupUye'):
+
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+
+        club_user_array = SportClubUser.objects.filter(sportsclub__in=clubsPk).distinct()
+
+
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
         sportsclup = request.POST.get('sportsClub')

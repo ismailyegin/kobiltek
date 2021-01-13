@@ -668,6 +668,19 @@ def return_belt_exams(request):
     return render(request, 'kulup/kusak-sinavlari.html', {'exams': exams, 'examMonth': examMonth})
 
 
+@login_required
+def return_belt_exams_detail(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    user = request.user
+    exams = BeltExam.objects.filter(status='Beklemede')
+
+    return render(request, 'kulup/Kusak-sinavi-detay.html', {'exams': exams})
+
 def detail_belt_exam(request, pk):
     perm = general_methods.control_access(request)
 

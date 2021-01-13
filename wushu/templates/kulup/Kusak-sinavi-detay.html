@@ -142,79 +142,77 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Kuşak Sınavları</h3>
+                            <h3 class="box-title">Onay Bekleyen Kuşak Sınavları</h3>
                         </div>
-                        {% if user.groups.all.0.name == 'KulupUye' or user.groups.all.0.name == 'Admin' %}
 
-
-
-                            {% if examMonth or user.groups.all.0.name == 'Admin' %}
-                            <div class="box-header with-border">
-                                <div class="btn-group">
-                                    <a href="{% url "wushu:kusak-sinavi-ekle" %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Sınav Oluştur
-                                    </a>
-                                </div>
-
-
-                            {% endif %}
-                        {% if user.groups.all.0.name == 'Admin' %}
-                            <div class="btn-group">
-                                <a href="{% url "wushu:kusak-sinav-detay" %}"
-                                   type="button" class="btn btn-success"><i
-                                        class="fa fa-edit"></i> Sınav Detay
-                                </a>
-                            </div>
-                            </div>
-                        {% endif %}
-
-
-                        {% endif %}
                         <div class="box-body">
                             <table id="kulupler" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Kulübü</th>
                                     {% endif %}
                                     <th>Sınav Tarihi</th>
-                                    <th>Branş </th>
-                                    <th>Antrenör  Sayısı</th>
-                                    <th>Sporcu Sayısı</th>
-                                    <th>Onay Durumu</th>
+                                    <th>Branş</th>
+                                    <th>Ad Soyadi</th>
+                                    <th>Önceki Kusak</th>
+                                    <th>Sonraki Kusak</th>
+                                    <th>lisans No</th>
+                                    <th>Form</th>
+                                    <th>Dekont</th>
                                     <th>İşlemler</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% if exams.all %}
                                     {% for exam in exams %}
-                                        <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+                                        {% for athlete in exam.athletes.all %}
+
+
+
+                                            <tr>
+
                                                 <td>{{ exam.sportClub }}</td>
-                                            {% endif %}
-                                            <td>{{ exam.examDate }}</td>
-                                            <td>{{ exam.branch }}</td>
-
-                                            <td>{{ exam.coachs.count}}</td>
-                                            <td>{{ exam.athletes.count }}</td>
-                                            <td>{{ exam.status }}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>İncele
-                                                    </a>
 
 
-                                                </div>
-                                            </td>
+                                                <td>{{ exam.examDate }}</td>
+                                                <td>{{ exam.branch }}</td>
+
+                                                <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                                <td>{{ athlete.belts.last.definition.name }}</td>
+                                                <td>{{ athlete.belts.last.definition.parent.name }}</td>
+                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
+
+                                                <td><a href="{{ MEDIA_URL }}{{ exam.form }}" target="_blank"> <img
+                                                        src="{{ MEDIA_URL }}{{ exam.form }}" class="user-image"
+                                                        alt="None"
+                                                        style=" width: 30px;height: 30px;"></a></td>
 
 
-                                        </tr>
+                                                <td><a href="{{ MEDIA_URL }}{{ exam.dekont }}" target="_blank"> <img
+                                                        src="{{ MEDIA_URL }}{{ exam.dekont }}" class="user-image"
+                                                        alt="None"
+                                                        style=" width: 30px;height: 30px;"></a></td>
 
+
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{% url "wushu:kusak-sinavi-incele" exam.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>İncele
+                                                        </a>
+
+
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+
+
+                                        {% endfor %}
                                     {% endfor %}
                                 {% endif %}
 
@@ -239,59 +237,25 @@
     <script>
         $(function () {
             $('#kulupler').DataTable({
-                'paging': true,
+
+                orderFixed: [[0, 'asc']],
+                rowGroup: {
+                    dataSrc: 0
+                },
+                'paging': false,
                 'lengthChange': true,
                 'searching': true,
                 'ordering': true,
                 'info': true,
-                'autoWidth': true
+                'autoWidth': true,
+                'responsive': true,
+
             })
 
         })
     </script>
 
 
-
-    <script>
-        function deleteExam(id) {
-
-            console.log(id);
-            var html = ''
-            $("#modal-danger").on("shown.bs.modal", function (e) {
-                $("#btn-conf").click(function () {
-                    $.ajax({
-                        url: "{% url "wushu:kusak-sinavi-sil" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
-
-                            html = 'Sınav Başarıyla Silindi';
-                        debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "wushu:kusak-sinavlari" %}");
-
-                                });
-
-                            }).modal('show');
-
-
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
-
-        }
-    </script>
 
 
 

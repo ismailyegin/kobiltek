@@ -169,6 +169,7 @@ urlpatterns = [
     url(r'kulup/kulupDuzenle/(?P<pk>\d+)$', ClubViews.clubUpdate,
         name='update-club'),
     url(r'kulup/kusak-sinavlari/$', ClubViews.return_belt_exams, name='kusak-sinavlari'),
+    url(r'kulup/kusak-sinav-detay/$', ClubViews.return_belt_exams_detail, name='kusak-sinav-detay'),
     url(r'kulup/kusak-sinavi-sporcu-sec/(?P<pk>\d+)$', ClubViews.choose_athlete, name='kusak-sinavi-sporcu-sec'),
     #
 

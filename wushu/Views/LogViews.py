@@ -92,4 +92,4 @@ def controlkusak(request):
     for item in beltExam:
         if item.athletes.count() == 0:
             item.delete()
-    return redirect('sbs:admin')
+    return redirect('wushu:admin')

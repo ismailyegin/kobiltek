@@ -349,7 +349,6 @@ urlpatterns = [
     url(r'yardim$', HelpViews.help, name='help'),
     url(r'sorular$', HelpViews.questions, name='sorular'),
 
-    url(r'log/log-kayıtlari/$', LogViews.return_log,
-        name='logs'),
-
+    url(r'log/log-kayıtlari/$', LogViews.return_log, name='logs'),
+    url(r'control/Lisanscontrol$', LogViews.control, name='control'),
 ]

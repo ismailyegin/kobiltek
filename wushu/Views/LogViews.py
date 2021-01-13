@@ -19,6 +19,8 @@ from wushu.services import general_methods
 from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models.Logs import Logs
 
+from wushu.models.Athlete import Athlete
+
 
 @login_required
 def return_log(request):
@@ -61,3 +63,18 @@ def return_log(request):
 
                 logs = Logs.objects.filter(query).order_by('-creationDate')
     return render(request, 'Log/Logs.html', {'logs': logs, 'user_form': user_form})
+
+
+@login_required
+def control(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    athletes = Athlete.objects.none()
+    for athlete in Athlete.objects.all():
+        if athlete.belts.filter(isActive=True).count() > 1:
+            athletes |= athlete
+
+    return render(request, 'sporcu/sporcular.html', {'athletes': athletes, })

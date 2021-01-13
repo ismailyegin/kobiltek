@@ -736,7 +736,6 @@ def visaSeminar_Delete_Referee(request, pk, competition):
 
 @login_required
 def visaSeminar_onayla(request, pk):
-    print('bana geldi ')
     seminar = VisaSeminar.objects.get(pk=pk)
 
     if seminar.status == VisaSeminar.WAITED:

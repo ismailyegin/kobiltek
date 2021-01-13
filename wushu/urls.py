@@ -351,4 +351,5 @@ urlpatterns = [
 
     url(r'log/log-kayıtlari/$', LogViews.return_log, name='logs'),
     url(r'control/Lisanscontrol$', LogViews.control, name='control'),
+    url(r'control/kusaksinav$', LogViews.controlkusak, name='control-kusak'),
 ]

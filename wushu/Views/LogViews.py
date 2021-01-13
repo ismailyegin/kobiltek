@@ -20,6 +20,7 @@ from wushu.Forms.UserSearchForm import UserSearchForm
 from wushu.models.Logs import Logs
 
 from wushu.models.Athlete import Athlete
+from wushu.models.BeltExam import BeltExam
 
 
 @login_required
@@ -78,3 +79,17 @@ def control(request):
             athletes |= athlete
 
     return render(request, 'sporcu/sporcular.html', {'athletes': athletes, })
+
+
+@login_required
+def controlkusak(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    beltExam = BeltExam.objects.all()
+    for item in beltExam:
+        if item.athletes.count() == 0:
+            item.delete()
+    return redirect('sbs:admin')

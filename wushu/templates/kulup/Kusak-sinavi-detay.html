@@ -169,17 +169,10 @@
                                     {% for exam in exams %}
 
                                         {% for athlete in exam.athletes.all %}
-
-
-
                                             <tr>
-
                                                 <td>{{ exam.sportClub }}</td>
-
-
                                                 <td>{{ exam.examDate }}</td>
                                                 <td>{{ exam.branch }}</td>
-
                                                 <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
                                                 <td>{{ athlete.belts.last.definition.name }}</td>
                                                 <td>{{ athlete.belts.last.definition.parent.name }}</td>

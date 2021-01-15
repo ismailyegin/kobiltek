@@ -10,6 +10,7 @@ class MenuDirectory(models.Model):
     is_show = models.BooleanField(default=True)
     fa_icon = models.CharField(max_length=120, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    sorting = models.IntegerField(null=True, blank=True)
 
     class Meta:
         default_permissions = ()

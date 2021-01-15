@@ -315,7 +315,7 @@ urlpatterns = [
     url(r'admin/admin-profil-guncelle/$', AdminViews.updateProfile,
         name='admin-profil-guncelle'),
 
-    # Kullanıcılar
+    # Kullanıcılar/musabaka/musabakalar/
     url(r'kullanici/kullanicilar/$', UserViews.return_users, name='kullanicilar'),
     url(r'kullanici/kullanici-duzenle/(?P<pk>\d+)$', UserViews.update_user, name='kullanici-duzenle'),
     url(r'kullanici/kullanicilar/aktifet/(?P<pk>\d+)$', UserViews.active_user,
@@ -327,8 +327,9 @@ urlpatterns = [
     url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
     url(r'musabaka/musabaka-ekle/$', CompetitionViews.musabaka_ekle, name='musabaka-ekle'),
     url(r'musabaka/musabaka-duzenle/(?P<pk>\d+)$', CompetitionViews.musabaka_duzenle, name='musabaka-duzenle'),
+    url(r'musabaka/musabaka-sanda/(?P<pk>\d+)$', CompetitionViews.musabaka_sanda, name='musabaka-sanda-ekle'),
     url(r'musabaka/musabakalar/musabaka-sil(?P<pk>\d+)$', CompetitionViews.musabaka_sil, name='musabaka-sil'),
-    url(r'musabaka/musabaka-duzenle/musabaka-sporcu-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
+    url(r'musabaka/Sanda/musabaka-sporcu-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,
         name='musabaka-sporcu-sec'),
     url(r'musabaka/musabaka-duzenle/kaldir/(?P<pk>\d+)/$', CompetitionViews.musabaka_sporcu_sil,
         name='musabaka-sporcu-kaldir'),
@@ -340,6 +341,7 @@ urlpatterns = [
         name='musabaka-categori-sil'),
     url(r'musabaka/KategorilerinSporculari/$', CompetitionViews.return_sporcu, name='Kategorilerin-Sporculari'),
     url(r'musabaka/SporcuSec/$', CompetitionViews.return_sporcu_sec, name='catagori-sporcu-sec-ajax'),
+    url(r'musabaka/SporcuSecim/Sanda S$', CompetitionViews.return_sporcu_sec_sanda, name='sanda-sporcu-sec-ajax'),
     url(r'musabaka/sporcu-sec/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete,
         name='catagori-sporcu-sec'),
     url(r'musabaka/taoluSporcuSil/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.taolu_sporcu_sil,
@@ -349,8 +351,8 @@ urlpatterns = [
 
     url(r'yardim$', HelpViews.help, name='help'),
     url(r'sorular$', HelpViews.questions, name='sorular'),
-
     url(r'log/log-kayıtlari/$', LogViews.return_log, name='logs'),
     url(r'control/Lisanscontrol$', LogViews.control, name='control'),
     url(r'control/kusaksinav$', LogViews.controlkusak, name='control-kusak'),
+
 ]
